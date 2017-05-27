@@ -16,16 +16,21 @@ const options = {
 const User = models.User;
 
 const strategy = new Strategy(options, (payload, done) => {
+  console.log('strategizing');  
   User.findOne({
     where: { email: payload.email }
   })
     .then(user => {
+      console.log(user);
       if (user) {
         return done(null, user);
       }
       return done(new Error('User not found'), false);
     })
-    .catch(error => done(error, null));
+    .catch(error => {
+      console.log(error);
+      done(error, null)
+    });
 });
 
 

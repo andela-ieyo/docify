@@ -6,17 +6,29 @@ import auth from '../config/middlewares/auth';
 
 const routes = () => {
   const userRoutes = express.Router();
+
+  // endpoint for signup
   userRoutes.post('/users', userController.create);
+
+  // endpoint for login
   userRoutes.post('/users/login', userController.login);
+  
+  // token authentication middleware
   userRoutes.use(auth.authenticate('jwt', config.jwtSession));
-  userRoutes.get('/users/test', (req, res) => {
-    res.status(200).send({ msg: 'welcome to docify' });
-  });
+
+  // endpoint to retrieve all users
+  userRoutes.get('/users', userController.findAll);
+
+  //endpoint to retrieve a user
+  userRoutes.get('/users/:id', userController.findUser);
+
+  // endpoint to delete user
+  userRoutes.delete('/users/:id', userController.deleteUser);
+
+  // update user records
+  userRoutes.put('/users/:id', userController.update);
+
   return userRoutes;
 }
 
 export default routes;
-
-// app.get('/token', (req, res) => {
-//   res.status(200).send(jwt.sign({ a: 1}, config.jwtSecret));
-// });
