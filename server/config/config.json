@@ -10,7 +10,7 @@
   "test": {
     "username": "andeladeveloper",
     "password": null,
-    "database": "dms-dev",
+    "database": "dms-test",
     "host": "127.0.0.1",
     "port": 5432,
     "dialect": "postgres"
