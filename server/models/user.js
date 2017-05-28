@@ -47,8 +47,8 @@ module.exports = (sequelize, DataTypes) => {
     classMethods: {
       associate: (models) => {
         Users.hasMany(models.Documents, {
-          // foreignKey: 'id',
-          // as: 'ownerId',
+          foreignKey: 'id',
+          as: 'ownerId',
         });
         Users.belongsTo(models.Roles, {
           foreignKey: 'roleId',

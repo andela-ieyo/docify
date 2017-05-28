@@ -14,6 +14,18 @@ const routes = () => {
   // create documents
   docRoutes.post('/documents', documentController.create);
 
+  // retrieve all documents
+  docRoutes.get('/documents', documentController.getAll);
+
+  // retrieve a document
+  docRoutes.get('/documents/:id', documentController.getOne);
+  
+  // update a doc
+  docRoutes.put('/documents/:id', documentController.update);
+  
+  // delete a document
+  docRoutes.delete('/documents/:id', documentController.deleteOne);
+
   return docRoutes; 
 }
 

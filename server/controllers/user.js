@@ -6,7 +6,7 @@ const Users = models.Users;
 const Roles = models.Roles;
 
  const isLoggedInUser = (userId, queryId) => {
-    if (parseInt(userId) === parseInt(queryId)) return true;
+    if (parseInt(userId, 10) === parseInt(queryId, 10)) return true;
   };
 
 const UserController = {
@@ -75,7 +75,7 @@ const UserController = {
         .catch(error => {
           res.status(500).send(error);
         });
-      } else return res.status(406).send('Enter a valid email address and password');
+      } else return res.status(400).send('Enter a valid email address and password');
   },
 
   findAll(req, res) {
@@ -112,7 +112,7 @@ const UserController = {
         if (!user) {
           return res.status(400).send({ message: 'User not found' });
         }
-        Users.destroy()
+        user.destroy()
           .then(() => {
             res.status(204).send({message: 'User record deleted successfully'});
           })
@@ -153,7 +153,6 @@ const UserController = {
   updateRole(req, res) {
     const isAdmin = req.user.roleId === 3;
     const queryId = req.params.id;
-    console.log(queryId, 'query', req);
     if(!isAdmin) {
       return res.status(403).send({ message: 'Request Denied' });
     }

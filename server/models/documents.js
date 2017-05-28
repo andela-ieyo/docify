@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     classMethods: {
       associate: (models) => {
         Documents.belongsTo(models.Users, {
-          foreignKey: 'userId',
+          foreignKey: 'id',
           onDelete: 'CASCADE',
         });
       },
