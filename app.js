@@ -6,17 +6,10 @@ import config from './server/config/config';
 import db from './server/models/index';
 import auth from './server/config/middlewares/auth';
 import userRoutes from './server/routes/userRoutes';
+import docRoutes from './server/routes/documentRoutes';
 
 // Set up the express app
 const app = express();
-
-// userRoute.get('/one', (req, res) => {
-//  res.status(200).send({ y: 99999});
-// });
-
-// userRoute.use(auth.authenticate('jwt', config.jwtSession));
-
-// userRoute.get('/all', user.getAll());
 
 // Log requests to the console.
 app.use(logger('dev'));
@@ -26,9 +19,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(auth.initialize());
 
-
-
+// routes middleware
 app.use('/api', userRoutes());
+app.use('/api', docRoutes());
+
 
 // Setup a default catch-all route that sends back a welcome message in JSON format.
 // app.get('*', (req, res) => res.status(200).send({

@@ -1,8 +1,3 @@
-import models from '../../models/';
-import passport from 'passport';
-import { Strategy, ExtractJwt } from 'passport-jwt';
-import config from '../config';
-
 const options = {
   secretOrKey: config.jwtSecret,
   jwtFromRequest: (req) => {
@@ -12,12 +7,16 @@ const options = {
     return null;
   }
 };
+import models from '../../models/';
+import passport from 'passport';
+import { Strategy, ExtractJwt } from 'passport-jwt';
+import config from '../config';
 
-const User = models.User;
+const Users = models.Users;
 
 const strategy = new Strategy(options, (payload, done) => {
   console.log('strategizing');  
-  User.findOne({
+  Users.findOne({
     where: { email: payload.email }
   })
     .then(user => {

@@ -28,6 +28,9 @@ const routes = () => {
   // update user records
   userRoutes.put('/users/:id', userController.update);
 
+// update a user's role (Admin Privilege)
+  userRoutes.put('/users/role/:id', userController.updateRole);
+  
   return userRoutes;
 }
 

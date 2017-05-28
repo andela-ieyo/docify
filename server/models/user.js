@@ -3,7 +3,7 @@
 import bcrypt from 'bcrypt';
 
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
+  const Users = sequelize.define('Users', {
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -46,11 +46,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     classMethods: {
       associate: (models) => {
-        User.hasMany(models.Documents, {
-          foreignKey: 'userId',
-          as: 'ownerID',
+        Users.hasMany(models.Documents, {
+          // foreignKey: 'id',
+          // as: 'ownerId',
         });
-        User.belongsTo(models.Role, {
+        Users.belongsTo(models.Roles, {
           foreignKey: 'roleId',
         });
       },
@@ -60,5 +60,5 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   });
-  return User;
+  return Users;
 };

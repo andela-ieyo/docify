@@ -2,8 +2,8 @@ import models from '../models';
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
 
-const Users = models.User;
-const Roles = models.Role;
+const Users = models.Users;
+const Roles = models.Roles;
 
  const isLoggedInUser = (userId, queryId) => {
     if (parseInt(userId) === parseInt(queryId)) return true;
@@ -22,16 +22,17 @@ const UserController = {
     })
     .then((dbUser) => {
       if (dbUser) { // dbUser.username || dbUser.email
-        return res.status(409).send({ message: 'An account with that email address exists' });
+        return res.status(409).send({ message: 'An account with that email address already exists' });
       }
       Roles.findOne({
         where:{
-          title: 'WRITER'
+          title: 'Writer'
         }
       }).then((role) =>
         Users.create(Object.assign({}, userData, { roleId: role.id }))
           .then((newUser) => {
             const payload = {
+              roleId: newUser.roleId,
               email: newUser.email
             };
             const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '24h' });
@@ -83,7 +84,7 @@ const UserController = {
       return res.status(403).send({ message: 'Request denied' })
     };
     Users.findAll()
-      .then( allRegUsers => res.status(200).send(allRegUsers))
+      .then(allRegUsers => res.status(200).send(allRegUsers))
       .catch(error => res.status(500).send({ message: 'Server error' }));
   },
 
@@ -124,7 +125,6 @@ const UserController = {
     const queryId = req.params.id;
     const userId = req.user.id;
     const isUser = isLoggedInUser(userId, queryId);
-    // const isAdmin = req.user.roleId === 3
     if(!isUser) {
       return res.status(403).send({ message: 'Request denied'});
     }
@@ -147,6 +147,30 @@ const UserController = {
         .catch(error => res.status(500).send(error));
       })
       .catch(error => res.status(500).send(error));   
+  },
+
+// Admin privilege to update any user's role 
+  updateRole(req, res) {
+    const isAdmin = req.user.roleId === 3;
+    const queryId = req.params.id;
+    console.log(queryId, 'query', req);
+    if(!isAdmin) {
+      return res.status(403).send({ message: 'Request Denied' });
+    }
+    Users.findById(queryId)
+      .then(user => {
+         if (!user) {
+          return res.status(404).send({ message: 'User not found'});
+        }
+        user.update({
+          roleId: req.body.roleId
+        })
+        .then(() => {
+          return res.status(200).send({ message: 'User role updated successfully'});
+        })
+        .catch(error => res.status(500).send(error));
+      })
+      .catch(error => res.status(500).send(error));
   }
 
 }
