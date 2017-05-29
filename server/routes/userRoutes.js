@@ -30,7 +30,12 @@ const routes = () => {
 
 // update a user's role (Admin Privilege)
   userRoutes.put('/users/role/:id', userController.updateRole);
-  
+
+  // retrieve all docs belonging to a specific user
+  userRoutes.get('/users/:id/documents', userController.findUserDoc);
+
+  userRoutes.get('/search/users/', userController.search); 
+
   return userRoutes;
 }
 

@@ -4,7 +4,6 @@ import config from '../config/config';
 
 const Documents = models.Documents;
 const Users = models.Users;
-const Roles = models.Roles;
 
 const checkDocOwner = (docId, queryId) => {
   if (parseInt(docId, 10) === parseInt(queryId, 10)) return true;
@@ -152,6 +151,53 @@ const documentController = {
       .catch(error => res.status(500)
         .send( {message: 'Server error', error: error}));  
   },
+
+  search(req, res) {
+    const { docTitle } = req.query;
+    const isAdmin = req.user.roleId === 3;
+    const loggedInUser = req.user;
+
+    Documents.findAll({
+      where: {
+        title: docTitle
+      }
+    })
+      .then(docs => {
+        if (!docs) {
+          return res.status(404).send({ message: 'Not Found'});
+        };
+
+        const isWriter = checkUserRole(loggedInUser.roleId);
+        if (isWriter) {
+          const writerDocs = docs.filter(doc => {
+            doc.ownerId === loggedInUser.id || doc.access === 'Writer' 
+              || doc.access === 'public';
+          });
+          if (writerDocs === []) {
+            return res.status(404).send({ message: 'Not Found'});
+          }
+          return res.status(200).send(writerDocs);
+        };
+
+        if (!isWriter && !isAdmin) {
+          const editorDocs = docs.filter(doc => {
+            doc.ownerId === loggedInUser.id || doc.access === 'Writer' 
+              || doc.access === 'public' || doc.access === 'Editor';
+          });
+          if (editorDocs === []) {
+            return res.status(404).send({ message: 'Not Found'});
+          }
+          return res.status(200).send(editorDocs);
+        };
+
+        const adminDocs = docs.filter(doc => {
+          doc.ownerId !== loggedInUser.id && doc.access !== 'private' 
+            || doc.ownerId === loggedInUser.id 
+        });
+        res.status(200).send(adminDocs);
+      })
+      .catch(error => res.status(500).send(error));
+  }
 
 }
 

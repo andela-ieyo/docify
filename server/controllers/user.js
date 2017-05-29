@@ -4,6 +4,7 @@ import config from '../config/config';
 
 const Users = models.Users;
 const Roles = models.Roles;
+const Documents = models.documents;
 
  const isLoggedInUser = (userId, queryId) => {
     if (parseInt(userId, 10) === parseInt(queryId, 10)) return true;
@@ -12,41 +13,60 @@ const Roles = models.Roles;
 const UserController = {
    create(req, res) {
     const userData = req.body;
-    Users.findOne({
-      where: {
-        $or: [
-          {email: req.body.email},
-          {username: req.body.username},
-        ]
-      }
-    })
-    .then((dbUser) => {
-      if (dbUser) { // dbUser.username || dbUser.email
-        return res.status(409).send({ message: 'An account with that email address already exists' });
-      }
-      Roles.findOne({
-        where:{
-          title: 'Writer'
-        }
-      }).then((role) =>
-        Users.create(Object.assign({}, userData, { roleId: role.id }))
-          .then((newUser) => {
-            const payload = {
-              roleId: newUser.roleId,
-              email: newUser.email
-            };
-            const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '24h' });
-            return res.status(201).send({
-              newUser,
-              message: 'User signup completed successfully',
-              token
-            });
-          })
-      )
-    })
-    .catch(error => res.status(500).send(error));
-  },
+    const query = {
+      where: { email: req.body.email }
+    };
+    const defaultRole = {
+      where: { title: 'Writer' }
+    };
 
+    Users.findOne(query)
+      .then(checkReturnedUSer)
+      .then(getDefaultRoleInfo)
+      .then(createUser)
+      .then(generateToken)
+      .then(resHandler)
+      .catch(errorHandler);
+
+
+    function checkReturnedUSer(user) {
+      if (user) {
+        throw new Error('checkReturnedUSer');
+      }
+      return user;
+    }
+
+    function getDefaultRoleInfo() {
+      return Roles.findOne(defaultRole);
+    }
+
+    function createUser(role) {
+      return Users.create(Object.assign({}, userData, { roleId: role.id }));
+    }
+
+    function generateToken(newUserObj) {
+      const payload = { roleId: newUserObj.roleId, email: newUserObj.email };
+      return {
+        newUser: newUserObj,
+        token: jwt.sign(payload, config.jwtSecret, { expiresIn: '24h' })
+      };
+    }
+
+    function resHandler(resObj) {
+      return res.status(201).send(Object.assign({}, resObj, {
+        message: 'User signup completed successfully'
+      }));
+    }
+
+    function errorHandler(error) {
+      const message = error.message;
+      if (message === 'checkReturnedUSer') {
+        return res.status(400).send({ error: 'An account with that email address already exists' });
+      }
+      return res.status(500).send({ error });
+    }
+  },
+  
   login(req, res) {
     if (req.body.email && req.body.password ){
       const { email } = req.body;
@@ -139,7 +159,7 @@ const UserController = {
           lastName: req.body.lastName || user.lastName,
           username: req.body.username || user.username,
           password: req.body.password || user.password,
-          roleid: req.body.roleId || user.roleId
+          roleId: req.body.roleId || user.roleId
         })
         .then(() => {
           return res.status(200).send({ message: 'User record updated successfully'});
@@ -170,6 +190,63 @@ const UserController = {
         .catch(error => res.status(500).send(error));
       })
       .catch(error => res.status(500).send(error));
+  },
+
+  findUserDoc(req, res) {
+    const loggedInUser = req.user;
+    const isAdmin = loggedInUser.roleId === 3;
+    const { id } = req.params;
+    const isOwner = loggedInUser.id === id;
+
+    if (!isOwner && !isAdmin) {
+      return res.status(401).send({ message: 'Request denied'});
+    };
+
+    if (isAdmin) {
+      return Documents.findAll({
+        where: {
+          access: {
+            $ne: 'private'
+          }
+        }
+      })
+        .then(docs => {
+          if (!docs) {
+            return res.send(404).send({ message: 'No document found'});
+          }
+          res.status(200).send(docs)
+        })
+        .catch(error => 
+          res.status(500).send({ message: 'Server error', error: error}));
+    };
+    Documents.findAll()
+      .then(docs => {
+        if (!docs) {
+          return res.send(404).send({ message: 'No document found' });
+        };
+        res.status(200).send(docs)
+      })
+      .catch(error => 
+        res.status(500).send({ message: 'Server error', error: error}));  
+  },
+
+  search(req, res) {
+    const loggedInUser = req.user;
+    const { firstName, lastName } = req.query;
+    Users.findAll({
+      where: {
+        firstName: firstName,
+        lastName: lastName
+      }
+    })
+      .then(users => {
+        if (!users) {
+          return res.status(404).send({ message: 'No user record found'});
+        }
+        const filteredUsers = users.filter(user => user.id !== loggedInUser.id)
+        res.status(200).send(filteredUsers);
+      })
+      .catch(error => res.status(500).send(error));  
   }
 
 }
