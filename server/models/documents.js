@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         isIn: {
           args: [['public', 'private', 'editor', 'writer']],
-          msg: 'Must be either public, private, writer or Chinese'
+          msg: 'Must be either public, private, writer or editor'
         }
       }
     },

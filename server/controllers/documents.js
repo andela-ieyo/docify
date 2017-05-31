@@ -20,6 +20,8 @@ const checkIfWriter = (roleId) => {
 const documentController = {
   create(req, res) {
     const userData = req.body;
+    const loggedInUser = req.user;
+
     if (req.body.title === '' || req.body.content === ''
     || req.body.access === '') {
       return res.status(400).send({ message: 'All fields must not be empty' });
@@ -27,7 +29,7 @@ const documentController = {
 
     return Users.findOne({
       where: {
-        id: req.user.id
+        id: loggedInUser.id
       }
     })
       .then(user => {
