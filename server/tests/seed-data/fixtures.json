@@ -1,0 +1,30 @@
+{
+  "users": [{
+      "username": "Admin",
+      "firstName": "Precious",
+      "lastName": "Ijege",
+      "password": "testing",
+      "email": "precious.ijege@gmail.com",
+      "roleId": 3
+    },
+    {
+      "username": "Jd",
+      "firstName": "John",
+      "lastName": "Doe",
+      "password": "testing",
+      "email": "john.doe@gmail.com",
+      "roleId": 1
+    }
+  ],
+  "roles":[
+    {
+      "title": "Writer"
+    },
+    {
+      "title": "Editor"
+    },
+    {
+      "title": "Admin"
+    }
+  ]
+}

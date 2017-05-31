@@ -1,22 +1,29 @@
 import express from 'express';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
-import jwt from 'jsonwebtoken';
-import config from './server/config/config';
 import db from './server/models/index';
 import auth from './server/config/middlewares/auth';
 import userRoutes from './server/routes/userRoutes';
 import docRoutes from './server/routes/documentRoutes';
 
+// import models from './server/models';
+
+// let Users = models.Users;
+// let Roles = models.Roles;
+
 // Set up the express app
 const app = express();
 
+const port = process.env.PORT || 8000; // eslint-disable-line
+
 // Log requests to the console.
-app.use(logger('dev'));
+app.use(logger('combined'));
 
 // Parse incoming requests data
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(auth.initialize());
 
 // routes middleware
@@ -29,4 +36,9 @@ app.use('/api', docRoutes());
 //   message: 'Welcome to the beginning of nothingness.',
 // }));
 
-module.exports = app;
+const server = app.listen(port, () => {
+  db.sequelize.sync();
+  console.log(`Listening on port ${port}`);
+});
+
+export default server;

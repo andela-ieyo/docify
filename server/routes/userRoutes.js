@@ -1,18 +1,17 @@
 import express from 'express';
 import userController from '../controllers/user';
-import jwt from 'jsonwebtoken';
 import config from '../config/config';
 import auth from '../config/middlewares/auth';
 
 const routes = () => {
-  const userRoutes = express.Router();
+  const userRoutes = express.Router(); // eslint-disable-line
 
   // endpoint for signup
   userRoutes.post('/users', userController.create);
 
   // endpoint for login
   userRoutes.post('/users/login', userController.login);
-  
+
   // token authentication middleware
   userRoutes.use(auth.authenticate('jwt', config.jwtSession));
 
@@ -34,9 +33,9 @@ const routes = () => {
   // retrieve all docs belonging to a specific user
   userRoutes.get('/users/:id/documents', userController.findUserDoc);
 
-  userRoutes.get('/search/users/', userController.search); 
+  userRoutes.get('/search/users/', userController.search);
 
   return userRoutes;
-}
+};
 
 export default routes;
