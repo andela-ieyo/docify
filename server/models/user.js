@@ -1,7 +1,9 @@
 'use strict';
 
+import bcrypt from 'bcrypt';
+
 module.exports = (sequelize, DataTypes) => {
-  const user = sequelize.define('User', {
+  const Users = sequelize.define('Users', {
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -31,22 +33,32 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      validate: {
-        isEmail: 'true'
+      isEmail: {
+        msg: "Please enter a valid email address"
       }
     } 
   }, {
+    hooks: {
+      beforeCreate: User => {
+        const salt = bcrypt.genSaltSync();
+        User.password = bcrypt.hashSync(User.password, salt);
+      }
+    },
     classMethods: {
       associate: (models) => {
-        user.hasMany(models.Documents, {
-          foreignKey: 'userId',
-          as: 'ownerID',
+        Users.hasMany(models.Documents, {
+          foreignKey: 'id',
+          as: 'ownerId',
         });
-        user.belongsTo(models.Roles, {
+        Users.belongsTo(models.Roles, {
           foreignKey: 'roleId',
         });
       },
+      isPassword: (encodedPassword, password) => {
+        console.log({ encodedPassword, password });
+        return bcrypt.compareSync(password, encodedPassword);
+      }
     }
   });
-  return user;
+  return Users;
 };

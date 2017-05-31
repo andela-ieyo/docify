@@ -1,23 +1,328 @@
-const Todo = require('../models').Todo;
+import jwt from 'jsonwebtoken';
+import models from '../models';
+import config from '../config/config';
 
-module.exports = {
-  create(req, res) {
-    return Todo
-      .create({
-        title: req.body.title,
-      })
-      .then(todo => res.status(201).send(todo))
-      .catch(error => res.status(400).send(error));
-  },
+const Users = models.Users;
+const Roles = models.Roles;
+const Documents = models.documents;
+
+const isLoggedInUser = (userId, queryId) => {
+  if (parseInt(userId, 10) === parseInt(queryId, 10)) {
+    return true;
+  }
+  return false;
 };
 
-import user from './models/user';
-
-
-export default = {
+const UserController = {
   create(req, res) {
-    return user.create({
-      
+    const userData = req.body;
+    const query = {
+      where: {
+        email: req.body.email
+      }
+    };
+    const defaultRole = {
+      where: {
+        title: 'Writer'
+      }
+    };
+
+    Users.findOne(query)
+      .then(checkReturnedUSer)
+      .then(getDefaultRoleInfo)
+      .then(createUser)
+      .then(generateToken)
+      .then(resHandler)
+      .catch(errorHandler);
+
+
+    function checkReturnedUSer(user) {
+      if (user) {
+        throw new Error('checkReturnedUSer');
+      }
+      return user;
+    }
+
+    function getDefaultRoleInfo() {
+      return Roles.findOne(defaultRole);
+    }
+
+    function createUser(role) {
+      return Users.create(Object.assign({}, userData, {
+        roleId: role.id
+      }));
+    }
+
+    function generateToken(newUserObj) {
+      const payload = {
+        roleId: newUserObj.roleId,
+        email: newUserObj.email
+      };
+      return {
+        newUser: newUserObj,
+        token: jwt.sign(payload, config.jwtSecret, {
+          expiresIn: '24h'
+        })
+      };
+    }
+
+    function resHandler(resObj) {
+      return res.status(201).send(Object.assign({}, resObj, {
+        message: 'User signup completed successfully'
+      }));
+    }
+
+    function errorHandler(error) {
+      const message = error.message;
+      if (message === 'checkReturnedUSer') {
+        return res.status(400).send({
+          error: 'An account with that email address already exists'
+        });
+      }
+      return res.status(500).send({
+        error
+      });
+    }
+  },
+
+  login(req, res) {
+    if (req.body.email && req.body.password) {
+      const { email } = req.body;
+      const query = {
+        where: {
+          email
+        }
+      };
+
+      return Users.findOne(query)
+        .then((user) => {
+          if (!user) {
+            return res.status(404).send({
+              message: 'Your account does not exist'
+            });
+          }
+          if (Users.isPassword(user.password, req.body.password)) {
+            const payload = {
+              id: user.id,
+              roleId: user.roleId,
+              email: user.email
+            };
+            const token = jwt.sign(payload, config.jwtSecret, {
+              expiresIn: '24h'
+            });
+            return res.status(201).send({
+              message: 'User login completed successfully',
+              token
+            });
+          }
+          return res.status(401).send({
+            message: 'Please, enter the correct password or email'
+          });
+        })
+        .catch(error => {
+          res.status(500).send(error);
+        });
+    }
+    return res.status(400).send('Enter a valid email address and password');
+
+  },
+
+  findAll(req, res) {
+    const isAdmin = req.user.roleId === 3;
+    if (!isAdmin) {
+      return res.status(403).send({
+        message: 'Request denied'
+      });
+    }
+    return Users.findAll()
+      .then(allRegUsers => res.status(200).send(allRegUsers))
+      .catch(error => res.status(500).send({
+        message: 'Server error',
+        error
+      }));
+  },
+
+  findUser(req, res) {
+    const query = req.params.id;
+    Users.findById(query)
+      .then(user => {
+        if (!user) {
+          return res.status(404).send({
+            message: 'User not found'
+          });
+        }
+        return res.status(200).send(user);
+      })
+      .catch(error => res.status(500).send({
+        message: 'Server error',
+        error
+      }));
+  },
+
+  deleteUser(req, res) {
+    const isAdmin = req.user.roleId === 3;
+    const {
+      id
+    } = req.params;
+    if (!isAdmin) {
+      return res.status(403).send({
+        message: 'Request denied'
+      });
+    }
+
+    return Users.findById(id)
+      .then(user => {
+        if (!user) {
+          return res.status(400).send({
+            message: 'User not found'
+          });
+        }
+        return user.destroy()
+          .then(() => {
+            res.status(204).send({
+              message: 'User record deleted successfully'
+            });
+          })
+          .catch(error => res.status(500).send({
+            message: 'Server error',
+            error
+          }));
+      })
+      .catch(error => res.status(500).send({
+        message: 'Server error',
+        error
+      }));
+  },
+
+  update(req, res) {
+    const queryId = req.params.id;
+    const userId = req.user.id;
+    const isUser = isLoggedInUser(userId, queryId);
+    if (!isUser) {
+      return res.status(403).send({
+        message: 'Request denied'
+      });
+    }
+
+    return Users.findById(queryId)
+      .then(user => {
+        if (!user) {
+          return res.status(404).send({
+            message: 'User not found'
+          });
+        }
+        return user.update({
+          firstName: req.body.firstName || user.firstName,
+          lastName: req.body.lastName || user.lastName,
+          username: req.body.username || user.username,
+          password: req.body.password || user.password,
+          roleId: req.body.roleId || user.roleId
+        })
+          .then(() => res.status(200).send({
+            message: 'User record updated successfully'
+          }))
+          .catch(error => res.status(500).send(error));
+      })
+      .catch(error => res.status(500).send(error));
+  },
+
+  // Admin privilege to update any user's role
+  updateRole(req, res) {
+    const isAdmin = req.user.roleId === 3;
+    const queryId = req.params.id;
+    if (!isAdmin) {
+      return res.status(403).send({
+        message: 'Request Denied'
+      });
+    }
+    return Users.findById(queryId)
+      .then(user => {
+        if (!user) {
+          return res.status(404).send({
+            message: 'User not found'
+          });
+        }
+        return user.update({
+          roleId: req.body.roleId
+        })
+          .then(() => res.status(200).send({
+            message: 'User role updated successfully'
+          }))
+          .catch(error => res.status(500).send(error));
+      })
+      .catch(error => res.status(500).send(error));
+  },
+
+  findUserDoc(req, res) {
+    const loggedInUser = req.user;
+    const isAdmin = loggedInUser.roleId === 3;
+    const { id } = req.params;
+    const isOwner = loggedInUser.id === id;
+
+    if (!isOwner && !isAdmin) {
+      return res.status(401).send({
+        message: 'Request denied'
+      });
+    }
+
+    if (isAdmin) {
+      return Documents.findAll({
+        where: {
+          access: {
+            $ne: 'private'
+          }
+        }
+      })
+        .then(docs => {
+          if (!docs) {
+            return res.send(404).send({
+              message: 'No document found'
+            });
+          }
+          return res.status(200).send(docs);
+        })
+        .catch(error =>
+          res.status(500).send({
+            message: 'Server error',
+            error
+          }));
+    }
+    return Documents.findAll()
+      .then(docs => {
+        if (!docs) {
+          return res.send(404).send({
+            message: 'No document found'
+          });
+        }
+        return res.status(200).send(docs);
+      })
+      .catch(error =>
+        res.status(500).send({
+          message: 'Server error',
+          error
+        }));
+  },
+
+  search(req, res) {
+    const loggedInUser = req.user;
+    const { firstName, lastName } = req.query;
+    Users.findAll({
+      where: {
+        firstName,
+        lastName
+      }
     })
+      .then(users => {
+        if (!users) {
+          return res.status(404).send({
+            message: 'No user record found'
+          });
+        }
+        const filteredUsers = users.filter(user => user.id !== loggedInUser.id);
+        return res.status(200).send(filteredUsers);
+      })
+      .catch(error => res.status(500).send(error));
   }
-}
+};
+
+export default UserController;
