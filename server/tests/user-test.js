@@ -8,7 +8,7 @@ import fixtures from './seed-data/fixtures.json';
 const should = chai.should();
 const salt = bcrypt.genSaltSync();
 
-const syncModel = models.sequelize.sync({ force: true });
+const syncModel = models.sequelize.sync();
 
 const seededRoles = fixtures.roles;
 
@@ -47,12 +47,10 @@ describe('Users', () => {
   });
 
   afterEach((done) => { //Before each test we empty the database
-    models.sequelize.sync({
-      force: true
-    }) // drops table and re-creates it
-      .then(() => {
-        done();
-      })
+  // drops table and re-creates it
+    models.sequelize.sync({ force: true }).then(() => {
+      done();
+    })
       .catch((error) => {
         done(error);
       });
@@ -75,5 +73,30 @@ describe('Users', () => {
           done();
         });
     });
+  });
+
+});
+
+describe('/POST Users', () => {
+  it('it should post user without error', (done) => {
+    const user = {
+      username: 'Kel',
+      firstName: 'Kelvin',
+      lastName: 'Smith',
+      email: 'kelvin.smith@gmail.com',
+      password: 'testing'
+    };
+    request(app)
+          .post('api/users')
+          .send(user)
+          .end((err, res) => {
+            console.log(res, 'ooooo');
+            // res.status.should.equal(200);
+            // res.body.should.be.a('object');
+              // res.body.should.have.property('errors');
+              // res.body.errors.should.have.property('pages');
+              // res.body.errors.pages.should.have.property('kind').eql('required');
+            done();
+          });
   });
 });
