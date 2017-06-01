@@ -1,5 +1,6 @@
 import express from 'express';
 import logger from 'morgan';
+import path from 'path';
 import bodyParser from 'body-parser';
 import db from './server/models/index';
 import auth from './server/config/middlewares/auth';
@@ -31,10 +32,10 @@ app.use('/api', userRoutes());
 app.use('/api', docRoutes());
 
 
-// Setup a default catch-all route that sends back a welcome message in JSON format.
-// app.get('*', (req, res) => res.status(200).send({
-//   message: 'Welcome to the beginning of nothingness.',
-// }));
+// Setup a default catch-all route that sends back a welcome message.
+app.get('*', (req, res) => { // '*'
+  res.sendFile(path.resolve(__dirname, 'app', 'index.html'));
+});
 
 const server = app.listen(port, () => {
   db.sequelize.sync();

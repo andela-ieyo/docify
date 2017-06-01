@@ -175,7 +175,7 @@ const documentController = {
              doc.ownerId === loggedInUser.id || doc.access === 'writer'
               || doc.access === 'public'
           );
-          if (writerDocs === []) {
+          if (writerDocs.length === 0) {
             return res.status(404).send({ message: 'Not Found' });
           }
           return res.status(200).send(writerDocs);
@@ -186,7 +186,7 @@ const documentController = {
             doc.ownerId === loggedInUser.id || doc.access === 'writer'
               || doc.access === 'public' || doc.access === 'editor'
           );
-          if (editorDocs === []) {
+          if (editorDocs.length === 0) {
             return res.status(404).send({ message: 'Not Found' });
           }
           return res.status(200).send(editorDocs);

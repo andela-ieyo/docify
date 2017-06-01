@@ -4,13 +4,17 @@
   "description": "A document management application",
   "main": "server.js",
   "scripts": {
+    "build": "webpack -p",
+    "deploy": "webpack -p && npm start",
     "test": "mocha  ./server/tests/*.js --require babel-register",
-    "start": "nodemon server.js --exec babel-node"
+    "start": "webpack -p & nodemon server.js --exec babel-node"
   },
   "author": "Ifiok Eyo",
   "license": "MIT",
   "devDependencies": {
+    "async": "^2.4.1",
     "babel-register": "^6.24.1",
+    "bluebird": "^3.5.0",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
     "eslint": "^3.19.0",
@@ -40,6 +44,11 @@
     "passport-jwt": "^2.2.1",
     "pg": "^6.2.2",
     "pg-hstore": "^2.3.2",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.5",
+    "react-router": "^4.1.1",
+    "redux": "^3.6.0",
     "sequelize": "^3.30.4",
     "webpack": "^2.6.0"
   }
