@@ -6,13 +6,15 @@
   "scripts": {
     "build": "webpack -p",
     "deploy": "webpack -p && npm start",
-    "test": "mocha  ./server/tests/*.js --require babel-register",
-    "start": "webpack -p & nodemon server.js --exec babel-node"
+    "test": "NODE_ENV=test nyc --reporter=html --reporter=text mocha ./tests/backend/*.js --require babel-register",
+    "start": "webpack -w & nodemon server.js --exec babel-node"
   },
   "author": "Ifiok Eyo",
   "license": "MIT",
   "devDependencies": {
     "async": "^2.4.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1",
     "babel-register": "^6.24.1",
     "bluebird": "^3.5.0",
     "chai": "^3.5.0",
@@ -28,6 +30,7 @@
     "supertest": "^3.0.0"
   },
   "dependencies": {
+    "axios": "^0.16.1",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
@@ -35,21 +38,33 @@
     "babel-preset-react": "^6.24.1",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
+    "css-loader": "^0.28.4",
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
     "jsonwebtoken": "^7.4.1",
     "jwt-simple": "^0.5.1",
+    "lodash": "^4.17.4",
+    "material-ui": "^0.18.1",
     "morgan": "^1.8.1",
+    "node-sass": "^4.5.3",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
     "pg": "^6.2.2",
     "pg-hstore": "^2.3.2",
+    "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.5",
-    "react-router": "^4.1.1",
+    "react-router": "^3.0.5",
+    "react-swal": "^2.0.0",
+    "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.6.0",
+    "redux-thunk": "^2.2.0",
+    "sass-loader": "^6.0.5",
     "sequelize": "^3.30.4",
+    "shortid": "^2.2.8",
+    "style-loader": "^0.18.1",
+    "validator": "^7.0.0",
     "webpack": "^2.6.0"
   }
 }

@@ -1,10 +1,16 @@
 import React from 'react';
 import { Router, browserHistory } from 'react-router';
 import { render } from 'react-dom';
+import { Provider } from 'react-redux';
 import routes from './routes';
-//  css here
+import configureStore from './store/configureStore';
+import './static/styles/style.scss'
+
+const store = configureStore();
 
 render(
-  <Router history={browserHistory} routes={routes} />,
+  <Provider store={store}>
+    <Router history={browserHistory} routes={routes} />
+  </Provider>,
   document.getElementById('app')
 );

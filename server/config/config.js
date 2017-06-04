@@ -1,6 +1,8 @@
-// config.js
+require('dotenv').config();
+
+
 export default ({
-  jwtSecret: 'MyS3cr3tK3Y',
+  jwtSecret: process.env.JWT_SECRET,
   jwtSession: {
     session: false
   }

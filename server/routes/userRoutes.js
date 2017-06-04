@@ -18,6 +18,10 @@ const routes = () => {
   // endpoint to retrieve all users
   userRoutes.get('/users', userController.findAll);
 
+  // verify current user when browser reloads
+  userRoutes.get('/users/current', userController.getCurrentUser);
+
+
   //endpoint to retrieve a user
   userRoutes.get('/users/:id', userController.findUser);
 

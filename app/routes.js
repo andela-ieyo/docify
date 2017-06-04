@@ -1,11 +1,12 @@
 import React from 'react';
-import { Route, IndexRoute } from 'react-router';
+import { Route } from 'react-router';
+import Home from './components/Home.jsx';
 import App from './app';
-import HomePage from './components/HomePage';
 
 
-export default (
-  <Route path="/" component={App}>
-    <IndexRoute component={HomePage} />
-  </Route>
-);
+export default
+  <div>
+    <Route path="/" component={Home} />
+    <Route component={App}>
+    </Route>
+  </div>;

@@ -15,11 +15,19 @@ export default {
     loaders: [
       {
         test: /\.js$/,
+        include: [
+          path.join(__dirname, 'app'),
+          path.join(__dirname, 'server/shared')
+        ],
         exclude: /node_modules/,
         loader: 'babel-loader'
       },
       {
         test: /\.jsx$/,
+        include: [
+           path.join(__dirname, 'app'),
+          path.join(__dirname, 'server/shared')
+        ],
         exclude: /node_modules/,
         loader: 'babel-loader'
 

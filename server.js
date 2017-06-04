@@ -18,13 +18,14 @@ const app = express();
 const port = process.env.PORT || 8000; // eslint-disable-line
 
 // Log requests to the console.
-app.use(logger('combined'));
+// app.use(logger('combined'));
 
 // Parse incoming requests data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
 }));
+app.use(express.static('public'));
 app.use(auth.initialize());
 
 // routes middleware
@@ -33,7 +34,7 @@ app.use('/api', docRoutes());
 
 
 // Setup a default catch-all route that sends back a welcome message.
-app.get('*', (req, res) => { // '*'
+app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'app', 'index.html'));
 });
 

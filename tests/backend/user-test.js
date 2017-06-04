@@ -2,9 +2,9 @@ import bcrypt from 'bcrypt';
 import chai from 'chai';
 import async from 'async';
 import request from 'supertest';
-import models, { Users, Roles } from '../models';
+import models, { Users, Roles } from '../../server/models';
 import app from '../../server';
-import fixtures from './seed-data/fixtures.json';
+import fixtures from '../seed-data/fixtures.json';
 
 const should = chai.should();
 const expect = chai.expect;
@@ -76,6 +76,7 @@ describe('Users', () => {
         .set('authorization', token)
         .expect(200)
         .end((err, res) => {
+          console.log(res.body, 'oooooooo');
           res.status.should.equal(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(2);
@@ -154,7 +155,8 @@ describe('Users', () => {
   describe('/PUT/:id Users', () => {
     let userToken;
 
-    before((done) => request(app)
+    before((done) => {
+      request(app)
         .post('/api/users/login')
         .send({
           email: 'kelvin.smith@gmail.com',
@@ -163,8 +165,8 @@ describe('Users', () => {
         .end((err, res) => {
           userToken = res.body.token;
           done();
-        })
-    );
+        });
+    });
 
     it('it should UPDATE a user given the id', (done) => {
       request(app)
@@ -174,8 +176,41 @@ describe('Users', () => {
         .end((err, res) => {
           res.status.should.equal(200);
           expect(res.body).should.be.a('object');
+          res.body.should.have.property('message').eql('User record updated successfully');
           done();
         });
     });
   });
+
+  describe('/DELETE/:id Users', () => {
+    it('Admin should DELETE a user given the id', (done) => {
+      request(app)
+        .delete('/api/users/3')
+        .set('authorization', token)
+        .end((err, res) => {
+          res.status.should.equal(204);
+          expect(res.body).should.be.a('object');
+          expect(res.error).to.equal(false);
+          done();
+        });
+    });
+  });
+
+  describe('/PUT/role/:id Users', () => {
+    it('Admin should UPDATE a user\'s role given the id', (done) => {
+      request(app)
+        .put('/api/users/role/2')
+        .set('authorization', token)
+        .send({ roleId: 2 })
+        .end((err, res) => {
+          console.log(res.body, 'oooooo');
+          res.status.should.equal(200);
+          expect(res.body).should.be.a('object');
+          expect(res.error).to.equal(false);
+          res.body.should.have.property('message').eql('User role updated successfully');
+          done();
+        });
+    });
+  });
+
 });
