@@ -12,7 +12,14 @@ class App extends Component {
 }
 
 App.propTypes = {
-  children: PropTypes.object.isRequired
+  children: React.PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
+};
+
+App.defaultProps = {
+  children: [] || null
 };
 
 export default App;

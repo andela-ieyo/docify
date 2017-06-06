@@ -1,29 +1,35 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import { connect } from 'react-redux';
-import { userSignUpRequest } from '../actions/signUpActions';
-import { addFlashMessage } from '../actions/flashMessages';
-import SignUp from './SignUp.jsx';
-
-injectTapEventPlugin();
-
+import { Link } from 'react-router';
 
 class Home extends Component {
   render() {
-    // const { userSignUpRequest, addFlashMessage } = this.props;
     return (
-      <div>
-        <SignUp />
+      <div className="docify-home">
+        <div className="docify-signup center-align">
+          <div>
+            <Link
+              to="/signup"
+              className="waves-effect waves-light btn"
+            >
+              SignUp
+              <i className="material-icons right">send</i>
+            </Link>
+          </div>
+        </div>
+        <div className="docify-login center-align">
+          <div>
+            <Link
+              to="/login"
+              className="waves-effect waves-light btn"
+            >
+               Login
+              <i className="material-icons right">send</i>
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
 }
-
-// Home.propTypes = {
-//   userSignUpRequest: PropTypes.func.isRequired,
-//   addFlashMessage: PropTypes.func.isRequired
-// };
-
 
 export default Home;

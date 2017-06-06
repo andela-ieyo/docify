@@ -33,7 +33,11 @@ const documentController = {
       }
     })
       .then(user => {
-        Documents.create(Object.assign({}, userData, { ownerId: user.id }))
+        Documents.create(
+          Object.assign({},
+          userData,
+          { ownerId: parseInt(user.id, 10) }
+          ))
           .then(() => res.status(200).send({ message: 'Document created successfully.' }))
           .catch(error => res.status(500).send(error));
       })
@@ -45,7 +49,19 @@ const documentController = {
     const isWriter = checkIfWriter(loggedInUserRoleId);
     const editorId = 2;
     if (isWriter) {
-      return res.status(403).send({ message: 'Request Denied!' });
+      return Documents.findAll({
+        where: {
+          $or:
+          [
+            { access: 'public' },
+            { ownerId: loggedInUserRoleId },
+            { access: 'writer' }
+          ]
+        }
+      })
+      .then(docs => res.status(200).send(docs))
+      .catch(error => res.send(500)
+        .send({ message: 'Server error', error }));
     }
     if (loggedInUserRoleId === editorId) {
       return Documents.findAll({

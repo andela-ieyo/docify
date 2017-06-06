@@ -4,7 +4,7 @@ import rootReducer from '../reducers';
 import client from '../utils/client';
 
 
-export default function configureStore(initialState) {
+const configureStore = (initialState)  => {
   return createStore(
     rootReducer,
     initialState,
@@ -15,4 +15,7 @@ export default function configureStore(initialState) {
       window.devToolsExtension ? window.devToolsExtension() : f => f
     )
   );
-}
+};
+
+
+export default configureStore();

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const getToken = () => localStorage.getItem('jwtToken_docify');
+const getToken = () => window.localStorage.getItem('jwtToken_docify');
 
 axios.interceptors.request.use((config) => {
     // Do something before request is sent

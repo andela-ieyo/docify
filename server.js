@@ -39,7 +39,7 @@ app.get('*', (req, res) => {
 });
 
 const server = app.listen(port, () => {
-  db.sequelize.sync();
+  db.sequelize.sync().then();
   console.log(`Listening on port ${port}`);
 });
 

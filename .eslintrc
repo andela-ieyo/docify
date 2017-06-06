@@ -167,6 +167,7 @@
     "no-continue"              : [2],
     "no-inline-comments"       : [0],
     "no-lonely-if"             : [0],
+    "react/no-unused-prop-types": [0],
     "no-mixed-spaces-and-tabs" : [2],
 
     "no-multiple-empty-lines"  : [2, {
@@ -181,6 +182,7 @@
     "no-underscore-dangle" : [0],
     "no-extra-parens"      : [2],
     "one-var"              : [0],
+    "react/forbid-prop-types": [0],
     "operator-assignment"  : [0],
     "operator-linebreak"   : [2, "before"],
     "padded-blocks"        : [0],

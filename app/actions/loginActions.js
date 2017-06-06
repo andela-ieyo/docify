@@ -7,7 +7,6 @@ export const saveUserSuccess = (user) => {
 };
 
 export const saveUserError = (error) => {
-  console.log(error);
   return { type: SAVE_USER_ERROR, error };
 };
 
@@ -15,16 +14,14 @@ export const saveUser = () => {
   return { type: SAVE_USER };
 };
 
-
-export const userSignUpRequest = (fieldData) => {
+export const userLoginRequest = (fieldData) => {
   return (dispatch, getState, { client }) => {
-    return client.post('/api/users', fieldData)
+    return client.post('/api/users/login', fieldData)
       .then(res => {
-        const { message, newUser, token } = res.data;
+        const { message, token, userInfo } = res.data;
 
         window.localStorage.setItem('jwtToken_docify', token);
-        dispatch(saveUserSuccess({ newUser }));
-
+        dispatch(saveUserSuccess(userInfo));
         dispatch(addFlashMessage({
           type: 'success',
           text: message

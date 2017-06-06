@@ -2,10 +2,11 @@ import jwt from 'jsonwebtoken';
 import models from '../models';
 import config from '../config/config';
 import validateInput from '../shared/validations/signup';
+import validateLogin from '../shared/validations/login';
 
 const Users = models.Users;
 const Roles = models.Roles;
-const Documents = models.documents;
+const Documents = models.Documents;
 const secretKey = config.jwtSecret;
 
 const isLoggedInUser = (userId, queryId) => {
@@ -96,15 +97,22 @@ const UserController = {
   },
 
   login(req, res) {
-    if (req.body.email && req.body.password) {
-      const { email } = req.body;
-      const query = {
-        where: {
-          email
-        }
-      };
 
-      return Users.findOne(query)
+    const { errors, isValid } = validateLogin(req.body);
+
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+
+    // if (req.body.email && req.body.password)
+    const { email } = req.body;
+    const query = {
+      where: {
+        email
+      }
+    };
+
+    return Users.findOne(query)
         .then((user) => {
           if (!user) {
             return res.status(404).send({
@@ -121,6 +129,7 @@ const UserController = {
               expiresIn: '24h'
             });
             return res.status(201).send({
+              userInfo: payload,
               message: 'User login completed successfully',
               token
             });
@@ -132,8 +141,8 @@ const UserController = {
         .catch(error => {
           res.status(500).send({ message: 'Server error', error });
         });
-    }
-    return res.status(400).send({ message: 'Enter a valid email address and password' });
+
+    // return res.status(400).send({ message: 'Enter a valid email address and password' });
 
   },
 
@@ -267,9 +276,8 @@ const UserController = {
   findUserDoc(req, res) {
     const loggedInUser = req.user;
     const isAdmin = loggedInUser.roleId === 3;
-    const { id } = req.params;
+    const id  = parseInt(req.params.id, 10);
     const isOwner = loggedInUser.id === id;
-
     if (!isOwner && !isAdmin) {
       return res.status(401).send({
         message: 'Request denied'
@@ -279,6 +287,7 @@ const UserController = {
     if (isAdmin) {
       return Documents.findAll({
         where: {
+          ownerId: id,
           access: {
             $ne: 'private'
           }
@@ -298,20 +307,21 @@ const UserController = {
             error
           }));
     }
+
     return Documents.findAll()
-      .then(docs => {
-        if (!docs) {
-          return res.send(404).send({
-            message: 'No document found'
-          });
-        }
-        return res.status(200).send(docs);
-      })
-      .catch(error =>
-        res.status(500).send({
-          message: 'Server error',
-          error
-        }));
+    .then(docs => {
+      if (!docs) {
+        return res.send(404).send({
+          message: 'No document found'
+        });
+      }
+      return res.status(200).send(docs);
+    })
+    .catch(error =>
+      res.status(500).send({
+        message: 'Server error',
+        error
+      }));
   },
 
   search(req, res) {

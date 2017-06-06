@@ -3,10 +3,8 @@ import { Router, browserHistory } from 'react-router';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import routes from './routes';
-import configureStore from './store/configureStore';
-import './static/styles/style.scss'
-
-const store = configureStore();
+import store from './store/configureStore';
+import './static/styles/style.scss';
 
 render(
   <Provider store={store}>

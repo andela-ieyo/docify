@@ -4,16 +4,14 @@ import PropTypes from 'prop-types';
 import { browserHistory } from 'react-router';
 import FlashMessage from '../flash/FlashMessage.jsx';
 import { deleteFlashMessage } from '../actions/flashMessages';
-import { userSignUpRequest } from '../actions/signUpActions';
-import validateInput from '../../server/shared/validations/signup';
+import { userLoginRequest } from '../actions/loginActions';
+import validateLogin from '../../server/shared/validations/login';
 
-class SignUp extends Component {
+
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: '',
-      lastName: '',
-      username: '',
       email: '',
       password: '',
       errors: {},
@@ -31,10 +29,10 @@ class SignUp extends Component {
 
   onClickSave(event) {
     event.preventDefault();
-    const { errors, isValid } = validateInput(this.state);
+    const { errors, isValid } = validateLogin(this.state);
 
     if (isValid) {
-      this.props.userSignUpRequest(this.state)
+      this.props.userLoginRequest(this.state)
       .then(
         () => {
           browserHistory.push('/dashboard');
@@ -53,15 +51,13 @@ class SignUp extends Component {
     );
 
     const { errors } = this.state;
-    const { firstName, lastName, username, email, password } = this.state;
+    const { email, password } = this.state;
     return (
       <div className="docify-home">
-
-
-        <div id="signup">
+        <div className="login">
           <div>
             <div>
-              <h4>Sign Up</h4>
+              <h4>Login</h4>
             </div>
 
             <div className="col s6 .right-align">
@@ -70,44 +66,18 @@ class SignUp extends Component {
 
             <div className="row">
               <form className="col s12" action="">
-                <div className="row">
-                  <div className="input-field col s6">
-                    <i className="material-icons prefix">account_circle</i>
-                    <input
-                      id="firstName"
-                      type="text"
-                      className="validate"
-                      onChange={this.onFieldChange}
-                      value={firstName}
-                    />
-                    <label htmlFor="first_name">First Name</label>
-                    {errors.firstName && <span className="validate">{errors.firstName}</span>}
-                  </div>
-
-                  <div className="input-field col s6">
-                    <input
-                      id="lastName"
-                      type="text"
-                      className="validate"
-                      value={lastName}
-                      onChange={this.onFieldChange}
-                    />
-                    <label htmlFor="last_name">Last Name</label>
-                    {errors.lastName && <span className="validate">{errors.lastName}</span>}
-                  </div>
-                </div>
 
                 <div className="row">
                   <div className="input-field col s12">
                     <input
-                      id="username"
-                      type="text"
+                      id="email"
+                      type="email"
                       className="validate"
+                      value={email}
                       onChange={this.onFieldChange}
-                      value={username}
                     />
-                    <label htmlFor="disabled">Username</label>
-                    {errors.username && <span className="validate">{errors.username}</span>}
+                    <label htmlFor="email">Email</label>
+                    {errors.email && <span className="validate">{errors.email}</span>}
                   </div>
                 </div>
 
@@ -125,19 +95,7 @@ class SignUp extends Component {
                   </div>
                 </div>
 
-                <div className="row">
-                  <div className="input-field col s12">
-                    <input
-                      id="email"
-                      type="email"
-                      className="validate"
-                      value={email}
-                      onChange={this.onFieldChange}
-                    />
-                    <label htmlFor="email">Email</label>
-                    {errors.email && <span className="validate">{errors.email}</span>}
-                  </div>
-                </div>
+
                 <div className="row">
                   <div className="input-field col s12 s6">
                     <button
@@ -161,13 +119,18 @@ class SignUp extends Component {
   }
 }
 
-SignUp.propTypes = {
-  userSignUpRequest: PropTypes.func.isRequired,
+Login.propTypes = {
+  userLoginRequest: PropTypes.func.isRequired,
   user: PropTypes.object,
   flashMessages: PropTypes.array,
   deleteFlashMessage: PropTypes.func.isRequired
 };
 
+Login.defaultProps = {
+  flashMessages: [],
+  user: {}
+};
+
 const mapStateToProps = ({ user, flashMessages }) => ({ user, flashMessages });
 
-export default connect(mapStateToProps, { userSignUpRequest, deleteFlashMessage })(SignUp);
+export default connect(mapStateToProps, { userLoginRequest, deleteFlashMessage })(Login);

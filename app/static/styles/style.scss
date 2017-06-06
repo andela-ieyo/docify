@@ -1,3 +1,57 @@
+$width: 100%;
+
 body {
   font-family: 'Roboto', sans-serif;
+}
+
+.docify-home{
+  display: flex;
+  width: 30%;
+  margin: auto;
+  margin-top: 15%;
+  justify-content: space-around;
+}
+
+.login{
+  width: $width;
+}
+
+.signup{
+  width: $width;
+}
+
+.doc-card{
+  margin: 5%;
+  span {
+    display: inline-block;
+    margin-right: 2%;
+  }
+}
+
+.card-action{
+  display: flex;
+  span {
+    color: mintcream;
+  }
+}
+
+.docify-icons{
+  width: 70%;
+  margin-left: 2%;
+  margin-top: -2%;
+  color: #90caf9;
+  i {
+    margin-top: 1%;
+    margin-left: 5%;
+  }
+}
+
+.docify-card{
+  border: #212121 solid 1px;
+  .card-title, span{
+    color: #212121;
+  }
+  .docify-p{
+    color: #212121;
+  }
 }
