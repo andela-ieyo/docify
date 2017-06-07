@@ -7,6 +7,7 @@ import Login from './components/Login.jsx';
 import store from './store/configureStore';
 import { saveUserSuccess } from './actions/loginActions';
 import Dashboard from './components/Dashboard.jsx';
+import CreateDocument from './components/CreateDocument.jsx';
 import App from './app';
 
 
@@ -44,5 +45,6 @@ export default
     <Route path="/login" component={Login} />
     <Route component={App} onEnter={onEnter}>
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/createDocument" component={CreateDocument} />
     </Route>
   </div>;

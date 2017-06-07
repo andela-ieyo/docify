@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { browserHistory } from 'react-router';
-import FlashMessage from '../flash/FlashMessage.jsx';
-import { deleteFlashMessage } from '../actions/flashMessages';
 import { userSignUpRequest } from '../actions/signUpActions';
 import validateInput from '../../server/shared/validations/signup';
 
@@ -44,14 +42,6 @@ class SignUp extends Component {
   }
 
   render() {
-    const messages = this.props.flashMessages.map(message =>
-       (<FlashMessage
-         key={message.id}
-         message={message}
-         deleteFlashMessage={this.props.deleteFlashMessage}
-       />)
-    );
-
     const { errors } = this.state;
     const { firstName, lastName, username, email, password } = this.state;
     return (
@@ -62,10 +52,6 @@ class SignUp extends Component {
           <div>
             <div>
               <h4>Sign Up</h4>
-            </div>
-
-            <div className="col s6 .right-align">
-              {messages}
             </div>
 
             <div className="row">
@@ -163,11 +149,13 @@ class SignUp extends Component {
 
 SignUp.propTypes = {
   userSignUpRequest: PropTypes.func.isRequired,
-  user: PropTypes.object,
-  flashMessages: PropTypes.array,
-  deleteFlashMessage: PropTypes.func.isRequired
+  user: PropTypes.object
 };
 
-const mapStateToProps = ({ user, flashMessages }) => ({ user, flashMessages });
+SignUp.defaultProps = {
+  user: {}
+};
 
-export default connect(mapStateToProps, { userSignUpRequest, deleteFlashMessage })(SignUp);
+const mapStateToProps = ({ user }) => ({ user });
+
+export default connect(mapStateToProps, { userSignUpRequest })(SignUp);

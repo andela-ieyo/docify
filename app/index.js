@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import routes from './routes';
 import store from './store/configureStore';
 import './static/styles/style.scss';
+import './static/styles/toastr.scss';
 
 render(
   <Provider store={store}>

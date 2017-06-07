@@ -1,20 +1,14 @@
+import toastr from 'toastr';
 import { SAVE_USER_SUCCESS, SAVE_USER_ERROR, SAVE_USER } from '../constants/user';
-import { addFlashMessage } from '../actions/flashMessages';
+
+export const saveUserSuccess = (user) => ({ type: SAVE_USER_SUCCESS, user });
+
+export const saveUserError = (error) =>
+  ({ type: SAVE_USER_ERROR, error });
 
 
-export const saveUserSuccess = (user) => {
-  return { type: SAVE_USER_SUCCESS, user };
-};
-
-export const saveUserError = (error) => {
-  console.log(error);
-  return { type: SAVE_USER_ERROR, error };
-};
-
-export const saveUser = () => {
-  return { type: SAVE_USER };
-};
-
+export const saveUser = () =>
+   ({ type: SAVE_USER });
 
 export const userSignUpRequest = (fieldData) => {
   return (dispatch, getState, { client }) => {
@@ -24,19 +18,12 @@ export const userSignUpRequest = (fieldData) => {
 
         window.localStorage.setItem('jwtToken_docify', token);
         dispatch(saveUserSuccess({ newUser }));
-
-        dispatch(addFlashMessage({
-          type: 'success',
-          text: message
-        }));
+        toastr.success(message);
       }, error => {
         const errorMsgs = error.response.data.message;
 
         dispatch(saveUserError(errorMsgs));
-        dispatch(addFlashMessage({
-          type: 'error',
-          text: errorMsgs
-        }));
+        toastr.error(errorMsgs);
       });
   };
 };

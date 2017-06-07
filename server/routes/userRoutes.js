@@ -12,6 +12,8 @@ const routes = () => {
   // endpoint for login
   userRoutes.post('/users/login', userController.login);
 
+  userRoutes.get('/users/logout', userController.logout);
+
   // token authentication middleware
   userRoutes.use(auth.authenticate('jwt', config.jwtSession));
 

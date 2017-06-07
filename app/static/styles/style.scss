@@ -39,10 +39,12 @@ body {
   width: 70%;
   margin-left: 2%;
   margin-top: -2%;
-  color: #90caf9;
-  i {
+  a {
     margin-top: 1%;
     margin-left: 5%;
+    i {
+      color:#90caf9;
+    }
   }
 }
 
@@ -53,5 +55,53 @@ body {
   }
   .docify-p{
     color: #212121;
+  }
+}
+
+.brand-logo{
+  margin-left: 2%,
+}
+
+.docify-add{
+  margin-right: 2%;
+  margin-top: -2%;
+}
+
+.docify-menu{
+  margin-top: 2%;
+  margin-left: 2%;
+}
+
+.docify-create {
+  width: 50%;
+  margin-top: 7%;
+  margin-bottom: 2%;
+}
+
+.create-title {
+  font-size: 2rem;
+  color: #909090 ;
+  margin-top: 3%;
+}
+
+.docify-back {
+  margin-right: 2%;
+  margin-top: -3%;
+  color: #909090 ;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.docify-search{
+  justify-content: space-around;
+  width: 40%;
+}
+
+.docify-checkbox {
+  margin-left: 7%;
+  label {
+    margin-right: 2%;
   }
 }

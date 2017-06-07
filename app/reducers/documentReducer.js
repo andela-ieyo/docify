@@ -1,10 +1,11 @@
-import { SAVE_USER_DOCUMENT_SUCCESS } from '../constants/documents';
+import { SAVE_DOCUMENT_SUCCESS } from '../constants/documents';
 
-export default function documentReducer(state = [], action) {
+export default function documentReducer(state = {}, action) {
   switch (action.type) {
-    case SAVE_USER_DOCUMENT_SUCCESS:
-      return [...state, ...action.documents];
-
+    case SAVE_DOCUMENT_SUCCESS: {
+      const { category, documents } = action;
+      return { ...state, [category]: documents };
+    }
     default:
       return state;
   }

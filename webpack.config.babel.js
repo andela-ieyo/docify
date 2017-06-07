@@ -25,7 +25,7 @@ export default {
       {
         test: /\.jsx$/,
         include: [
-           path.join(__dirname, 'app'),
+          path.join(__dirname, 'app'),
           path.join(__dirname, 'server/shared')
         ],
         exclude: /node_modules/,

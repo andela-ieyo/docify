@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { browserHistory } from 'react-router';
-import FlashMessage from '../flash/FlashMessage.jsx';
-import { deleteFlashMessage } from '../actions/flashMessages';
 import { userLoginRequest } from '../actions/loginActions';
 import validateLogin from '../../server/shared/validations/login';
 
@@ -42,13 +40,13 @@ class Login extends Component {
   }
 
   render() {
-    const messages = this.props.flashMessages.map(message =>
+    /*const messages = this.props.flashMessages.map(message =>
        (<FlashMessage
          key={message.id}
          message={message}
          deleteFlashMessage={this.props.deleteFlashMessage}
        />)
-    );
+    );*/
 
     const { errors } = this.state;
     const { email, password } = this.state;
@@ -60,9 +58,9 @@ class Login extends Component {
               <h4>Login</h4>
             </div>
 
-            <div className="col s6 .right-align">
+            {/*<div className="col s6 .right-align">
               {messages}
-            </div>
+            </div>*/}
 
             <div className="row">
               <form className="col s12" action="">
@@ -121,16 +119,13 @@ class Login extends Component {
 
 Login.propTypes = {
   userLoginRequest: PropTypes.func.isRequired,
-  user: PropTypes.object,
-  flashMessages: PropTypes.array,
-  deleteFlashMessage: PropTypes.func.isRequired
+  user: PropTypes.object
 };
 
 Login.defaultProps = {
-  flashMessages: [],
   user: {}
 };
 
-const mapStateToProps = ({ user, flashMessages }) => ({ user, flashMessages });
+const mapStateToProps = ({ user }) => ({ user });
 
-export default connect(mapStateToProps, { userLoginRequest, deleteFlashMessage })(Login);
+export default connect(mapStateToProps, { userLoginRequest })(Login);

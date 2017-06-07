@@ -308,7 +308,11 @@ const UserController = {
           }));
     }
 
-    return Documents.findAll()
+    return Documents.findAll({
+      where: {
+        ownerId: id
+      }
+    })
     .then(docs => {
       if (!docs) {
         return res.send(404).send({
@@ -350,6 +354,10 @@ const UserController = {
     const user = JSON.parse(JSON.stringify(req.user));
     const currentUser = Object.assign({}, user, { password: '' });
     return res.status(200).send(currentUser);
+  },
+
+  logout(req, res) {
+    return res.status(200).send({ message: 'You have been successfully logged out' });
   }
 
 };

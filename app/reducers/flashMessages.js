@@ -3,8 +3,6 @@ import findIndex from 'lodash/findIndex';
 import { ADD_FLASH_MESSAGE, DELETE_FLASH_MESSAGE } from '../constants/flashMessage';
 
 
-
-
 export default (state = [], action = {}) => {
   switch (action.type) {
     case ADD_FLASH_MESSAGE:

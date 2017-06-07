@@ -39,13 +39,17 @@ const documentController = {
           { ownerId: parseInt(user.id, 10) }
           ))
           .then(() => res.status(200).send({ message: 'Document created successfully.' }))
-          .catch(error => res.status(500).send(error));
+          .catch(error => res.status(500)
+            .send({ message: 'Server error', error }));
       })
-      .catch(error => res.status(500).send(error));
+      .catch(error => res.status(500)
+        .send({ message: 'Server error', error }));
   },
 
   getAll(req, res) {
-    const loggedInUserRoleId = req.user.roleId;
+    const loggedInUser = req.user;
+    const loggedInUserId = req.user.id;
+    const loggedInUserRoleId = loggedInUser.roleId;
     const isWriter = checkIfWriter(loggedInUserRoleId);
     const editorId = 2;
     if (isWriter) {
@@ -54,7 +58,7 @@ const documentController = {
           $or:
           [
             { access: 'public' },
-            { ownerId: loggedInUserRoleId },
+            { ownerId: loggedInUserId },
             { access: 'writer' }
           ]
         }
@@ -69,7 +73,7 @@ const documentController = {
           $or:
           [
             { access: 'public' },
-            { ownerId: loggedInUserRoleId },
+            { ownerId: loggedInUserId },
             { access: 'editor' }
           ]
         }

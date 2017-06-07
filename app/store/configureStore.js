@@ -4,7 +4,7 @@ import rootReducer from '../reducers';
 import client from '../utils/client';
 
 
-const configureStore = (initialState)  => {
+const configureStore = (initialState) => {
   return createStore(
     rootReducer,
     initialState,
