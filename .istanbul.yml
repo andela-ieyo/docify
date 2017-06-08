@@ -1,0 +1,4 @@
+instrumentation:
+  excludes: ['**/lib/**', '**/tools/**', '**/build/**']
+  extensions: ['.js', '.jsx']
+  default-excludes: true

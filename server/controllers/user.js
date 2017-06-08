@@ -1,10 +1,13 @@
 import jwt from 'jsonwebtoken';
 import models from '../models';
 import config from '../config/config';
+import validateInput from '../shared/validations/signup';
+import validateLogin from '../shared/validations/login';
 
 const Users = models.Users;
 const Roles = models.Roles;
-const Documents = models.documents;
+const Documents = models.Documents;
+const secretKey = config.jwtSecret;
 
 const isLoggedInUser = (userId, queryId) => {
   if (parseInt(userId, 10) === parseInt(queryId, 10)) {
@@ -16,6 +19,13 @@ const isLoggedInUser = (userId, queryId) => {
 const UserController = {
   create(req, res) {
     const userData = req.body;
+
+    const { errors, isValid } = validateInput(userData);
+
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+
     const query = {
       where: {
         email: req.body.email
@@ -27,7 +37,7 @@ const UserController = {
       }
     };
 
-    Users.findOne(query)
+    return Users.findOne(query)
       .then(checkReturnedUSer)
       .then(getDefaultRoleInfo)
       .then(createUser)
@@ -60,7 +70,7 @@ const UserController = {
       };
       return {
         newUser: newUserObj,
-        token: jwt.sign(payload, config.jwtSecret, {
+        token: jwt.sign(payload, secretKey, {
           expiresIn: '24h'
         })
       };
@@ -76,25 +86,33 @@ const UserController = {
       const message = error.message;
       if (message === 'checkReturnedUSer') {
         return res.status(400).send({
-          error: 'An account with that email address already exists'
+          message: 'An account with that email address already exists'
         });
       }
       return res.status(500).send({
+        message: 'Server error',
         error
       });
     }
   },
 
   login(req, res) {
-    if (req.body.email && req.body.password) {
-      const { email } = req.body;
-      const query = {
-        where: {
-          email
-        }
-      };
 
-      return Users.findOne(query)
+    const { errors, isValid } = validateLogin(req.body);
+
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+
+    // if (req.body.email && req.body.password)
+    const { email } = req.body;
+    const query = {
+      where: {
+        email
+      }
+    };
+
+    return Users.findOne(query)
         .then((user) => {
           if (!user) {
             return res.status(404).send({
@@ -107,10 +125,11 @@ const UserController = {
               roleId: user.roleId,
               email: user.email
             };
-            const token = jwt.sign(payload, config.jwtSecret, {
+            const token = jwt.sign(payload, secretKey, {
               expiresIn: '24h'
             });
             return res.status(201).send({
+              userInfo: payload,
               message: 'User login completed successfully',
               token
             });
@@ -120,10 +139,10 @@ const UserController = {
           });
         })
         .catch(error => {
-          res.status(500).send(error);
+          res.status(500).send({ message: 'Server error', error });
         });
-    }
-    return res.status(400).send('Enter a valid email address and password');
+
+    // return res.status(400).send({ message: 'Enter a valid email address and password' });
 
   },
 
@@ -161,10 +180,10 @@ const UserController = {
 
   deleteUser(req, res) {
     const isAdmin = req.user.roleId === 3;
-    const {
-      id
-    } = req.params;
-    if (!isAdmin) {
+    const { id } = req.params;
+    const isUser = req.user.id === id;
+
+    if (!isAdmin && !isUser) {
       return res.status(403).send({
         message: 'Request denied'
       });
@@ -184,14 +203,12 @@ const UserController = {
             });
           })
           .catch(error => res.status(500).send({
-            message: 'Server error',
-            error
-          }));
+            message: 'Server error', error })
+          );
       })
       .catch(error => res.status(500).send({
-        message: 'Server error',
-        error
-      }));
+        message: 'Server error', error })
+      );
   },
 
   update(req, res) {
@@ -221,9 +238,11 @@ const UserController = {
           .then(() => res.status(200).send({
             message: 'User record updated successfully'
           }))
-          .catch(error => res.status(500).send(error));
+          .catch(error => res.status(500)
+            .send({ message: 'Server error', error }));
       })
-      .catch(error => res.status(500).send(error));
+      .catch(error => res.status(500)
+        .send({ message: 'Server error', error }));
   },
 
   // Admin privilege to update any user's role
@@ -248,7 +267,8 @@ const UserController = {
           .then(() => res.status(200).send({
             message: 'User role updated successfully'
           }))
-          .catch(error => res.status(500).send(error));
+          .catch(error => res.status(500)
+            .send({ message: 'Server error', error }));
       })
       .catch(error => res.status(500).send(error));
   },
@@ -256,9 +276,8 @@ const UserController = {
   findUserDoc(req, res) {
     const loggedInUser = req.user;
     const isAdmin = loggedInUser.roleId === 3;
-    const { id } = req.params;
+    const id  = parseInt(req.params.id, 10);
     const isOwner = loggedInUser.id === id;
-
     if (!isOwner && !isAdmin) {
       return res.status(401).send({
         message: 'Request denied'
@@ -268,6 +287,7 @@ const UserController = {
     if (isAdmin) {
       return Documents.findAll({
         where: {
+          ownerId: id,
           access: {
             $ne: 'private'
           }
@@ -287,20 +307,25 @@ const UserController = {
             error
           }));
     }
-    return Documents.findAll()
-      .then(docs => {
-        if (!docs) {
-          return res.send(404).send({
-            message: 'No document found'
-          });
-        }
-        return res.status(200).send(docs);
-      })
-      .catch(error =>
-        res.status(500).send({
-          message: 'Server error',
-          error
-        }));
+
+    return Documents.findAll({
+      where: {
+        ownerId: id
+      }
+    })
+    .then(docs => {
+      if (!docs) {
+        return res.send(404).send({
+          message: 'No document found'
+        });
+      }
+      return res.status(200).send(docs);
+    })
+    .catch(error =>
+      res.status(500).send({
+        message: 'Server error',
+        error
+      }));
   },
 
   search(req, res) {
@@ -321,8 +346,20 @@ const UserController = {
         const filteredUsers = users.filter(user => user.id !== loggedInUser.id);
         return res.status(200).send(filteredUsers);
       })
-      .catch(error => res.status(500).send(error));
+      .catch(error => res.status(500)
+        .send({ message: 'Server error', error }));
+  },
+
+  getCurrentUser(req, res) {
+    const user = JSON.parse(JSON.stringify(req.user));
+    const currentUser = Object.assign({}, user, { password: '' });
+    return res.status(200).send(currentUser);
+  },
+
+  logout(req, res) {
+    return res.status(200).send({ message: 'You have been successfully logged out' });
   }
+
 };
 
 export default UserController;

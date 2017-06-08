@@ -1,5 +1,3 @@
-'use strict';
-
 import bcrypt from 'bcrypt';
 
 module.exports = (sequelize, DataTypes) => {
@@ -8,14 +6,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notEmpty: true,
+        notEmpty: true
       }
     },
     lastName: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notEmpty: true,
+        notEmpty: true
       }
     },
     username: {
@@ -26,7 +24,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [6, 8]
+        len: {
+          $gt: 5
+        }
       }
     },
     email: {
@@ -34,9 +34,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true,
       isEmail: {
-        msg: "Please enter a valid email address"
+        msg: 'Please enter a valid email address'
       }
-    } 
+    }
   }, {
     hooks: {
       beforeCreate: User => {
@@ -48,10 +48,10 @@ module.exports = (sequelize, DataTypes) => {
       associate: (models) => {
         Users.hasMany(models.Documents, {
           foreignKey: 'id',
-          as: 'ownerId',
+          as: 'ownerId'
         });
         Users.belongsTo(models.Roles, {
-          foreignKey: 'roleId',
+          foreignKey: 'roleId'
         });
       },
       isPassword: (encodedPassword, password) => {

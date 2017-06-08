@@ -1,0 +1,107 @@
+$width: 100%;
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.docify-home{
+  display: flex;
+  width: 30%;
+  margin: auto;
+  margin-top: 15%;
+  justify-content: space-around;
+}
+
+.login{
+  width: $width;
+}
+
+.signup{
+  width: $width;
+}
+
+.doc-card{
+  margin: 5%;
+  span {
+    display: inline-block;
+    margin-right: 2%;
+  }
+}
+
+.card-action{
+  display: flex;
+  span {
+    color: mintcream;
+  }
+}
+
+.docify-icons{
+  width: 70%;
+  margin-left: 2%;
+  margin-top: -2%;
+  a {
+    margin-top: 1%;
+    margin-left: 5%;
+    i {
+      color:#90caf9;
+    }
+  }
+}
+
+.docify-card{
+  border: #212121 solid 1px;
+  .card-title, span{
+    color: #212121;
+  }
+  .docify-p{
+    color: #212121;
+  }
+}
+
+.brand-logo{
+  margin-left: 2%,
+}
+
+.docify-add{
+  margin-right: 2%;
+  margin-top: -2%;
+}
+
+.docify-menu{
+  margin-top: 2%;
+  margin-left: 2%;
+}
+
+.docify-create {
+  width: 50%;
+  margin-top: 7%;
+  margin-bottom: 2%;
+}
+
+.create-title {
+  font-size: 2rem;
+  color: #909090 ;
+  margin-top: 3%;
+}
+
+.docify-back {
+  margin-right: 2%;
+  margin-top: -3%;
+  color: #909090 ;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.docify-search{
+  justify-content: space-around;
+  width: 40%;
+}
+
+.docify-checkbox {
+  margin-left: 7%;
+  label {
+    margin-right: 2%;
+  }
+}

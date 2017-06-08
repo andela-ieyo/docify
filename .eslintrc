@@ -8,6 +8,7 @@
   "extends": "airbnb",
   "rules": {
     "import/no-extraneous-dependencies" : ["error", {"devDependencies": true}],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "import/no-dynamic-require" : [0],
     "import/newline-after-import" : [0],
     "comma-dangle"            : [2, "never"],
@@ -82,7 +83,7 @@
     "no-octal"              : [2],
     "no-octal-escape"       : [2],
     "no-param-reassign"     : [2],
-    "no-process-env"        : [2],
+    "no-process-env"        : [0],
     "no-proto"              : [2],
     "no-redeclare"          : [2],
     "no-return-assign"      : [2],
@@ -93,6 +94,7 @@
     "no-unused-expressions" : [2],
     "no-void"               : [0],
     "no-warning-comments"   : [0],
+    "jsx-a11y/interactive-supports-focus": [0],
     "no-with"               : [2],
     "radix"                 : [2],
     "vars-on-top"           : [0],
@@ -166,6 +168,7 @@
     "no-continue"              : [2],
     "no-inline-comments"       : [0],
     "no-lonely-if"             : [0],
+    "react/no-unused-prop-types": [0],
     "no-mixed-spaces-and-tabs" : [2],
 
     "no-multiple-empty-lines"  : [2, {
@@ -180,6 +183,7 @@
     "no-underscore-dangle" : [0],
     "no-extra-parens"      : [2],
     "one-var"              : [0],
+    "react/forbid-prop-types": [0],
     "operator-assignment"  : [0],
     "operator-linebreak"   : [2, "before"],
     "padded-blocks"        : [0],

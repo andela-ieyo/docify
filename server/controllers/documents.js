@@ -33,19 +33,39 @@ const documentController = {
       }
     })
       .then(user => {
-        Documents.create(Object.assign({}, userData, { ownerId: user.id }))
+        Documents.create(
+          Object.assign({},
+          userData,
+          { ownerId: parseInt(user.id, 10) }
+          ))
           .then(() => res.status(200).send({ message: 'Document created successfully.' }))
-          .catch(error => res.status(500).send(error));
+          .catch(error => res.status(500)
+            .send({ message: 'Server error', error }));
       })
-      .catch(error => res.status(500).send(error));
+      .catch(error => res.status(500)
+        .send({ message: 'Server error', error }));
   },
 
   getAll(req, res) {
-    const loggedInUserRoleId = req.user.roleId;
+    const loggedInUser = req.user;
+    const loggedInUserId = req.user.id;
+    const loggedInUserRoleId = loggedInUser.roleId;
     const isWriter = checkIfWriter(loggedInUserRoleId);
     const editorId = 2;
     if (isWriter) {
-      return res.status(403).send({ message: 'Request Denied!' });
+      return Documents.findAll({
+        where: {
+          $or:
+          [
+            { access: 'public' },
+            { ownerId: loggedInUserId },
+            { access: 'writer' }
+          ]
+        }
+      })
+      .then(docs => res.status(200).send(docs))
+      .catch(error => res.send(500)
+        .send({ message: 'Server error', error }));
     }
     if (loggedInUserRoleId === editorId) {
       return Documents.findAll({
@@ -53,7 +73,7 @@ const documentController = {
           $or:
           [
             { access: 'public' },
-            { ownerId: loggedInUserRoleId },
+            { ownerId: loggedInUserId },
             { access: 'editor' }
           ]
         }
@@ -175,7 +195,7 @@ const documentController = {
              doc.ownerId === loggedInUser.id || doc.access === 'writer'
               || doc.access === 'public'
           );
-          if (writerDocs === []) {
+          if (writerDocs.length === 0) {
             return res.status(404).send({ message: 'Not Found' });
           }
           return res.status(200).send(writerDocs);
@@ -186,7 +206,7 @@ const documentController = {
             doc.ownerId === loggedInUser.id || doc.access === 'writer'
               || doc.access === 'public' || doc.access === 'editor'
           );
-          if (editorDocs === []) {
+          if (editorDocs.length === 0) {
             return res.status(404).send({ message: 'Not Found' });
           }
           return res.status(200).send(editorDocs);
