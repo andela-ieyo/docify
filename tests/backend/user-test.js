@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import chai from 'chai';
 import async from 'async';
 import request from 'supertest';
-import models, { Users, Roles } from '../../server/models';
+import models, { Users, Roles, Documents } from '../../server/models';
 import app from '../../server';
 import fixtures from '../seed-data/fixtures.json';
 
@@ -126,9 +126,9 @@ describe('Users', () => {
           .post('/api/users')
           .send(user)
           .end((err, res) => {
-            res.body.should.have.property('error');
-            expect(res.body.error).to.have.property('errors');
-            expect(res.body.error.errors).to.have.length(1);
+            console.log(res.body, 'iiii');
+            expect(res.body).to.have.property('username');
+            expect(res.body).to.have.property('username').eql('This field is required');
             done();
           });
     });
@@ -203,7 +203,6 @@ describe('Users', () => {
         .set('authorization', token)
         .send({ roleId: 2 })
         .end((err, res) => {
-          console.log(res.body, 'oooooo');
           res.status.should.equal(200);
           expect(res.body).should.be.a('object');
           expect(res.error).to.equal(false);
@@ -214,3 +213,32 @@ describe('Users', () => {
   });
 
 });
+
+describe('/POST Documents', () => {
+
+    it('it should POST a doc with a 200', (done) => {
+      const doc = {
+        title: 'Lord of the Rings',
+        content: 'A great story filled with excitment and suspense',
+        access: 'public',
+        ownerId: 1
+      };
+      request(app)
+          .post('/api/documents')
+          .send(doc)
+          .end((err, res) => {
+            console.log(res);
+            // res.status.should.equal(201);
+            // res.body.should.be.a('object');
+            // res.body.should.have.property('message').eql('User signup completed successfully');
+            // expect(res.body).to.have.property('newUser');
+            // expect(res.body.newUser).to.be.a('object');
+            // expect(res.body.newUser).to.have.property('id');
+            // expect(res.body.newUser).to.have.property('username');
+            // expect(res.body.newUser).to.have.property('firstName');
+            // expect(res.body.newUser).to.have.property('email');
+            // expect(res.body.newUser).to.have.property('password');
+            // expect(res.body).to.have.property('token');
+            done();
+          });
+    });

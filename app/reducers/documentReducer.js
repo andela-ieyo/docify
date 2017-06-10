@@ -10,3 +10,4 @@ export default function documentReducer(state = {}, action) {
       return state;
   }
 }
+

@@ -6,6 +6,7 @@ import routes from './routes';
 import store from './store/configureStore';
 import './static/styles/style.scss';
 import './static/styles/toastr.scss';
+import '../node_modules/sweetalert/dist/sweetalert.css';
 
 render(
   <Provider store={store}>

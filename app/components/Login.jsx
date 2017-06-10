@@ -30,37 +30,22 @@ class Login extends Component {
     const { errors, isValid } = validateLogin(this.state);
 
     if (isValid) {
-      this.props.userLoginRequest(this.state)
-      .then(
-        () => {
-          browserHistory.push('/dashboard');
-        });
+      this.props.userLoginRequest(this.state);
     }
     this.setState({ errors });
   }
 
   render() {
-    /*const messages = this.props.flashMessages.map(message =>
-       (<FlashMessage
-         key={message.id}
-         message={message}
-         deleteFlashMessage={this.props.deleteFlashMessage}
-       />)
-    );*/
 
     const { errors } = this.state;
     const { email, password } = this.state;
     return (
-      <div className="docify-home">
+      <div className="docify-login">
         <div className="login">
           <div>
-            <div>
+            <div className="login-title">
               <h4>Login</h4>
             </div>
-
-            {/*<div className="col s6 .right-align">
-              {messages}
-            </div>*/}
 
             <div className="row">
               <form className="col s12" action="">

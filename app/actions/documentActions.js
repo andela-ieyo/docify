@@ -6,9 +6,8 @@ export const saveDocumentSuccess = (documents, category) =>
   ({ type: SAVE_DOCUMENT_SUCCESS, documents, category });
 
 
-export const retrieveMyDocuments = (userId) => {
-  return (dispatch, getState, { client }) => {
-    return client.get(`/api/users/${userId}/documents`)
+export const retrieveMyDocuments = (userId) =>
+(dispatch, getState, { client }) => client.get(`/api/users/${userId}/documents`)
       .then(res => {
         const documents = res.data;
         dispatch(saveDocumentSuccess(documents, 'myDocuments'));
@@ -16,12 +15,9 @@ export const retrieveMyDocuments = (userId) => {
         const errorMsgs = error.response.data.message;
         toastr.error(errorMsgs);
       });
-  };
-};
 
-export const retrieveAllDocuments = (userId) => {
-  return (dispatch, getState, { client }) => {
-    return client.get('/api/documents')
+export const retrieveAllDocuments = () =>
+(dispatch, getState, { client }) => client.get('/api/documents')
       .then(res => {
         const allDocuments = res.data;
         dispatch(saveDocumentSuccess(allDocuments, 'allDocuments'));
@@ -30,12 +26,9 @@ export const retrieveAllDocuments = (userId) => {
         toastr.error(errorMsgs);
       }
       );
-  };
-};
 
-export const createDocument = (fieldData) => {
-  return (dispatch, getState, { client }) => {
-    return client.post('/api/documents', fieldData)
+export const createDocument = (fieldData) =>
+(dispatch, getState, { client }) => client.post('/api/documents', fieldData)
       .then(res => {
         const successMsg = res.data.message;
         toastr.success(successMsg);
@@ -44,22 +37,16 @@ export const createDocument = (fieldData) => {
         toastr.error(errorMsgs);
       }
       );
-  };
-};
 
-export const viewDocument = (fieldData) => {
-  return (dispatch, getState, { client }) => {
-    return client.post('/api/documents', fieldData)
+export const saveEditedDoc = (docId, fieldData) => (dispatch, getState, { client }) =>
+  client.put(`/api/documents/${docId}`, fieldData)
       .then(res => {
         const successMsg = res.data.message;
+        dispatch(retrieveAllDocuments());
         toastr.success(successMsg);
       }, error => {
         const errorMsgs = error.response.data.message;
         toastr.error(errorMsgs);
       }
       );
-  };
-};
-
-
 

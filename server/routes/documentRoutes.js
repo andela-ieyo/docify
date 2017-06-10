@@ -25,7 +25,7 @@ const routes = () => {
   // delete a document
   docRoutes.delete('/documents/:id', documentController.deleteOne);
 
-  docRoutes.get('/search/documents/', documentController.search);
+  docRoutes.get('/search/documents/?query=', documentController.search);
 
   return docRoutes;
 };

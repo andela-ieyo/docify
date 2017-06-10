@@ -94,6 +94,7 @@
     "no-unused-expressions" : [2],
     "no-void"               : [0],
     "no-warning-comments"   : [0],
+    "arrow-body-style"      : [0],
     "jsx-a11y/interactive-supports-focus": [0],
     "no-with"               : [2],
     "radix"                 : [2],

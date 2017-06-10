@@ -1,5 +1,6 @@
 import toastr from 'toastr';
-import { SAVE_USER_SUCCESS, SAVE_USER_ERROR, SAVE_USER } from '../constants/user';
+import { browserHistory } from 'react-router';
+import { SAVE_USER_SUCCESS, SAVE_USER_ERROR } from '../constants/user';
 
 
 export const saveUserSuccess = (user) =>
@@ -8,10 +9,6 @@ export const saveUserSuccess = (user) =>
 
 export const saveUserError = (error) =>
   ({ type: SAVE_USER_ERROR, error });
-
-export const saveUser = () =>
-  ({ type: SAVE_USER });
-
 
 export const userLoginRequest = (fieldData) => {
   return (dispatch, getState, { client }) => {
@@ -22,11 +19,13 @@ export const userLoginRequest = (fieldData) => {
         window.localStorage.setItem('jwtToken_docify', token);
         dispatch(saveUserSuccess(userInfo));
         toastr.success(message);
+        browserHistory.push('/dashboard');
       }, error => {
         const errorMsgs = error.response.data.message;
 
         dispatch(saveUserError(errorMsgs));
         toastr.error(errorMsgs);
+        browserHistory.push('/');
       });
   };
 };

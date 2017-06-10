@@ -110,8 +110,14 @@ const documentController = {
   update(req, res) {
     const query = req.params.id;
     const loggedInUser = req.user;
+    const { title, access, content } = req.body;
 
-    Documents.findById(query)
+    if (!title || !content
+    || !access) {
+      return res.status(400).send({ message: 'All fields must not be empty' });
+    }
+
+    return Documents.findById(query)
       .then(doc => {
         if (!doc) {
           return res.status(404).send({ message: 'Document not found' });
@@ -122,10 +128,9 @@ const documentController = {
           return res.status(401).send({ message: 'Request denied' });
         }
         return doc.update({
-          title: req.body.title || doc.title,
-          content: req.body.content || doc.content,
-          access: req.body.access || doc.access,
-          ownerId: doc.ownerId
+          title: req.body.title,
+          content: req.body.content,
+          access: req.body.access
         })
           .then(() =>
             res.status(200).send({ message: 'Document updated successfully' }))

@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import models from '../models';
 import config from '../config/config';
 import validateInput from '../shared/validations/signup';
@@ -8,6 +9,7 @@ const Users = models.Users;
 const Roles = models.Roles;
 const Documents = models.Documents;
 const secretKey = config.jwtSecret;
+const salt = bcrypt.genSaltSync();
 
 const isLoggedInUser = (userId, queryId) => {
   if (parseInt(userId, 10) === parseInt(queryId, 10)) {
@@ -141,9 +143,6 @@ const UserController = {
         .catch(error => {
           res.status(500).send({ message: 'Server error', error });
         });
-
-    // return res.status(400).send({ message: 'Enter a valid email address and password' });
-
   },
 
   findAll(req, res) {
@@ -181,40 +180,54 @@ const UserController = {
   deleteUser(req, res) {
     const isAdmin = req.user.roleId === 3;
     const { id } = req.params;
-    const isUser = req.user.id === id;
+    const isUser = req.user.id === parseInt(id, 10);
+    console.log(isUser, 'oooooo');
 
-    if (!isAdmin && !isUser) {
-      return res.status(403).send({
-        message: 'Request denied'
-      });
-    }
-
-    return Users.findById(id)
-      .then(user => {
-        if (!user) {
-          return res.status(400).send({
-            message: 'User not found'
-          });
-        }
-        return user.destroy()
-          .then(() => {
-            res.status(204).send({
-              message: 'User record deleted successfully'
+    if (isAdmin || isUser) {
+      return Users.findById(id)
+        .then(user => {
+          if (!user) {
+            return res.status(400).send({
+              message: 'User not found'
             });
-          })
-          .catch(error => res.status(500).send({
-            message: 'Server error', error })
-          );
-      })
-      .catch(error => res.status(500).send({
-        message: 'Server error', error })
-      );
+          }
+          return user.destroy()
+            .then(() => {
+              res.status(204).send({
+                message: 'User record deleted successfully'
+              });
+            })
+            .catch(error => res.status(500).send({
+              message: 'Server error', error })
+            );
+        })
+        .catch(error => res.status(500).send({
+          message: 'Server error', error })
+        );
+    }
+    return res.status(403).send({
+      message: 'Request denied'
+    });
   },
 
+  /**
+   * 
+   *
+   * @param {any} req
+   * @param {any} res
+   * @returns
+   */
   update(req, res) {
     const queryId = req.params.id;
     const userId = req.user.id;
+    let encryptedPassword;
     const isUser = isLoggedInUser(userId, queryId);
+
+    if (req.body.password) {
+      encryptedPassword = bcrypt.hashSync(req.body.password, salt);
+
+    }
+
     if (!isUser) {
       return res.status(403).send({
         message: 'Request denied'
@@ -232,7 +245,7 @@ const UserController = {
           firstName: req.body.firstName || user.firstName,
           lastName: req.body.lastName || user.lastName,
           username: req.body.username || user.username,
-          password: req.body.password || user.password,
+          password: encryptedPassword || user.password,
           roleId: req.body.roleId || user.roleId
         })
           .then(() => res.status(200).send({
@@ -248,7 +261,7 @@ const UserController = {
   // Admin privilege to update any user's role
   updateRole(req, res) {
     const isAdmin = req.user.roleId === 3;
-    const queryId = req.params.id;
+    const queryId = parseInt(req.params.id, 10);
     if (!isAdmin) {
       return res.status(403).send({
         message: 'Request Denied'

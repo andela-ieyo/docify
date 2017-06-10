@@ -9,8 +9,8 @@ import docRoutes from './server/routes/documentRoutes';
 
 // import models from './server/models';
 
-// let Users = models.Users;
-// let Roles = models.Roles;
+// const Users = models.Users;
+// const Roles = models.Roles;
 
 // Set up the express app
 const app = express();
@@ -39,7 +39,7 @@ app.get('*', (req, res) => {
 });
 
 const server = app.listen(port, () => {
-  db.sequelize.sync().then();
+  db.sequelize.sync();
   console.log(`Listening on port ${port}`);
 });
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { browserHistory } from 'react-router';
 import { userSignUpRequest } from '../actions/signUpActions';
 import validateInput from '../../server/shared/validations/signup';
 
@@ -32,11 +31,7 @@ class SignUp extends Component {
     const { errors, isValid } = validateInput(this.state);
 
     if (isValid) {
-      this.props.userSignUpRequest(this.state)
-      .then(
-        () => {
-          browserHistory.push('/dashboard');
-        });
+      this.props.userSignUpRequest(this.state);
     }
     this.setState({ errors });
   }
@@ -45,12 +40,12 @@ class SignUp extends Component {
     const { errors } = this.state;
     const { firstName, lastName, username, email, password } = this.state;
     return (
-      <div className="docify-home">
+      <div className="docify-signup">
 
 
         <div id="signup">
           <div>
-            <div>
+            <div className="signup-title">
               <h4>Sign Up</h4>
             </div>
 
