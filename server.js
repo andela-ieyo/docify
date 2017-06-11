@@ -41,7 +41,7 @@ app.get('*', (req, res) => {
 const server = app.listen(port, () => {
   db.sequelize.sync().then(() => {
     Roles.findAll().then(roles => {
-      if (!roles) {
+      if (!roles.length) {
         Roles.bulkCreate(
           [
             { title: 'Writer' },
