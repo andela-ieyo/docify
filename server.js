@@ -7,10 +7,10 @@ import auth from './server/config/middlewares/auth';
 import userRoutes from './server/routes/userRoutes';
 import docRoutes from './server/routes/documentRoutes';
 
-// import models from './server/models';
+import models from './server/models';
 
 // const Users = models.Users;
-// const Roles = models.Roles;
+const Roles = models.Roles;
 
 // Set up the express app
 const app = express();
@@ -39,7 +39,19 @@ app.get('*', (req, res) => {
 });
 
 const server = app.listen(port, () => {
-  db.sequelize.sync();
+  db.sequelize.sync().then(() => {
+    Roles.findAll().then(roles => {
+      if (!roles) {
+        Roles.bulkCreate(
+          [
+            { title: 'Writer' },
+            { title: 'Editor' },
+            { title: 'Admin' }
+          ]
+        );
+      }
+    });
+  });
   console.log(`Listening on port ${port}`);
 });
 
