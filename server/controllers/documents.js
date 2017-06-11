@@ -224,6 +224,59 @@ const documentController = {
         return res.status(200).send(adminDocs);
       })
       .catch(error => res.status(500).send(error));
+  },
+
+  getPaginatedDocs(req, res) {
+    const limit = req.query.limit || 10;
+    const offset = req.query.offset || 0;
+    const loggedInUser = req.user;
+    const loggedInUserId = req.user.id;
+    const loggedInUserRoleId = loggedInUser.roleId;
+    const isWriter = checkIfWriter(loggedInUserRoleId);
+    const editorId = 2;
+    if (isWriter) {
+      return Documents.findAll({
+        offset,
+        limit,
+        where: {
+          $or:
+          [
+            { access: 'public' },
+            { ownerId: loggedInUserId },
+            { access: 'writer' }
+          ]
+        }
+      })
+      .then(docs => res.status(200).send(docs))
+      .catch(error => res.send(500)
+        .send({ message: 'Server error', error }));
+    }
+    if (loggedInUserRoleId === editorId) {
+      return Documents.findAll({
+        offset,
+        limit,
+        where: {
+          $or:
+          [
+            { access: 'public' },
+            { ownerId: loggedInUserId },
+            { access: 'editor' }
+          ]
+        }
+      })
+        .then(docs => res.status(200).send(docs))
+        .catch(error => res.status(404)
+          .send({ message: 'No such Documents', error }));
+    }
+    return Documents.findAll(
+      {
+        offset,
+        limit
+      }
+    )
+      .then(docs => res.status(200).send(docs))
+      .catch(error => res.status(500).send(error));
+
   }
 
 };

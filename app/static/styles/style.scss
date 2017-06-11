@@ -56,12 +56,17 @@ body {
   margin: auto;
   margin-top: 15%;
   justify-content: space-around;
-  background-color: #F5F5F5;
   border-radius: 5px;
 
   .signup-title{
-    margin-left: 2%
+    margin-left: 3%
   }
+}
+
+#signup{
+   background-color: #F5F5F5;
+   border-radius: 5px;
+   width: $width;
 }
 
 .login{
@@ -252,6 +257,9 @@ body {
 .docify-access-section{
   text-transform: capitalize;
   font-weight: bold;
+  position: absolute;
+  bottom: 60px;
+  right: 10px;
 }
 
 .docify-users-btn-section{

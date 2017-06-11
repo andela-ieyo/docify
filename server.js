@@ -18,7 +18,7 @@ const app = express();
 const port = process.env.PORT || 8000; // eslint-disable-line
 
 // Log requests to the console.
-// app.use(logger('combined'));
+app.use(logger('combined'));
 
 // Parse incoming requests data
 app.use(bodyParser.json());
