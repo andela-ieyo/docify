@@ -21,6 +21,7 @@ const documentController = {
   create(req, res) {
     const userData = req.body;
     const loggedInUser = req.user;
+    const loggedInUserId = parseInt(loggedInUser.id, 10);
 
     if (req.body.title === '' || req.body.content === ''
     || req.body.access === '') {
@@ -36,7 +37,7 @@ const documentController = {
         Documents.create(
           Object.assign({},
           userData,
-          { ownerId: parseInt(user.id, 10) }
+          { ownerId: loggedInUserId }
           ))
           .then(() => res.status(200).send({ message: 'Document created successfully.' }))
           .catch(error => res.status(500)

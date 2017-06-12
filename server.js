@@ -1,5 +1,5 @@
 import express from 'express';
-import logger from 'morgan';
+// import logger from 'morgan';
 import path from 'path';
 import bodyParser from 'body-parser';
 import db from './server/models/index';
@@ -9,7 +9,7 @@ import docRoutes from './server/routes/documentRoutes';
 
 import models from './server/models';
 
-const Users = models.Users;
+// const Users = models.Users;
 const Roles = models.Roles;
 
 // Set up the express app
@@ -18,7 +18,7 @@ const app = express();
 const port = process.env.PORT || 8000; // eslint-disable-line
 
 // Log requests to the console.
-app.use(logger('combined'));
+// app.use(logger('combined'));
 
 // Parse incoming requests data
 app.use(bodyParser.json());

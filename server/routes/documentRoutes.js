@@ -1,6 +1,6 @@
 import express from 'express';
 import documentController from '../controllers/documents';
-import config from '../config/config';
+import config from '../config/middlewares/config';
 import auth from '../config/middlewares/auth';
 
 

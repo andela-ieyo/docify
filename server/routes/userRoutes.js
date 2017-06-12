@@ -1,6 +1,6 @@
 import express from 'express';
 import userController from '../controllers/user';
-import config from '../config/config';
+import config from '../config/middlewares/config';
 import auth from '../config/middlewares/auth';
 
 const routes = () => {
