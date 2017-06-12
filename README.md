@@ -36,7 +36,7 @@ Docify is built with JavaScript (ES6), React, NodeJs, and Express, and PostGres 
 **_Docify-cli installation_**
 
     ```bash
-    $ git clone https://github.com/andela-ieyo/News_Feed_App.git
+    $ git clone https://github.com/andela-ieyo/docify.git
     $ cd <news-feed-app directory>
     $ npm install
     $ run npm start
@@ -64,7 +64,7 @@ If the contribution you wish to make isn't documented in an existing issue, plea
 
 ### Deployment
 
- Docify is hosted on heroku. Visit 
+ Docify is hosted on heroku. Visit https://docify.herokuapp.com/
 
 
 ### License

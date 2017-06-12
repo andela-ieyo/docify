@@ -462,25 +462,21 @@ describe('Users', () => {
 
     it('it should GET the details of a logged in user', (done) => {
       request(app)
-        .get('/api/users/1/documents')
+        .get('/api/users/current')
         .set('authorization', token)
         .end((err, res) => {
           res.status.should.equal(200);
+          expect(res.body).to.be.an.instanceof(Object);
           expect(res.body).to.not.be.null;
-          expect(res.body).to.be.an.instanceof(Array);
-          expect(res.body[0]).to.have.property('title');
-          expect(res.body[0]).to.have.property('title').eql('The Lord of the Rings');
-          expect(res.body[0]).to.have.property('access');
-          expect(res.body[0]).to.have.property('access').eql('public');
-          expect(res.body[0]).to.have.property('content');
-          expect(res.body[0]).to.have.property('content').eql('sex and Adventure');
-          expect(res.body[0]).to.have.property('ownerId').eql(1);
+          expect(res.body).to.have.property('firstName').eql('Precious');
+          expect(res.body).to.have.property('lastName').eql('Ijege');
+          expect(res.body).to.have.property('username').eql('Admin');
+          expect(res.body).to.have.property('roleId').eql(3);
+          expect(res.body).to.have.property('email').eql('precious.ijege@gmail.com');
           done();
         });
     });
   });
 
 });
-
- userRoutes.get('/users/current', userController.getCurrentUser);
 
