@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => 
+  up: (queryInterface, Sequelize) =>
     queryInterface.createTable('Documents', {
       id: {
         allowNull: false,
@@ -11,15 +11,15 @@ module.exports = {
       },
       title: {
         type: Sequelize.STRING,
-        allowNull: false, 
+        allowNull: false,
       },
       content: {
         type: Sequelize.TEXT,
-        allowNull: false, 
+        allowNull: false,
       },
       access: {
         type: Sequelize.STRING,
-        allowNull: false, 
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -34,7 +34,7 @@ module.exports = {
         references: {
           model: 'Users',
           key: 'id',
-          as: 'ownerId',
+          as: 'ownerId'
         }
       }
     }),

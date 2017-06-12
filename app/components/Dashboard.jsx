@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
+// import toastr from 'toastr';
+import swal from 'sweetalert';
 import PropTypes from 'prop-types';
-import { retrieveMyDocuments, retrieveAllDocuments } from '../actions/documentActions';
+import {
+  retrieveMyDocuments,
+  retrieveAllDocuments } from '../actions/documentActions';
+import logOut from '../actions/logOutAction';
+import client from '../utils/client';
 
 
 const updateFilters = (value) => (state) => {
@@ -19,17 +25,31 @@ class Dashboard extends Component {
     this.state = {
       documents: props.documents || {},
       view:'allDocuments',
-      filters: []
+      filters: [],
+      query: '',
+      hide: 'hide'
     };
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
+    this.handleSearchInput = this.handleSearchInput.bind(this);
+    this.searchDoc = this.searchDoc.bind(this);
+    this.deleteDoc = this.deleteDoc.bind(this);
+    this.deleteMyAccount = this.deleteMyAccount.bind(this);
+  }
+
+
+  componentWillMount() {
+    const isAdmin = this.props.user.roleId === 3;
+    if (isAdmin) {
+      this.setState({ hide: 'show' });
+    }
   }
 
   componentDidMount() {
     const userId = this.props.user.id;
     this.props.retrieveMyDocuments(userId);
     this.props.retrieveAllDocuments();
-    $('.button-collapse').sideNav();
+    $('.button-collapse').sideNav({ 'closeOnClick': true });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -50,9 +70,106 @@ class Dashboard extends Component {
     this.setState(updateFilters(value));
   }
 
+  handleSearchInput(event) {
+    const { value } = event.target;
+    this.setState({ query: value });
+    console.log(value, this.state.query);
+  }
+
+  deleteMyAccount(userId) {
+    console.log(userId);
+    swal({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover your account',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e53935',
+      confirmButtonText: 'Yes, delete it!',
+      closeOnConfirm: false
+    }, (isConfirm) => {
+      if (isConfirm) {
+        client.delete(`/api/users/${userId}`)
+          .then(res => {
+            const successMsg = res.data.message;
+            swal({
+              title: 'Deleted!',
+              text: successMsg,
+              timer: 2000,
+              type: 'success',
+              showConfirmButton: false
+            });
+            this.props.logOut();
+          }, error => {
+            const errorMsg = error.response.data.message;
+            swal({
+              title: 'Oops, something went wrong!',
+              text: errorMsg,
+              timer: 2000,
+              type: 'error',
+              showConfirmButton: false
+            });
+          });
+      }
+      swal('Cancelled', 'Your account is safe :)', 'error');
+    }
+      );
+  }
+
+  searchDoc() {
+    // event.preventDefault();
+    const query = this.state.query;
+    // client.get(`/api/search/documents/?query=${query}`)
+    //   .then(res => {
+    //     const result = res.data;
+    //     this.state.documents[this.state.view] = result;
+    //   }, error => {
+    //     const errorMsg = error.res.data.message;
+    //     toastr.error(errorMsg);
+    //   });
+
+  }
+
+  deleteDoc(docId) {
+    swal({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this file!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#DD6B55',
+      confirmButtonText: 'Yes, delete it!',
+      closeOnConfirm: false
+    }, (isConfirm) => {
+      if (isConfirm) {
+        client.delete(`/api/documents/${docId}`)
+          .then(res => {
+            const successMsg = res.data.message;
+            this.props.retrieveAllDocuments();
+            swal({
+              title: 'Deleted!',
+              text: successMsg,
+              timer: 2000,
+              type: 'success',
+              showConfirmButton: false
+            });
+          }, error => {
+            const errorMsg = error.response.data.message;
+            swal({
+              title: 'Oops, something went wrong!',
+              text: errorMsg,
+              timer: 2000,
+              type: 'error',
+              showConfirmButton: false
+            });
+          });
+      }
+      swal('Cancelled', 'Your file is safe :)', 'error');
+    }
+      );
+  }
+
   render() {
     const role = this.props.user.roleId === 1 ? 'writer' : 'editor';
-    const { filters } = this.state;
+    const { filters, query, hide } = this.state;
     const { documents } = this.props;
     const filteredDocs = (documents[this.state.view] || []).filter(
       doc => filters.includes(doc.access) || filters.length === 0
@@ -62,20 +179,36 @@ class Dashboard extends Component {
         <ul id="slide-out" className="side-nav">
           <li>
             <div className="userView">
-              <a href="#!name"><span className="name">Welcome</span></a>
-              <a href="#!email">
-                <span className="email">{this.props.user.email}</span>
-              </a>
+              <span className="name">Welcome {this.props.user.lastName}</span>
+              <span className="email">{this.props.user.email}</span>
             </div>
           </li>
-          <li><a href="/alldocuments">
-            <i className="material-icons">visibility</i>
-             View All Documents
-          </a></li>
-          <li><a href="#!">Update profile</a></li>
+
+          <li><a
+            role="button"
+            onClick={() => {
+              this.deleteMyAccount(this.props.user.id);
+            }}
+          >Delete your account</a></li>
+
+          <li className={hide}>
+             Admin
+          </li>
+          <li><a
+            role="button"
+            onClick={() => {
+              browserHistory.push(`/users/profile/edit/${this.props.user.id}`);
+            }}
+          >Update profile</a></li>
           <li><div className="divider" /></li>
-          <li><a className="subheader">Subheader</a></li>
-          <li><a className="waves-effect" href="#!">Third Link With Waves</a></li>
+          <li className={hide}>
+            <a
+              role="button"
+              onClick={() => {
+                browserHistory.push('/users/all');
+              }}
+            > View All Users</a>
+          </li>
         </ul>
         <a data-activates="slide-out" className="button-collapse">
           <i className="Small material-icons docify-menu">menu</i>
@@ -84,7 +217,9 @@ class Dashboard extends Component {
         <div className="right-align docify-add">
           <button
             className="btn-floating btn-medium waves-effect waves-light red"
-            onClick={() => browserHistory.push('/createdocument')}
+            onClick={() =>
+              browserHistory.push('/create-document')
+            }
           >
             <i className="material-icons">add</i></button>
         </div>
@@ -95,14 +230,17 @@ class Dashboard extends Component {
               <div className="input-field">
                 <input
                   placeholder="Search for a document"
+                  onChange={this.handleSearchInput}
+                  value={query}
                   id="search"
                   type="text"
                   className="validate col s8"
                 />
                 <a
                   role="button"
-                  className="btn-floating"
-                ><i className="material-icons col s4">search</i></a>
+                  onClick={this.searchDoc}
+                  className="btn-floating search-wrapper"
+                ><i className="material-icons col s4 search-icon">search</i></a>
               </div>
             </div>
           </form>
@@ -150,7 +288,6 @@ class Dashboard extends Component {
                 id="docify-option"
                 value={this.state.view}
               >
-                <option value="">Sort Options</option>
                 <option value="myDocuments">Owned by Me</option>
                 <option value="allDocuments">Shared with Me</option>
               </select>
@@ -160,30 +297,35 @@ class Dashboard extends Component {
 
 
         <div className="row container-fluid doc-card" >
-          {(filteredDocs || []).map(doc =>
-
+          {filteredDocs.map(doc =>
             (<div className="col s6 m4" key={doc.id}>
-              <div className="card docify-card">
+              <div className="card small docify-card">
                 <div className="card-content">
                   <span className="card-title">{doc.title}</span>
-                  <p className="docify-p">{doc.content.slice(0, 300)}...</p>
+                  <p className="docify-p">{doc.content.slice(0, 200)}...</p>
                 </div>
                 <div className="card-action">
                   <span>{doc.createdAt.slice(0, 10)}</span>
                   <div className="docify-icons">
                     <a
                       role="button"
+                      onClick={() => browserHistory.push(`documents/view/${doc.id}`)}
                       className="btn-small waves-effect waves-light"
-                    ><i className="small material-icons">pageview</i></a>
+                    >View</a>
                     <a
                       role="button"
+                      onClick={() => browserHistory.push(`documents/edit/${doc.id}`)}
                       className="btn-small waves-effect waves-light"
-                    ><i className="small material-icons">mode_edit</i></a>
+                    >Edit</a>
                     <a
                       role="button"
+                      onClick={() => { this.deleteDoc(doc.id); }}
                       className="btn-small waves-effect waves-light"
-                    ><i className="small material-icons">delete</i></a>
+                    >delete</a>
                   </div>
+                </div>
+                <div className="docify-access-section center-align">
+                  <span>{doc.access}</span>
                 </div>
               </div>
             </div>)
@@ -198,6 +340,7 @@ Dashboard.propTypes = {
   user: PropTypes.object.isRequired,
   retrieveMyDocuments: PropTypes.func.isRequired,
   retrieveAllDocuments: PropTypes.func.isRequired,
+  logOut: PropTypes.func.isRequired,
   documents: PropTypes.object
 };
 
@@ -207,4 +350,9 @@ Dashboard.defaultProps = {
 
 const mapStateToProps = ({ user, documents }) => ({ user, documents });
 
-export default connect(mapStateToProps, { retrieveMyDocuments, retrieveAllDocuments })(Dashboard);
+export default connect(mapStateToProps,
+  {
+    retrieveMyDocuments,
+    retrieveAllDocuments,
+    logOut
+  })(Dashboard);

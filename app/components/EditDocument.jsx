@@ -1,41 +1,53 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import toastr from 'toastr';
 import { browserHistory } from 'react-router';
-import { createDocument } from '../actions/documentActions';
+import { saveEditedDoc } from '../actions/documentActions';
+import client from '../utils/client';
 
-class CreateDocument extends Component {
+class EditDocument extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
-      access: 'private',
-      content: '',
-      errors: {}
+      document: props.document || {}
     };
-    this.saveDoc = this.saveDoc.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
     this.handleFieldChange = this.handleFieldChange.bind(this);
   }
 
-
-  handleFieldChange(event) {
-    event.preventDefault();
-    const { id, value } = event.target;
-    this.setState((state) => Object.assign({}, state, { [id]: value }));
+  componentDidMount() {
+    const id = this.props.id;
+    if (!this.props.document) {
+      client.get(`/api/documents/${id}`)
+        .then(res => {
+          this.setState({ document: res.data });
+        }, error => {
+          toastr.error(error.response.data.message);
+        });
+    }
   }
 
-  saveDoc(event) {
+  handleFieldChange(event) {
+    const { id, value } = event.target;
+    const field = id;
+    this.setState({ document: { ...this.state.document, [field]: value } });
+  }
+
+  submitHandler(event) {
     event.preventDefault();
-    this.props.createDocument(this.state);
+    const docId = this.state.document.id;
+    const fieldData = this.state.document;
+    this.props.saveEditedDoc(docId, fieldData);
   }
 
   render() {
-    const { title, access, content } = this.state;
+    const { document } = this.state;
 
     return (
       <div>
         <div className="create-title center-align">
-          Create a New Document
+          Edit this document
         </div>
 
         <div className="docify-back right-align">
@@ -44,18 +56,16 @@ class CreateDocument extends Component {
             onClick={() => browserHistory.push('/dashboard')}
           >Back</button>
         </div>
-
-        <div className="row container-fluid docify-create center-align" >
+        <div className="row container-fluid docify-create center-align">
           <form className="col s12">
             <div className="row">
               <div className="input-field col s6">
                 <input
                   placeholder="Document Title"
                   id="title"
+                  value={document.title}
                   onChange={this.handleFieldChange}
-                  value={title}
                   type="text"
-                  className="validate"
                 />
                 <label htmlFor="title">Title</label>
               </div>
@@ -65,7 +75,7 @@ class CreateDocument extends Component {
                   className="browser-default"
                   onChange={this.handleFieldChange}
                   id="access"
-                  value={access}
+                  value={document.access}
                 >
                   <option value="private">Private</option>
                   <option value="public">Public</option>
@@ -84,7 +94,7 @@ class CreateDocument extends Component {
                   <textarea
                     id="content"
                     onChange={this.handleFieldChange}
-                    value={content}
+                    value={document.content}
                     className="materialize-textarea"
                   />
                   <label htmlFor="content">Content</label>
@@ -96,22 +106,31 @@ class CreateDocument extends Component {
               className="btn waves-effect waves-light"
               type="submit"
               name="action"
-              onClick={this.saveDoc}
+              onClick={this.submitHandler}
             >Save
-              <i className="material-icons right">send</i>
+          <i className="material-icons right">send</i>
             </button>
           </form>
-
-
         </div>
       </div>
     );
   }
 }
 
-CreateDocument.propTypes = {
-  createDocument: PropTypes.func.isRequired
+EditDocument.propTypes = {
+  document: PropTypes.object.isRequired,
+  saveEditedDoc: PropTypes.func.isRequired
 };
 
 
-export default connect(null, { createDocument })(CreateDocument);
+const mapStateToProps = ({ documents }, { params }) => {
+  const { allDocuments = [] } = documents;
+  const { id } = params;
+  const document = allDocuments.find(doc => doc.id === parseInt(id, 10));
+  return {
+    document,
+    id
+  };
+};
+
+export default connect(mapStateToProps, { saveEditedDoc })(EditDocument);

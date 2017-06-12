@@ -14,7 +14,7 @@ const routes = () => {
   docRoutes.post('/documents', documentController.create);
 
   // retrieve all documents
-  docRoutes.get('/documents', documentController.getAll);
+  // docRoutes.get('/documents', documentController.getAll);
 
   // retrieve a document
   docRoutes.get('/documents/:id', documentController.getOne);
@@ -25,7 +25,10 @@ const routes = () => {
   // delete a document
   docRoutes.delete('/documents/:id', documentController.deleteOne);
 
-  docRoutes.get('/search/documents/', documentController.search);
+  docRoutes.get('/search/documents/?query=', documentController.search);
+
+  // paginated docs
+  docRoutes.get('/documents/?', documentController.getPaginatedDocs);
 
   return docRoutes;
 };

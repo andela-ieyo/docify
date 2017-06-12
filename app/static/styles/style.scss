@@ -1,10 +1,48 @@
 $width: 100%;
 
+$break-xsmall: 360px;
+$break-small: 550px;
+$break-large: 1080px;
+
+@mixin respond-to($media) {
+  @if $media == handhelds {
+    @media only screen and (max-width: $break-xsmall) { @content; }
+  }
+  @else if $media == medium-screens {
+    @media only screen and (min-width: $break-xsmall + 1) and (max-width: $break-small) { @content; }
+  }
+  @else if $media == wide-screens {
+    @media only screen and (min-width: $break-small + 1) and (max-width: $break-large) { @content; }
+  }
+}
+
 body {
   font-family: 'Roboto', sans-serif;
 }
 
 .docify-home{
+  display: flex;
+  width: 27%;
+  margin: auto;
+  margin-top: 13%;
+  justify-content: space-around;
+}
+
+.nav-wrapper{
+  background-color:rgb(0, 194, 255);
+}
+
+.docify-list-back{
+  margin-right: 2%;
+  margin-top: 2%;
+  color: #909090;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.docify-login{
   display: flex;
   width: 30%;
   margin: auto;
@@ -12,8 +50,33 @@ body {
   justify-content: space-around;
 }
 
+.docify-signup{
+  display: flex;
+  width: 30%;
+  margin: auto;
+  margin-top: 15%;
+  justify-content: space-around;
+  border-radius: 5px;
+
+  .signup-title{
+    margin-left: 3%
+  }
+}
+
+#signup{
+   background-color: #F5F5F5;
+   border-radius: 5px;
+   width: $width;
+}
+
 .login{
   width: $width;
+  background-color: #F5F5F5;
+  border-radius: 5px;
+
+  .login-title{
+    margin-left: 4%
+  }
 }
 
 .signup{
@@ -38,13 +101,12 @@ body {
 .docify-icons{
   width: 70%;
   margin-left: 2%;
-  margin-top: -2%;
+  margin-top: -1%;
+
   a {
     margin-top: 1%;
     margin-left: 5%;
-    i {
-      color:#90caf9;
-    }
+     color:#90caf9 !important;
   }
 }
 
@@ -105,3 +167,188 @@ body {
     margin-right: 2%;
   }
 }
+
+.view-section{
+  width: 60%;
+  margin: auto;
+  margin-top: 5%;
+  border: 2px solid #333333;
+
+  .doc-title{
+    font-weight: 500;
+    margin-top: 3%;
+    font-size: 2em;
+    margin-bottom: 6%
+  }
+
+  .doc-content{
+     margin: 0 3% 3% 3%;
+  }
+}
+
+.view-back{
+  margin-top: 2%;
+}
+
+.hide{
+  display: none;
+}
+
+.show{
+  display: inline-block;
+  margin-left: 10%;
+  font-weight: bold;
+}
+
+.name{
+  text-transform: capitalize;
+}
+
+.update-form{
+  margin-left: 25% !important;
+}
+
+.search-wrapper{
+  background-color: #00c2ff;
+
+  .search-icon {
+    background-color: #00c2ff !important;
+  }
+}
+
+.search-wrapper:hover {
+  background-color: #00AAFF;
+
+  .search-icon {
+    background-color: #00aaff!important;
+  }
+}
+
+.users-list{
+  margin-bottom: 2%;
+  margin-top: 5%;
+  margin-left: 11%;
+  margin-right: 4%;
+}
+
+.docify-list{
+  margin-right: 3%;
+}
+
+.list-section{
+  span{
+    color: #212121
+  }
+  .docify-role{
+    margin-left: 5%;
+  }
+}
+
+.docify-last-name{
+  display: flex;
+  font-weight: bold;
+
+  .docify-fn{
+    margin-right: 2% !important;
+    display: inline-block;
+  }
+}
+
+.docify-access-section{
+  text-transform: capitalize;
+  font-weight: bold;
+  position: absolute;
+  bottom: 60px;
+  right: 10px;
+}
+
+.docify-users-btn-section{
+  display: flex;
+  justify-content: space-between;
+  margin-left: 7%;
+
+  .docify-update{
+    margin-top: 3%;
+    font-size: 10px;
+  }
+
+  .docify-delete{
+    background-color: #e53935;
+    margin-top: 3%;
+    font-size: 10px;
+  }
+
+}
+
+.desc-section{
+  display: flex;
+  margin-top: 5%;
+  justify-content: space-between;
+
+  .desc-left{
+    margin-left: 4%;
+
+    div{
+      font-size: 16px;
+      color: mintcream;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    p{
+      margin-top: 0%;
+      color: #FFEB3B;
+    }
+  }
+
+  .desc-middle{
+    margin-right: 2%;
+    div{
+      font-size: 16px;
+      color: mintcream;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    p{
+      margin-top: 0%;
+      color: #FFEB3B;
+    }
+  }
+
+  .desc-right {
+    margin-right: 2%;
+    div{
+      font-size: 16px;
+      color: mintcream;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    p{
+      margin-top: 0%;
+      color: #FFEB3B;
+    }
+  }
+}
+
+.home-body{
+  background: url('../imgs/bg-img.jpg') center center;
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-position: 50% 50%;
+  box-shadow:inset 0 0 0 2000px rgba(0,150,150,0.6);
+}
+
+.app-name{
+  font-family: cursive;
+  font-size: 4rem;
+  color: mistyrose;
+  margin-top: 19%;
+  margin-bottom: -15%;
+}
+
+
+

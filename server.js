@@ -7,10 +7,10 @@ import auth from './server/config/middlewares/auth';
 import userRoutes from './server/routes/userRoutes';
 import docRoutes from './server/routes/documentRoutes';
 
-// import models from './server/models';
+import models from './server/models';
 
-// let Users = models.Users;
-// let Roles = models.Roles;
+// const Users = models.Users;
+const Roles = models.Roles;
 
 // Set up the express app
 const app = express();
@@ -18,7 +18,7 @@ const app = express();
 const port = process.env.PORT || 8000; // eslint-disable-line
 
 // Log requests to the console.
-// app.use(logger('combined'));
+app.use(logger('combined'));
 
 // Parse incoming requests data
 app.use(bodyParser.json());
@@ -39,7 +39,19 @@ app.get('*', (req, res) => {
 });
 
 const server = app.listen(port, () => {
-  db.sequelize.sync().then();
+  db.sequelize.sync().then(() => {
+    Roles.findAll().then(roles => {
+      if (!roles.length) {
+        Roles.bulkCreate(
+          [
+            { title: 'Writer' },
+            { title: 'Editor' },
+            { title: 'Admin' }
+          ]
+        );
+      }
+    });
+  });
   console.log(`Listening on port ${port}`);
 });
 

@@ -1,5 +1,7 @@
 import toastr from 'toastr';
+import { browserHistory } from 'react-router';
 import { SAVE_USER_SUCCESS, SAVE_USER_ERROR, SAVE_USER } from '../constants/user';
+
 
 export const saveUserSuccess = (user) => ({ type: SAVE_USER_SUCCESS, user });
 
@@ -19,6 +21,7 @@ export const userSignUpRequest = (fieldData) => {
         window.localStorage.setItem('jwtToken_docify', token);
         dispatch(saveUserSuccess({ newUser }));
         toastr.success(message);
+        browserHistory.push('/dashboard');
       }, error => {
         const errorMsgs = error.response.data.message;
 
