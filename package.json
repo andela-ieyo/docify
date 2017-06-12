@@ -10,7 +10,7 @@
     "db:migrate": "NODE_ENV=development sequelize db:migrate:undo:all && sequelize db:migrate",
     "build": "rm -rf public/ && babel server -d dist/server && npm run build:app",
     "postinstall": "npm run build",
-    "build:client": "webpack --config webpack.config.prod.js && cat app/index.html > dist/app/index.html",
+    "build:app": "webpack --config webpack.config.prod.js && cat app/index.html > dist/app/index.html",
     "start": "node dist/server.js"
   },
   "author": "Ifiok Eyo",
