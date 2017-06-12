@@ -44,7 +44,7 @@ Docify is built with JavaScript (ES6), React, NodeJs, and Express, and PostGres 
   **_Testing_**
 
       Testing is an important way of participating as well.
-      Use `npm test` or `yest --coverage` or `jest --verbose` to run local tests.
+      Use `NODE_ENV=test npm test` or `yest --coverage` or `jest --verbose` to run local tests.
 
 ## Status
 
