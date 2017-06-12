@@ -60,7 +60,7 @@ Currently good for contributing, observing progress, and testing. We'd encourage
 If you are interested in participating in the development of Docify, that's really great!
 Explore the GitHub issues platform. If you find something you want to work on, let us know right there in the comments. If you are interested in a specific aspect of the [project](https://github.com/andela-ieyo/docify/projects) but aren’t sure where to begin, feel free to ask. Start small and open up a dialogue with us. This will help to get your contributions accepted easily.
 
-If the contribution you wish to make isn't documented in an existing issue, please [create an issue](https://github.com/andela-ieyo/docify/issues/new), before you submit a [Pull Request](https://help.github.com/articles/about-pull-requests/). This will allow the Reaction Maintainers and Collaborators a chance to give additional feedback as well.
+If the contribution you wish to make isn't documented in an existing issue, please [create an issue](https://github.com/andela-ieyo/docify/issues/new), before you submit a [Pull Request](https://help.github.com/articles/about-pull-requests/). This will allow the Docify Maintainers and Collaborators a chance to give additional feedback as well.
 
 ### Deployment
 
