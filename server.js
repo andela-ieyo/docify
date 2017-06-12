@@ -9,7 +9,7 @@ import docRoutes from './server/routes/documentRoutes';
 
 import models from './server/models';
 
-// const Users = models.Users;
+const Users = models.Users;
 const Roles = models.Roles;
 
 // Set up the express app
