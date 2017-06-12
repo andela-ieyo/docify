@@ -4,7 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BabiliPlugin = require('babili-webpack-plugin');
 
 const BUILD_PATH = path.resolve(__dirname, 'public');
-const APP_DIR = `${path.resolve(__dirname)}/app`;
+const APP_DIR = `${path.resolve(__dirname)}/dist/app`;
 
 module.exports = {
   devtool: 'cheap-eval-source-map',
@@ -51,7 +51,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loaders: ['style-loader', 'css-loader', 'sass-loader']
+        loaders: ['css-loader', 'sass-loader']
       },
       {
         test: /\.jpg$/,
