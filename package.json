@@ -8,9 +8,10 @@
     "test": "NODE_ENV=test nyc --reporter=html --reporter=text mocha ./tests/backend/*.js --require babel-register",
     "start:dev": "webpack -w & nodemon server.js --exec babel-node",
     "db:migrate": "NODE_ENV=development sequelize db:migrate:undo:all && sequelize db:migrate",
-    "build": "rm -rf dist/ && babel server -d dist/server && npm run build:app",
+    "build": "rm -rf public/ && babel server -d dist/server && npm run build:app",
+    "postinstall": "npm run build",
     "build:client": "webpack --config webpack.config.prod.js && cat app/index.html > dist/app/index.html",
-    "start": "node server.js"
+    "start": "node dist/server.js"
   },
   "author": "Ifiok Eyo",
   "license": "MIT",
