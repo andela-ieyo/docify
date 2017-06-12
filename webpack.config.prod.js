@@ -1,7 +1,7 @@
-import webpack from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import BabiliPlugin from 'babili-webpack-plugin';
-import path from 'path';
+const webpack = require('webpack');
+const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const BabiliPlugin = require('babili-webpack-plugin');
 
 const BUILD_PATH = path.resolve(__dirname, 'public');
 const APP_DIR = `${path.resolve(__dirname)}/app`;
