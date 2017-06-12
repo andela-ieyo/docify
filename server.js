@@ -2,11 +2,9 @@ import express from 'express';
 // import logger from 'morgan';
 import path from 'path';
 import bodyParser from 'body-parser';
-import db from './server/models/index';
 import auth from './server/config/middlewares/auth';
 import userRoutes from './server/routes/userRoutes';
 import docRoutes from './server/routes/documentRoutes';
-
 import models from './server/models';
 
 // const Users = models.Users;
@@ -39,7 +37,7 @@ app.get('*', (req, res) => {
 });
 
 const server = app.listen(port, () => {
-  db.sequelize.sync().then(() => {
+  models.sequelize.sync().then(() => {
     Roles.findAll().then(roles => {
       if (!roles.length) {
         Roles.bulkCreate(
