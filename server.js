@@ -1,5 +1,3 @@
-require('babel-register');
-
 import express from 'express';
 // import logger from 'morgan';
 import path from 'path';
