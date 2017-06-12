@@ -50,3 +50,18 @@ export const saveEditedDoc = (docId, fieldData) => (dispatch, getState, { client
       }
       );
 
+export const searchDocs = (searchData) => (dispatch, getState, { client }) =>
+  client.get(`/api/search/documents/?docTitle=${searchData}`)
+      .then(res => {
+        const searchResult = res.data;
+        if (res.data.message) {
+          toastr.info(res.data.message);
+        }
+        console.log(searchResult, 'oopp');
+        dispatch(saveDocumentSuccess(searchResult, 'searchDocuments'));
+      }, error => {
+        const errorMsgs = error.response.data.message;
+        toastr.error(errorMsgs);
+      }
+      );
+

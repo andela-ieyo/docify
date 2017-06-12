@@ -6,7 +6,7 @@ import swal from 'sweetalert';
 import PropTypes from 'prop-types';
 import {
   retrieveMyDocuments,
-  retrieveAllDocuments } from '../actions/documentActions';
+  retrieveAllDocuments, searchDocs } from '../actions/documentActions';
 import logOut from '../actions/logOutAction';
 import client from '../utils/client';
 
@@ -27,12 +27,13 @@ class Dashboard extends Component {
       view:'allDocuments',
       filters: [],
       query: '',
+      isSearching: false,
       hide: 'hide'
     };
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
     this.handleSearchInput = this.handleSearchInput.bind(this);
-    this.searchDoc = this.searchDoc.bind(this);
+    this.onSubmitSearch = this.onSubmitSearch.bind(this);
     this.deleteDoc = this.deleteDoc.bind(this);
     this.deleteMyAccount = this.deleteMyAccount.bind(this);
   }
@@ -73,11 +74,13 @@ class Dashboard extends Component {
   handleSearchInput(event) {
     const { value } = event.target;
     this.setState({ query: value });
-    console.log(value, this.state.query);
+    const query = this.state.query;
+    this.props.searchDocs(query);
+    this.setState({ isSearching: true });
+    console.log(value, query);
   }
 
   deleteMyAccount(userId) {
-    console.log(userId);
     swal({
       title: 'Are you sure?',
       text: 'You will not be able to recover your account',
@@ -115,18 +118,12 @@ class Dashboard extends Component {
       );
   }
 
-  searchDoc() {
-    // event.preventDefault();
+  onSubmitSearch() {
+    event.preventDefault();
     const query = this.state.query;
-    // client.get(`/api/search/documents/?query=${query}`)
-    //   .then(res => {
-    //     const result = res.data;
-    //     this.state.documents[this.state.view] = result;
-    //   }, error => {
-    //     const errorMsg = error.res.data.message;
-    //     toastr.error(errorMsg);
-    //   });
-
+    console.log(query, 'query');
+    this.props.searchDocs(query);
+    this.setState({ isSearching: true });
   }
 
   deleteDoc(docId) {
@@ -168,10 +165,13 @@ class Dashboard extends Component {
   }
 
   render() {
+    console.log(this.props.documents.searchDocuments, 'state');
     const role = this.props.user.roleId === 1 ? 'writer' : 'editor';
-    const { filters, query, hide } = this.state;
+    const { filters, query, hide, isSearching } = this.state;
     const { documents } = this.props;
-    const filteredDocs = (documents[this.state.view] || []).filter(
+    console.log(documents.searchDocuments, 'ren');
+    const selectDocView = isSearching ? documents.searchDocuments : documents[this.state.view]; // documents[this.state.view]
+    const filteredDocs = (selectDocView || []).filter(
       doc => filters.includes(doc.access) || filters.length === 0
     );
     return (
@@ -238,7 +238,7 @@ class Dashboard extends Component {
                 />
                 <a
                   role="button"
-                  onClick={this.searchDoc}
+                  onClick={this.onSubmitSearch}
                   className="btn-floating search-wrapper"
                 ><i className="material-icons col s4 search-icon">search</i></a>
               </div>
@@ -341,6 +341,7 @@ Dashboard.propTypes = {
   retrieveMyDocuments: PropTypes.func.isRequired,
   retrieveAllDocuments: PropTypes.func.isRequired,
   logOut: PropTypes.func.isRequired,
+  searchDocs: PropTypes.func.isRequired,
   documents: PropTypes.object
 };
 
@@ -354,5 +355,6 @@ export default connect(mapStateToProps,
   {
     retrieveMyDocuments,
     retrieveAllDocuments,
-    logOut
+    logOut,
+    searchDocs
   })(Dashboard);

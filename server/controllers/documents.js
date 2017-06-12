@@ -19,7 +19,7 @@ const checkIfWriter = (roleId) => {
 
 const documentController = {
   create(req, res) {
-    const userData = req.body;
+    const docData = req.body;
     const loggedInUser = req.user;
     const loggedInUserId = parseInt(loggedInUser.id, 10);
 
@@ -36,7 +36,7 @@ const documentController = {
       .then(user => {
         Documents.create(
           Object.assign({},
-          userData,
+          docData,
           { ownerId: loggedInUserId }
           ))
           .then(() => res.status(200).send({ message: 'Document created successfully.' }))
@@ -179,14 +179,15 @@ const documentController = {
   },
 
   search(req, res) {
-    const { query } = req.query;
+    const { docTitle } = req.query;
+    console.log('a');
     const isAdmin = req.user.roleId === 3;
     const loggedInUser = req.user;
 
     Documents.findAll({
       where: {
         title: {
-          $like: query
+          $iLike: `%${docTitle}%`
         }
       }
     })
