@@ -6,7 +6,7 @@ const BabiliPlugin = require('babili-webpack-plugin');
 const BUILD_PATH = path.resolve(__dirname, 'public');
 const APP_DIR = `${path.resolve(__dirname)}/app`;
 
-export default {
+module.exports = {
   devtool: 'cheap-eval-source-map',
   entry: `${APP_DIR}/index.js`,
   output: {
