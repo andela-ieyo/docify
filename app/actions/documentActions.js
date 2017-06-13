@@ -24,7 +24,7 @@ export const retrieveAllDocuments = () =>
       .then(res => {
         console.log(res, 'iiii');
         if (res.data.count === 0) {
-          toastr.info(res.data.message);
+          toastr.info('You have 0 documents.');
         }
         const allDocuments = res.data.rows;
         dispatch(saveDocumentSuccess(allDocuments, 'allDocuments'));

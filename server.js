@@ -1,16 +1,14 @@
 import express from 'express';
 // import logger from 'morgan';
 import path from 'path';
-import bcrypt from 'bcrypt';
 import bodyParser from 'body-parser';
 import auth from './server/config/middlewares/auth';
 import userRoutes from './server/routes/userRoutes';
 import docRoutes from './server/routes/documentRoutes';
 import models from './server/models';
 
-const Users = models.Users;
+// const Users = models.Users;
 const Roles = models.Roles;
-const salt = bcrypt.genSaltSync();
 
 // Set up the express app
 const app = express();
@@ -48,21 +46,6 @@ const server = app.listen(port, () => {
             { title: 'Editor' },
             { title: 'Admin' }
           ]
-        );
-      }
-    });
-
-    Users.findAll().then(users => {
-      if (!users.length) {
-        Users.bulkCreate(
-          {
-            firstName: 'Ifiok',
-            lastName: 'Eyo',
-            username: 'Admin',
-            email: 'ifiokabasi.eyo@andela.com',
-            password: bcrypt.hashSync('sagehasson', salt),
-            roleId: 3
-          }
         );
       }
     });
