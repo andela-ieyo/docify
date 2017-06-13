@@ -7,8 +7,8 @@ const config = require(`${__dirname}/../config/config.js`)[env];
 const db = {};
 
 let sequelize;
-if (config.databaseURL) {
-  sequelize = new Sequelize(config.databaseURL, config);  // eslint-disable-line
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable]);  // eslint-disable-line
 } else {
   sequelize = new Sequelize(
     config.database, config.username, config.password, config
