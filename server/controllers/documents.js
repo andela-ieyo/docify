@@ -237,7 +237,7 @@ const documentController = {
     const isWriter = checkIfWriter(loggedInUserRoleId);
     const editorId = 2;
     if (isWriter) {
-      return Documents.findAll({
+      return Documents.findAndCountAll({
         offset,
         limit,
         where: {
@@ -254,7 +254,7 @@ const documentController = {
         .send({ message: 'Server error', error }));
     }
     if (loggedInUserRoleId === editorId) {
-      return Documents.findAll({
+      return Documents.findAndCountAll({
         offset,
         limit,
         where: {
@@ -270,7 +270,7 @@ const documentController = {
         .catch(error => res.status(404)
           .send({ message: 'No such Documents', error }));
     }
-    return Documents.findAll(
+    return Documents.findAndCountAll(
       {
         offset,
         limit

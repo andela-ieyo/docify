@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const BabiliPlugin = require('babili-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const BUILD_PATH = path.resolve(__dirname, 'public');
 const APP_DIR = `${path.resolve(__dirname)}/app`;
@@ -16,28 +16,17 @@ module.exports = {
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new ExtractTextPlugin('style.css'),
-    new BabiliPlugin()
+    new UglifyJSPlugin()
   ],
   module: {
     loaders: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         include: [
-          path.join(__dirname, 'app'),
-          path.join(__dirname, 'server/shared')
+          path.join(__dirname, 'app')
         ],
         exclude: /node_modules/,
         loader: 'babel-loader'
-      },
-      {
-        test: /\.jsx$/,
-        include: [
-          path.join(__dirname, 'app'),
-          path.join(__dirname, 'server/shared')
-        ],
-        exclude: /node_modules/,
-        loader: 'babel-loader'
-
       },
       {
         test: /\.css$/,

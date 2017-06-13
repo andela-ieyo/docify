@@ -33,7 +33,6 @@ class Dashboard extends Component {
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
     this.handleSearchInput = this.handleSearchInput.bind(this);
-    this.onSubmitSearch = this.onSubmitSearch.bind(this);
     this.deleteDoc = this.deleteDoc.bind(this);
     this.deleteMyAccount = this.deleteMyAccount.bind(this);
   }
@@ -73,11 +72,9 @@ class Dashboard extends Component {
 
   handleSearchInput(event) {
     const { value } = event.target;
-    this.setState({ query: value });
-    const query = this.state.query;
-    this.props.searchDocs(query);
-    this.setState({ isSearching: true });
-    console.log(value, query);
+    this.props.searchDocs(value);
+    this.setState({ isSearching: value.length > 0, query: value });
+    console.log(value);
   }
 
   deleteMyAccount(userId) {
@@ -116,14 +113,6 @@ class Dashboard extends Component {
       swal('Cancelled', 'Your account is safe :)', 'error');
     }
       );
-  }
-
-  onSubmitSearch() {
-    event.preventDefault();
-    const query = this.state.query;
-    console.log(query, 'query');
-    this.props.searchDocs(query);
-    this.setState({ isSearching: true });
   }
 
   deleteDoc(docId) {
@@ -165,12 +154,10 @@ class Dashboard extends Component {
   }
 
   render() {
-    console.log(this.props.documents.searchDocuments, 'state');
     const role = this.props.user.roleId === 1 ? 'writer' : 'editor';
     const { filters, query, hide, isSearching } = this.state;
     const { documents } = this.props;
-    console.log(documents.searchDocuments, 'ren');
-    const selectDocView = isSearching ? documents.searchDocuments : documents[this.state.view]; // documents[this.state.view]
+    const selectDocView = isSearching ? documents.searchDocuments : documents[this.state.view];
     const filteredDocs = (selectDocView || []).filter(
       doc => filters.includes(doc.access) || filters.length === 0
     );
@@ -236,11 +223,7 @@ class Dashboard extends Component {
                   type="text"
                   className="validate col s8"
                 />
-                <a
-                  role="button"
-                  onClick={this.onSubmitSearch}
-                  className="btn-floating search-wrapper"
-                ><i className="material-icons col s4 search-icon">search</i></a>
+                <i className="material-icons col s4 search-icon">search</i>
               </div>
             </div>
           </form>

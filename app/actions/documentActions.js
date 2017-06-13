@@ -9,6 +9,9 @@ export const saveDocumentSuccess = (documents, category) =>
 export const retrieveMyDocuments = (userId) =>
 (dispatch, getState, { client }) => client.get(`/api/users/${userId}/documents`)
       .then(res => {
+        if (res.data.message) {
+          toastr.info(res.data.message);
+        }
         const documents = res.data;
         dispatch(saveDocumentSuccess(documents, 'myDocuments'));
       }, error => {
@@ -19,7 +22,11 @@ export const retrieveMyDocuments = (userId) =>
 export const retrieveAllDocuments = () =>
 (dispatch, getState, { client }) => client.get('/api/documents')
       .then(res => {
-        const allDocuments = res.data;
+        console.log(res, 'iiii');
+        if (res.data.count === 0) {
+          toastr.info(res.data.message);
+        }
+        const allDocuments = res.data.rows;
         dispatch(saveDocumentSuccess(allDocuments, 'allDocuments'));
       }, error => {
         const errorMsgs = error.response.data.message;
@@ -53,11 +60,12 @@ export const saveEditedDoc = (docId, fieldData) => (dispatch, getState, { client
 export const searchDocs = (searchData) => (dispatch, getState, { client }) =>
   client.get(`/api/search/documents/?docTitle=${searchData}`)
       .then(res => {
+        console.log(res, 'oopp');
         const searchResult = res.data;
         if (res.data.message) {
           toastr.info(res.data.message);
         }
-        console.log(searchResult, 'oopp');
+
         dispatch(saveDocumentSuccess(searchResult, 'searchDocuments'));
       }, error => {
         const errorMsgs = error.response.data.message;
