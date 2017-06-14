@@ -22,7 +22,6 @@ export const retrieveMyDocuments = (userId) =>
 export const retrieveAllDocuments = () =>
 (dispatch, getState, { client }) => client.get('/api/documents')
       .then(res => {
-        console.log(res, 'iiii');
         if (res.data.count === 0) {
           toastr.info('You have 0 documents.');
         }
@@ -60,7 +59,6 @@ export const saveEditedDoc = (docId, fieldData) => (dispatch, getState, { client
 export const searchDocs = (searchData) => (dispatch, getState, { client }) =>
   client.get(`/api/search/documents/?docTitle=${searchData}`)
       .then(res => {
-        console.log(res, 'oopp');
         const searchResult = res.data;
         if (res.data.message) {
           toastr.info(res.data.message);

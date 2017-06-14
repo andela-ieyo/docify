@@ -128,6 +128,8 @@ const UserController = {
             const payload = {
               id: user.id,
               roleId: user.roleId,
+              firstName: user.firstName,
+              lastName: user.lastName,
               email: user.email
             };
             const token = jwt.sign(payload, secretKey, {

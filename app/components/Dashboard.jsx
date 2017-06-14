@@ -154,13 +154,18 @@ class Dashboard extends Component {
   }
 
   render() {
+    console.log(this.props.user, 'state');
     const role = this.props.user.roleId === 1 ? 'writer' : 'editor';
     const { filters, query, hide, isSearching } = this.state;
     const { documents } = this.props;
     const selectDocView = isSearching ? documents.searchDocuments : documents[this.state.view];
+
     const filteredDocs = (selectDocView || []).filter(
       doc => filters.includes(doc.access) || filters.length === 0
     );
+    // start = (currentPage - 1)*numberOfDocsPerPage
+    // end = numberOfDocsPerPage + start
+    // const currentPageDoc = selectDocView.slice(start, end);
     return (
       <div>
         <ul id="slide-out" className="side-nav">
@@ -272,7 +277,7 @@ class Dashboard extends Component {
                 value={this.state.view}
               >
                 <option value="myDocuments">Owned by Me</option>
-                <option value="allDocuments">Shared with Me</option>
+                <option value="allDocuments">All Documents</option>
               </select>
             </div>
           </div>

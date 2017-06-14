@@ -17,9 +17,8 @@ export const userSignUpRequest = (fieldData) => {
     return client.post('/api/users', fieldData)
       .then(res => {
         const { message, newUser, token } = res.data;
-
         window.localStorage.setItem('jwtToken_docify', token);
-        dispatch(saveUserSuccess({ newUser }));
+        dispatch(saveUserSuccess(newUser));
         toastr.success(message);
         browserHistory.push('/dashboard');
       }, error => {

@@ -6,7 +6,7 @@ export default function userReducer(state = { isLoading: false }, action) {
       return { ...state, isLoading: true, error: null };
 
     case SAVE_USER_SUCCESS:
-      return { ...state, isLoading: false, ...action.user };
+      return { isLoading: false, ...action.user };
 
     case SAVE_USER_ERROR:
       return { ...state, isLoading: false, error: action.error };
