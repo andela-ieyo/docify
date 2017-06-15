@@ -101,8 +101,6 @@ class CreateDocument extends Component {
               <i className="material-icons right">send</i>
             </button>
           </form>
-
-
         </div>
       </div>
     );

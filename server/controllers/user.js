@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import models from '../models';
-import config from '../config/config';
+import config from '../config/middlewares/config';
 import validateInput from '../shared/validations/signup';
 import validateLogin from '../shared/validations/login';
 
@@ -60,6 +60,9 @@ const UserController = {
     }
 
     function createUser(role) {
+      if (!role) {
+        throw new Error('bad app setup');
+      }
       return Users.create(Object.assign({}, userData, {
         roleId: role.id
       }));
@@ -125,6 +128,8 @@ const UserController = {
             const payload = {
               id: user.id,
               roleId: user.roleId,
+              firstName: user.firstName,
+              lastName: user.lastName,
               email: user.email
             };
             const token = jwt.sign(payload, secretKey, {
@@ -211,7 +216,7 @@ const UserController = {
   },
 
   /**
-   * 
+   *
    *
    * @param {any} req
    * @param {any} res

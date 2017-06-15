@@ -11,9 +11,7 @@ export const getUser = (userId) => {
   return (dispatch, getState, { client }) => {
     return client.get(`/api/users/${userId}`)
       .then(res => {
-        console.log(res);
         const { user } = res.data;
-
         dispatch(saveUserSuccess({ user }));
       }, error => {
         const errorMsgs = error.response.data.message;

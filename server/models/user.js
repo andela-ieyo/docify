@@ -47,8 +47,7 @@ module.exports = (sequelize, DataTypes) => {
     classMethods: {
       associate: (models) => {
         Users.hasMany(models.Documents, {
-          foreignKey: 'id',
-          as: 'ownerId',
+          foreignKey: 'ownerId',
           onDelete: 'CASCADE'
         });
         Users.belongsTo(models.Roles, {
@@ -56,7 +55,6 @@ module.exports = (sequelize, DataTypes) => {
         });
       },
       isPassword: (encodedPassword, password) => {
-        console.log({ encodedPassword, password });
         return bcrypt.compareSync(password, encodedPassword);
       }
     }

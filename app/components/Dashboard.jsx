@@ -6,7 +6,7 @@ import swal from 'sweetalert';
 import PropTypes from 'prop-types';
 import {
   retrieveMyDocuments,
-  retrieveAllDocuments } from '../actions/documentActions';
+  retrieveAllDocuments, searchDocs } from '../actions/documentActions';
 import logOut from '../actions/logOutAction';
 import client from '../utils/client';
 
@@ -27,12 +27,12 @@ class Dashboard extends Component {
       view:'allDocuments',
       filters: [],
       query: '',
+      isSearching: false,
       hide: 'hide'
     };
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
     this.handleSearchInput = this.handleSearchInput.bind(this);
-    this.searchDoc = this.searchDoc.bind(this);
     this.deleteDoc = this.deleteDoc.bind(this);
     this.deleteMyAccount = this.deleteMyAccount.bind(this);
   }
@@ -72,12 +72,12 @@ class Dashboard extends Component {
 
   handleSearchInput(event) {
     const { value } = event.target;
-    this.setState({ query: value });
-    console.log(value, this.state.query);
+    this.props.searchDocs(value);
+    this.setState({ isSearching: value.length > 0, query: value });
+    console.log(value);
   }
 
   deleteMyAccount(userId) {
-    console.log(userId);
     swal({
       title: 'Are you sure?',
       text: 'You will not be able to recover your account',
@@ -113,20 +113,6 @@ class Dashboard extends Component {
       swal('Cancelled', 'Your account is safe :)', 'error');
     }
       );
-  }
-
-  searchDoc() {
-    // event.preventDefault();
-    const query = this.state.query;
-    // client.get(`/api/search/documents/?query=${query}`)
-    //   .then(res => {
-    //     const result = res.data;
-    //     this.state.documents[this.state.view] = result;
-    //   }, error => {
-    //     const errorMsg = error.res.data.message;
-    //     toastr.error(errorMsg);
-    //   });
-
   }
 
   deleteDoc(docId) {
@@ -168,12 +154,18 @@ class Dashboard extends Component {
   }
 
   render() {
+    console.log(this.props.user, 'state');
     const role = this.props.user.roleId === 1 ? 'writer' : 'editor';
-    const { filters, query, hide } = this.state;
+    const { filters, query, hide, isSearching } = this.state;
     const { documents } = this.props;
-    const filteredDocs = (documents[this.state.view] || []).filter(
+    const selectDocView = isSearching ? documents.searchDocuments : documents[this.state.view];
+
+    const filteredDocs = (selectDocView || []).filter(
       doc => filters.includes(doc.access) || filters.length === 0
     );
+    // start = (currentPage - 1)*numberOfDocsPerPage
+    // end = numberOfDocsPerPage + start
+    // const currentPageDoc = selectDocView.slice(start, end);
     return (
       <div>
         <ul id="slide-out" className="side-nav">
@@ -236,11 +228,7 @@ class Dashboard extends Component {
                   type="text"
                   className="validate col s8"
                 />
-                <a
-                  role="button"
-                  onClick={this.searchDoc}
-                  className="btn-floating search-wrapper"
-                ><i className="material-icons col s4 search-icon">search</i></a>
+                <i className="material-icons col s4 search-icon">search</i>
               </div>
             </div>
           </form>
@@ -289,7 +277,7 @@ class Dashboard extends Component {
                 value={this.state.view}
               >
                 <option value="myDocuments">Owned by Me</option>
-                <option value="allDocuments">Shared with Me</option>
+                <option value="allDocuments">All Documents</option>
               </select>
             </div>
           </div>
@@ -341,6 +329,7 @@ Dashboard.propTypes = {
   retrieveMyDocuments: PropTypes.func.isRequired,
   retrieveAllDocuments: PropTypes.func.isRequired,
   logOut: PropTypes.func.isRequired,
+  searchDocs: PropTypes.func.isRequired,
   documents: PropTypes.object
 };
 
@@ -354,5 +343,6 @@ export default connect(mapStateToProps,
   {
     retrieveMyDocuments,
     retrieveAllDocuments,
-    logOut
+    logOut,
+    searchDocs
   })(Dashboard);
