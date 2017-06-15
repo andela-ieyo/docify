@@ -1,6 +1,5 @@
 /* global expect */
 
-import jest from 'jest';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import * as actions from '../../../app/actions/documentActions';
@@ -42,7 +41,6 @@ describe('searchDocument action', () => {
     const store = mockStore({});
     return store.dispatch(actions.searchDocs('The')).then(() => {
       // return of async actions
-      console.log(store.getActions());
       expect(store.getActions()).toEqual(expectedActions);
     });
   });

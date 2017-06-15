@@ -3,6 +3,13 @@ import models from '../models';
 const Documents = models.Documents;
 const Users = models.Users;
 
+/**
+ *
+ * @desc  checks if the request user is the owner of the requested document
+ * @param {number} docId document id
+ * @param {number} queryId id passed as params
+ * @returns
+ */
 const checkDocOwner = (docId, queryId) => {
   if (parseInt(docId, 10) === parseInt(queryId, 10)) {
     return true;
@@ -10,6 +17,12 @@ const checkDocOwner = (docId, queryId) => {
   return false;
 };
 
+/**
+ *
+ *
+ * @param {any} roleId
+ * @returns
+ */
 const checkIfWriter = (roleId) => {
   if (roleId === 1) {
     return true;
@@ -18,6 +31,13 @@ const checkIfWriter = (roleId) => {
 };
 
 const documentController = {
+  /**
+   * @desc signup route
+   *
+   * @param {any} req
+   * @param {any} res
+   * @returns {object} returns token, success message, and userInfo
+   */
   create(req, res) {
     const docData = req.body;
     const loggedInUser = req.user;
@@ -47,6 +67,13 @@ const documentController = {
         .send({ message: 'Server error', error }));
   },
 
+  /**
+   * @desc retrieves all documents based on access privileges
+   *
+   * @param {any} req
+   * @param {any} res
+   * @returns {array} all documents accessible by the user
+   */
   getAll(req, res) {
     const loggedInUser = req.user;
     const loggedInUserId = req.user.id;
@@ -88,6 +115,13 @@ const documentController = {
       .catch(error => res.status(500).send(error));
   },
 
+  /**
+   * @desc findOne route, to retrieve a single document using the id.
+   *
+   * @param {any} req
+   * @param {any} res
+   * @returns {object} returns the document belonging to the id passed as params.
+   */
   getOne(req, res) {
     const query = req.params.id;
     const loggedInUser = req.user;
@@ -108,6 +142,13 @@ const documentController = {
         res.status(500).send({ message: 'Server error', error }));
   },
 
+  /**
+   *
+   * @desc updates a document using the id as the get params.
+   * @param {any} req
+   * @param {any} res
+   * @returns {object} returns success message for a successful update or an error message.
+   */
   update(req, res) {
     const query = req.params.id;
     const loggedInUser = req.user;
@@ -142,6 +183,13 @@ const documentController = {
         .send({ message: 'Server error', error }));
   },
 
+  /**
+   *
+   * @desc deletes a document using the id as params
+   * @param {any} req
+   * @param {any} res
+   * @returns {object} return a success message or an error message
+   */
   deleteOne(req, res) {
     const loggedInUser = req.user;
     const isAdmin = loggedInUser.roleId === 3;

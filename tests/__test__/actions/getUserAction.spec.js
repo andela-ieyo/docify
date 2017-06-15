@@ -1,6 +1,5 @@
 /* global expect */
 
-import jest from 'jest';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import * as actions from '../../../app/actions/getUser';
