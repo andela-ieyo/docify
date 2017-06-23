@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt-nodejs';
 import models from '../models';
 import config from '../config/middlewares/config';
 import validateInput from '../shared/validations/signup';

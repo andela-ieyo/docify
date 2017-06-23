@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt-nodejs';
 import chai from 'chai';
 import async from 'async';
 import request from 'supertest';
