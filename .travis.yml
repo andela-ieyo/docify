@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - 6.10.2
+test: "npm run test:frontend"
+services:
+  - postgresql
+before_script:
+  - npm install jest -g
+  - psql -c 'create database dms-test;' -U postgres
