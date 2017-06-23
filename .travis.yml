@@ -5,4 +5,4 @@ services:
   - postgresql
 before_script:
   - npm install jest -g
-  - psql -c 'create database dms-test;' -U postgres
+  - psql -c 'create database "dms-test";' -U postgres
