@@ -28,7 +28,8 @@
   },
   "scripts": {
     "e2e": "node_modules/.bin/nightwatch --config nightwatch.conf.js",
-    "test": "nyc --reporter=html --reporter=text mocha ./server/tests/*.js --require babel-register",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "nyc --reporter=html --reporter=text mocha ./server/tests/*.js --require babel-register",
     "start:dev": "webpack -w & nodemon server.js --exec babel-node",
     "db:migrate": "NODE_ENV=development sequelize db:migrate:undo:all && sequelize db:migrate",
     "build": "rm -rf public/ && webpack --config webpack.config.prod.js",
