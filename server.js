@@ -67,7 +67,7 @@ app.get('*', (req, res) => {
 
 const server = app.listen(port, () => {
   const environment = process.env.NODE_ENV;
-  if (environment !== 'test' || environment !== 'travis') {
+  if (environment !== 'test' && environment !== 'travis') {
     models.sequelize.sync();
   }
   console.log(`Listening on port ${port}`);
