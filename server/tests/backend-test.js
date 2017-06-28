@@ -19,9 +19,8 @@ describe('Users', () => {
   let token;
 
   before(() => {
-    return models.sequelize.sync({
-      // force: true
-    }).then(() => {
+    return models.sequelize.sync()
+    .then(() => {
       return models.Roles.bulkCreate(fixtures.roles).then(res => {
         return models.Users.bulkCreate(hashedUsers)
           .then(res => {
@@ -41,8 +40,8 @@ describe('Users', () => {
 
   after((done) => { //Before each test we empty the database
     models.sequelize.sync({
-        force: true
-      }) // drops table and re-creates it
+      force: true
+    }) // drops table and re-creates it
       .then(() => {
         done();
       });
