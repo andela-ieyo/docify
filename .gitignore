@@ -2,8 +2,12 @@
 .sass-cache/
 node_modules/
 npm-debug.log
+selenium-debug.log
+screenshots/
+feCoverage/
+reports/
 .vscode/
 public/
 .env
 .nyc_output/
-coverage
+coverage/

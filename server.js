@@ -1,10 +1,11 @@
 import express from 'express';
-// import logger from 'morgan';
+import logger from 'morgan';
 import path from 'path';
 import bodyParser from 'body-parser';
-import auth from './server/config/middlewares/auth';
+import auth from './server/middleware/auth';
 import userRoutes from './server/routes/userRoutes';
 import docRoutes from './server/routes/documentRoutes';
+import searchRoutes from './server/routes/searchRoutes';
 import models from './server/models';
 
 // const Users = models.Users;
@@ -47,7 +48,7 @@ app.get('/swagger.json', (req, res) => {
 const port = process.env.PORT || 8000; // eslint-disable-line
 
 // Log requests to the console.
-// app.use(logger('combined'));
+app.use(logger('combined'));
 
 // Parse incoming requests data
 app.use(bodyParser.json());
@@ -58,9 +59,9 @@ app.use(express.static('public'));
 app.use(auth.initialize());
 
 // routes middleware
-app.use('/api', userRoutes());
-app.use('/api', docRoutes());
-
+app.use('/api/documents', docRoutes());
+app.use('/api/users', userRoutes());
+app.use('/api/search', searchRoutes());
 
 // Setup a default catch-all route that sends back a welcome message.
 app.get('*', (req, res) => {

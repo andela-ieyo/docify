@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { browserHistory } from 'react-router';
 import { userLoginRequest } from '../actions/loginActions';
 import validateLogin from '../../server/shared/validations/login';
 
 
-class Login extends Component {
+/**
+ *
+ *
+ * @desc represnts Login Page.
+ * @class Login
+ * @extends {Component}
+ */
+export class Login extends Component {
+  /**
+   * Creates an instance of Login.
+   * @param {object} props
+   *
+   * @memberof Login
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -19,12 +31,29 @@ class Login extends Component {
     this.onFieldChange = this.onFieldChange.bind(this);
   }
 
+  /**
+   *
+   * @desc handles onChange event on the form input.
+   * @param {object} event
+   *
+   * @memberof Login
+   * @returns {void}
+   */
   onFieldChange(event) {
     event.preventDefault();
     const { id, value } = event.target;
     this.setState((state) => Object.assign({}, state, { [id]: value }));
   }
 
+    /**
+   *
+   * @desc handles submit action on the form.
+   *  calls userLoginRequest action.
+   * @param {object} event
+   *
+   * @memberof Login
+   * @returns {void}
+   */
   onClickSave(event) {
     event.preventDefault();
     const { errors, isValid } = validateLogin(this.state);
@@ -82,7 +111,8 @@ class Login extends Component {
                 <div className="row">
                   <div className="input-field col s12 s6">
                     <button
-                      className="btn waves-effect waves-light"
+                      name="submit"
+                      className="btn waves-effect waves-light docify-test"
                       onClick={this.onClickSave}
                       disabled={this.state.isLoading}
                     >

@@ -20,6 +20,15 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+.docify-users-search{
+  margin-top: 4%;
+  justify-content: space-around;
+  width: 40%;
+  form {
+    margin-left: 10%;
+  }
+}
+
 .docify-home{
   display: flex;
   width: 27%;
@@ -34,7 +43,7 @@ body {
 
 .docify-list-back{
   margin-right: 2%;
-  margin-top: 2%;
+  margin-top: -6%;
   color: #909090;
 
   a {
@@ -62,6 +71,8 @@ body {
     margin-left: 3%
   }
 }
+
+
 
 #signup{
    background-color: #F5F5F5;
@@ -159,6 +170,10 @@ body {
 .docify-search{
   justify-content: space-around;
   width: 40%;
+
+  form{
+    margin-left: 10%;
+  }
 }
 
 .docify-checkbox {
@@ -196,8 +211,13 @@ body {
 
 .show{
   display: inline-block;
-  margin-left: 10%;
+  width: 100%;
+  margin-left: 0%;
   font-weight: bold;
+}
+
+.span-admin{
+  margin-left: 10%;
 }
 
 .name{
@@ -211,6 +231,11 @@ body {
 .search-icon {
   margin-top: 2%;
   margin-left: -5% !important;
+}
+
+#view-all{
+  width: 100%;
+  margin-left:0%;
 }
 
 .search-wrapper:hover {
@@ -257,6 +282,18 @@ body {
   position: absolute;
   bottom: 60px;
   right: 10px;
+}
+
+.docify-owner-section {
+  text-transform: capitalize;
+  font-weight: bold;
+  position: absolute;
+  bottom: 60px;
+  left: 10px;
+
+  span{
+    display: inline
+  }
 }
 
 .docify-users-btn-section{
@@ -347,6 +384,17 @@ body {
   margin-bottom: -15%;
 }
 
+.docify-view{
+  border: none;
+  background: #ffffff;
+  color: #90caf9;
+  text-transform: uppercase;
+  margin-top: 1%;
+}
 
+.pagination-wrapper{
+  position: relative;
+  margin-left: 45%;
+}
 
 

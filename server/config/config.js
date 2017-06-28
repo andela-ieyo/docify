@@ -17,9 +17,6 @@ module.exports = {
     port: 5432,
     dialect: 'postgres'
   },
-  travis: {
-    use_env_variable: 'DATABASE_URL'
-  },
   production: {
     use_env_variable: 'DATABASE_URL',
     dialect: 'postgres',
@@ -29,5 +26,8 @@ module.exports = {
         'require': true
       }
     }
+  },
+  travis: {
+    use_env_variable: 'DATABASE_URL'
   }
 };

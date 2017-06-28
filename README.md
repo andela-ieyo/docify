@@ -4,7 +4,7 @@
 
 ### What the project does
   **_Introduction/Background Information_**
-Docify is a document management application that helps users mangement and keep their documents. users can lso share their documents with other users. Docify protects your privacy by ensuring documents considered private remain that way. Docify is easy to use and efficient.
+Docify is a document management application that helps users mangement and keep their documents. Users can also share their documents with other users. Docify protects your privacy by ensuring documents considered private remain that way. Docify is easy to use and efficient.
 
 Docify is built with JavaScript (ES6), React, NodeJs, and Express, and PostGres DB.
 
@@ -18,15 +18,6 @@ Docify is built with JavaScript (ES6), React, NodeJs, and Express, and PostGres 
 
 ### Why the project is useful
    Docify provides a free alternative to Google Docs that is personalised for every user. Docify requires no subscription to get started.
-
-### Limitations of the project
-    This version of Docify have the following limitations:
-
-    * Upload Feature is not available
-    * Documents cannot be shared to users outside the application
-
-    These limitations will be resolved in the next version of this application.
-
 
 ### How users can get started with the project
 
@@ -61,6 +52,14 @@ If you are interested in participating in the development of Docify, that's real
 Explore the GitHub issues platform. If you find something you want to work on, let us know right there in the comments. If you are interested in a specific aspect of the [project](https://github.com/andela-ieyo/docify/projects) but aren’t sure where to begin, feel free to ask. Start small and open up a dialogue with us. This will help to get your contributions accepted easily.
 
 If the contribution you wish to make isn't documented in an existing issue, please [create an issue](https://github.com/andela-ieyo/docify/issues/new), before you submit a [Pull Request](https://help.github.com/articles/about-pull-requests/). This will allow the Docify Maintainers and Collaborators a chance to give additional feedback as well.
+
+### Limitations of the project
+    This version of Docify have the following limitations:
+
+    * Upload Feature is not available
+    * Documents cannot be shared to users outside the application
+
+    These limitations will be resolved in the next version of this application.
 
 ### Deployment
 

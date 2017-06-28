@@ -5,7 +5,20 @@ import toastr from 'toastr';
 import { browserHistory } from 'react-router';
 import client from '../utils/client';
 
-class UpdateProfile extends Component {
+/**
+ *
+ *
+ * @desc reprsents the Update user Profile Page.
+ * @class UpdateProfile
+ * @extends {Component}
+ */
+export class UpdateProfile extends Component {
+  /**
+   * Creates an instance of UpdateProfile.
+   * @param {object} props
+   *
+   * @memberof UpdateProfile
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -20,23 +33,40 @@ class UpdateProfile extends Component {
     if (!this.props.user) {
       client.get(`/api/users/${id}`)
         .then(res => {
-          this.setState({ document: res.data });
+          this.setState({ user: res.data });
         }, error => {
           toastr.error(error.response.data.message);
         });
     }
   }
 
+  /**
+   *
+   * @desc handles form input field change.
+   * @param {object} event
+   *
+   * @memberof UpdateProfile
+   * @returns {void}
+   */
   handleFieldChange(event) {
     const { id, value } = event.target;
     const field = id;
     this.setState({ user: { ...this.state.user, [field]: value } });
   }
 
+  /**
+   *
+   * @desc handles submit action of form.
+   *  Calls update user Profile endpoint.
+   * @param {object} event
+   *
+   * @memberof UpdateProfile
+   * @returns {void}
+   */
   submitHandler(event) {
     event.preventDefault();
     const userId = this.props.user.id;
-    const fieldData = this.state.user;
+    const fieldData = { ...this.state.user };
     client.put(`/api/users/${userId}`, fieldData)
       .then(res => {
         const successMsg = res.data.message;
@@ -72,7 +102,7 @@ class UpdateProfile extends Component {
                   type="text"
                   className="validate"
                   onChange={this.handleFieldChange}
-                  value={user.firstName}
+                  value={user.firstName || ''}
                 />
                 <label htmlFor="firstName">First Name</label>
               </div>
@@ -84,7 +114,7 @@ class UpdateProfile extends Component {
                   id="lastName"
                   type="text"
                   className="validate"
-                  value={user.lastName}
+                  value={user.lastName || ''}
                   onChange={this.handleFieldChange}
                 />
                 <label htmlFor="lastname">Last Name</label>
@@ -98,9 +128,9 @@ class UpdateProfile extends Component {
                   type="text"
                   className="validate"
                   onChange={this.handleFieldChange}
-                  value={user.username}
+                  value={user.username || ''}
                 />
-                <label htmlFor="disabled">Username</label>
+                <label htmlFor="username">Username</label>
               </div>
             </div>
 
@@ -112,7 +142,7 @@ class UpdateProfile extends Component {
                   id="password"
                   type="password"
                   className="validate"
-                  value={user.password}
+                  value={user.password || ''}
                   onChange={this.handleFieldChange}
                 />
                 <label htmlFor="password">Password</label>
@@ -125,7 +155,7 @@ class UpdateProfile extends Component {
                   id="email"
                   type="email"
                   className="validate"
-                  value={user.email}
+                  value={user.email || ''}
                   onChange={this.handleFieldChange}
                 />
                 <label htmlFor="email">Email</label>
@@ -134,7 +164,7 @@ class UpdateProfile extends Component {
             <div className="row">
               <div className="input-field col s12 s6">
                 <button
-                  className="btn waves-effect waves-light"
+                  className="btn waves-effect waves-light btn-update"
                   type="submit"
                   name="action"
                   onClick={this.submitHandler}
@@ -151,11 +181,12 @@ class UpdateProfile extends Component {
 }
 
 UpdateProfile.propTypes = {
-  user: PropTypes.object.isRequired
+  user: PropTypes.object,
+  id: PropTypes.string.isRequired
 };
 
 
-const mapStateToProps = ({ user }, { params }) => {
+export const mapStateToProps = ({ user }, { params }) => {
   const { id } = params;
   return {
     user,
