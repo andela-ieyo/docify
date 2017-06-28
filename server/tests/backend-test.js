@@ -23,26 +23,26 @@ describe('Users', () => {
       // force: true
     }).then(() => {
       return models.Roles.bulkCreate(fixtures.roles).then(res => {
-        return models.Users.bulkCreate(hashedUsers);
-      });
-    })
-      .then(res => {
-        return request(app)
-          .post('/api/users/login')
-          .send({
-            email: 'precious.ijege@gmail.com',
-            password: 'testing'
+        return models.Users.bulkCreate(hashedUsers)
+          .then(res => {
+            return request(app)
+              .post('/api/users/login')
+              .send({
+                email: 'precious.ijege@gmail.com',
+                password: 'testing'
+              });
+          })
+          .then(res => {
+            token = res.body.token;
           });
-      })
-      .then(res => {
-        token = res.body.token;
       });
+    }).catch(console.log);
   });
 
   after((done) => { //Before each test we empty the database
     models.sequelize.sync({
-      force: true
-    }) // drops table and re-creates it
+        force: true
+      }) // drops table and re-creates it
       .then(() => {
         done();
       });

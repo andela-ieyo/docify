@@ -8,9 +8,6 @@ import docRoutes from './server/routes/documentRoutes';
 import searchRoutes from './server/routes/searchRoutes';
 import models from './server/models';
 
-// const Users = models.Users;
-const Roles = models.Roles;
-
 // Set up the express app
 const app = express();
 
@@ -70,17 +67,6 @@ app.get('*', (req, res) => {
 
 const server = app.listen(port, () => {
   models.sequelize.sync().then(() => {
-    Roles.findAll().then(roles => {
-      if (!roles.length) {
-        Roles.bulkCreate(
-          [
-            { title: 'Writer' },
-            { title: 'Editor' },
-            { title: 'Admin' }
-          ]
-        );
-      }
-    });
   });
   console.log(`Listening on port ${port}`);
 });
