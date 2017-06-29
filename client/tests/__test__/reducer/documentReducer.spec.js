@@ -1,7 +1,7 @@
 /* global expect */
 
-import reducer from '../../../../app/reducers/documentReducer';
-import * as types from '../../../../app/constants/documents';
+import reducer from '../../../../client/reducers/documentReducer';
+import * as types from '../../../../client/constants/documents';
 
 
 const data = [

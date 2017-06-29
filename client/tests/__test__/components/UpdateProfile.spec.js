@@ -6,6 +6,7 @@ import {
 } from 'enzyme';
 import React from 'react';
 import toastr from 'toastr';
+import $ from 'jquery';
 import {
   UpdateProfile, mapStateToProps
 } from '../../../components/UpdateProfile.jsx';
@@ -24,6 +25,9 @@ jest.mock('react-router', () => ({
     }
   }
 }));
+
+global.$ = $;
+global.jQuery = $;
 
 let wrapper;
 let toastrSpySuccess;

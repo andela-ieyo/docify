@@ -1,7 +1,7 @@
 /* global expect */
 
-import reducer from '../../../../app/reducers/userReducer';
-import * as types from '../../../../app/constants/user';
+import reducer from '../../../../client/reducers/userReducer';
+import * as types from '../../../../client/constants/user';
 
 
 const user1 = {

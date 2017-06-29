@@ -3,8 +3,8 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import toastr from 'toastr';
-import * as actions from '../../../../app/actions/documentActions';
-import * as types from '../../../../app/constants/documents';
+import * as actions from '../../../actions/documentActions';
+import * as types from '../../../constants/documents';
 
 const data = [
   {
