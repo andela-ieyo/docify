@@ -19,11 +19,29 @@ const routes = () => {
  *     description: Creates a new document
  *     produces:
  *       - application/json
+ *     consumes:
+ *       - x-www-form-urlencoded
  *     parameters:
- *       - name: document
- *         description: Document object
- *         in: body
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
  *         required: true
+ *         type: string
+ *       - name: title
+ *         description: Document title
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: access
+ *         description: Document access type
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: content
+ *         description: Document content
+ *         in: formData
+ *         required: true
+ *         type: string
  *         schema:
  *           $ref: '#/definitions/Documents'
  *     responses:
@@ -45,6 +63,11 @@ const routes = () => {
  *     produces:
  *       - application/json
  *     parameters:
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
+ *         required: true
+ *         type: string
  *       - name: id
  *         description: Document's id
  *         in: path
@@ -68,12 +91,34 @@ const routes = () => {
  *     description: Updates a single document
  *     produces:
  *       - application/json
+ *     consumes:
+ *       - x-www-form-urlencoded
  *     parameters:
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
+ *         required: true
+ *         type: string
  *       - name: id
  *         description: Document's id
  *         in: path
  *         required: true
  *         type: integer
+ *       - name: title
+ *         description: Document title
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: access
+ *         description: Document access type
+ *         in: formDataD
+ *         required: true
+ *         type: string
+ *       - name: content
+ *         description: Document content
+ *         in: formData
+ *         required: true
+ *         type: string
  *     responses:
  *       200:
  *         description: Successfully updated
@@ -92,6 +137,11 @@ const routes = () => {
  *     produces:
  *       - application/json
  *     parameters:
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
+ *         required: true
+ *         type: string
  *       - name: id
  *         description: Document's id
  *         in: path
@@ -127,6 +177,22 @@ const routes = () => {
  *     description: Returns all documents
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
+ *         required: true
+ *         type: string
+ *       - name: offset
+ *         description: number of data rows to skip
+ *         in: path
+ *         required: false
+ *         type: integer
+ *       - name: limit
+ *         description: number of rows to return
+ *         in: path
+ *         required: false
+ *         type: integer
  *     responses:
  *       200:
  *         description: An array of documents

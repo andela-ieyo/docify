@@ -16,11 +16,39 @@ const routes = () => {
  *     description: Creates a new user
  *     produces:
  *       - application/json
+ *     consumes:
+ *       - x-www-form-urlencoded
  *     parameters:
- *       - name: user
- *         description: User object
- *         in: body
+ *       - name: firstName
+ *         description: User's first name
+ *         in: formData
  *         required: true
+ *         type: string
+ *       - name: lastName
+ *         description: User's last name
+ *         in: form
+ *         required: true
+ *         type: string
+ *       - name: email
+ *         description: User's email
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: username
+ *         description: User's username
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: password
+ *         description: User's password
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: pwConfirmation
+ *         description: password confirmation
+ *         in: formData
+ *         required: true
+ *         type: string
  *         schema:
  *           $ref: '#/definitions/Users'
  *     responses:
@@ -38,11 +66,19 @@ const routes = () => {
  *     description: log in a user
  *     produces:
  *       - application/json
+ *     consumes:
+ *       - x-www-form-urlencoded
  *     parameters:
- *       - name: user
- *         description: User object
- *         in: body
+ *       - name: email
+ *         description: User's email
+ *         in: formData
  *         required: true
+ *         type: string
+ *       - name: password
+ *         description: User's password
+ *         in: formData
+ *         required: true
+ *         type: string
  *         schema:
  *           $ref: '#/definitions/Users'
  *     responses:
@@ -61,10 +97,11 @@ const routes = () => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: user
- *         description: User object
- *         in: body
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
  *         required: true
+ *         type: string
  *         schema:
  *           $ref: '#/definitions/Users'
  *     responses:
@@ -90,6 +127,11 @@ const routes = () => {
  *     produces:
  *       - application/json
  *     parameters:
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
+ *         required: true
+ *         type: string
  *       - name: id
  *         description: User's id
  *         in: path
@@ -112,12 +154,43 @@ const routes = () => {
  *     description: Updates a single user
  *     produces:
  *       - application/json
+ *     consumes:
+ *       - x-www-form-urlencoded
  *     parameters:
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
+ *         required: true
+ *         type: string
  *       - name: id
  *         description: User's id
  *         in: path
  *         required: true
  *         type: integer
+ *       - name: firstName
+ *         description: User's first name
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: lastName
+ *         description: User's last name
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: email
+ *         description: User's email
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: username
+ *         description: User's username
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: password
+ *         description: User's password
+ *         in: formData
+ *         required: true
  *     responses:
  *       200:
  *         description: Successfully updated
@@ -137,6 +210,17 @@ const routes = () => {
    *     description: Returns all of the users Documents
    *     produces:
    *       - application/json
+   *     parameters:
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
+ *         required: true
+ *         type: string
+ *       - name: id
+ *         description: User's id
+ *         in: path
+ *         required: true
+ *         type: integer
    *     responses:
    *       200:
    *         description: An array of documents
@@ -157,10 +241,22 @@ const routes = () => {
  *     description: Updates a single user role
  *     produces:
  *       - application/json
+ *     consumes:
+ *       - x-www-form-urlencoded
  *     parameters:
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
+ *         required: true
+ *         type: string
  *       - name: id
  *         description: User's id
  *         in: path
+ *         required: true
+ *         type: integer
+ *       - name: roleId
+ *         description: User's new roleId
+ *         in: formData
  *         required: true
  *         type: integer
  *     responses:
@@ -182,6 +278,11 @@ const routes = () => {
  *     produces:
  *       - application/json
  *     parameters:
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
+ *         required: true
+ *         type: string
  *       - name: id
  *         description: User's id
  *         in: path
@@ -204,15 +305,20 @@ const routes = () => {
  *     produces:
  *       - application/json
  *     parameters:
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
+ *         required: true
+ *         type: string
  *       - name: offset
  *         description: number of data rows to skip
  *         in: path
- *         required: true
+ *         required: false
  *         type: integer
  *       - name: limit
  *         description: number of rows to return
  *         in: path
- *         required: true
+ *         required: false
  *         type: integer
  *     responses:
  *       200:
@@ -233,6 +339,8 @@ const routes = () => {
 *         type: string
 *       access:
 *         type: string
+*       ownerId:
+*         type: integer
 */
 
   /**
@@ -242,7 +350,7 @@ const routes = () => {
  *     properties:
  *       firstName:
  *         type: string
- *       LastName:
+ *       lastName:
  *         type: string
  *       username:
  *         type: string
@@ -250,8 +358,6 @@ const routes = () => {
  *         type: string
  *       password:
  *         type: string
- *       pwConfirmation:
- *          type: string
  */
 
   /**
