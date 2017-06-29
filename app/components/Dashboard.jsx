@@ -1,7 +1,8 @@
+/* global $ */
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-// import toastr from 'toastr';
 import swal from 'sweetalert';
 import PropTypes from 'prop-types';
 import {
@@ -9,9 +10,11 @@ import {
   retrieveAllDocuments, searchDocs } from '../actions/documentActions';
 import logOut from '../actions/logOutAction';
 import client from '../utils/client';
+import CheckBoxes from './CheckBoxes.jsx';
+import DashboardDocCards from './DashboardDocCards.jsx';
 
 
-const updateFilters = (value) => (state) => {
+export const updateFilters = (value) => (state) => {
   const itemExist = state.filters.includes(value);
   if (!itemExist) {
     return { filters: [...state.filters, value] };
@@ -19,36 +22,52 @@ const updateFilters = (value) => (state) => {
   return { filters: state.filters.filter(i => i !== value) };
 };
 
-class Dashboard extends Component {
+/**
+ * @desc represents the Dashboard component
+ *
+ * @class Dashboard
+ * @extends {Component}
+ */
+export class Dashboard extends Component {
+  /**
+   * Creates an instance of Dashboard.
+   * @param {any} props
+   *
+   * @memberof Dashboard
+   */
   constructor(props) {
     super(props);
     this.state = {
-      documents: props.documents || {},
       view:'allDocuments',
       filters: [],
       query: '',
       isSearching: false,
-      hide: 'hide'
+      selectedPage: 0,
+      hide: 'hide',
+      show: 'show'
     };
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
     this.handleSearchInput = this.handleSearchInput.bind(this);
     this.deleteDoc = this.deleteDoc.bind(this);
     this.deleteMyAccount = this.deleteMyAccount.bind(this);
+    this.setPage = this.setPage.bind(this);
+    this.deleteAndLogout = this.deleteAndLogout.bind(this);
+    this.showEmailConfirm = this.showEmailConfirm.bind(this);
   }
 
 
   componentWillMount() {
     const isAdmin = this.props.user.roleId === 3;
     if (isAdmin) {
-      this.setState({ hide: 'show' });
+      this.setState({ hide: 'show', show: 'hide' });
     }
   }
 
   componentDidMount() {
     const userId = this.props.user.id;
-    this.props.retrieveMyDocuments(userId);
-    this.props.retrieveAllDocuments();
+    this.props.retrieveMyDocuments(userId, this.state.selectedPage);
+    this.props.retrieveAllDocuments(this.state.selectedPage);
     $('.button-collapse').sideNav({ 'closeOnClick': true });
   }
 
@@ -59,26 +78,137 @@ class Dashboard extends Component {
       });
     }
   }
+  /**
+   *
+   * @desc sets a new page displaying user documents.
+   * @param {number} page
+   *
+   * @memberof Dashboard
+   * @returns {array} returns an array of document objects
+   */
+  setPage(page) {
+    const userId = this.props.user.id;
+    if (this.state.selectedPage !== page) {
+      this.setState({ selectedPage: page });
+      if (this.state.isSearching) {
+        return this.props.searchDocs(this.state.query, page);
+      }
+      this.props.retrieveMyDocuments(userId, page);
+      this.props.retrieveAllDocuments(page);
+    }
+  }
 
+  /**
+   *
+   * @desc handles onChange event in the form select field.
+   * @param {object} event
+   *
+   * @memberof Dashboard
+   * @returns {void}
+   */
   handleOptionChange(event) {
     const { value } = event.target;
     this.setState({ view: value });
   }
 
+  /**
+   *
+   * @desc handles onChange event on the form checkBox.
+   * @param {object} event
+   *
+   * @memberof Dashboard
+   */
   handleCheckBoxChange(event) {
     const { value } = event.target;
     this.setState(updateFilters(value));
   }
 
+  /**
+   * @desc handles onChange event in the form input field.
+   *
+   * @param {object} event
+   *
+   * @memberof Dashboard
+   */
   handleSearchInput(event) {
     const { value } = event.target;
-    this.props.searchDocs(value);
+    this.props.searchDocs(value, this.state.selectedPage);
     this.setState({ isSearching: value.length > 0, query: value });
-    console.log(value);
   }
 
-  deleteMyAccount(userId) {
-    swal({
+  /**
+   *
+   * @desc pops a modal that prompts the user to insert his email.
+   * @param {string} email
+   *
+   * @memberof Dashboard
+   */
+
+  showEmailConfirm(email) {
+    return swal({
+      title: 'Please, Confirm your account',
+      text: 'Enter your email address:',
+      type: 'input',
+      showCancelButton: true,
+      closeOnConfirm: false,
+      animation: 'slide-from-top',
+      inputPlaceholder: 'Enter email'
+    }, (inputValue) => {
+      if (inputValue === false) {
+        return;
+      }
+      if (inputValue === '') {
+        return swal.showInputError('You need to write something!');
+      }
+      if (inputValue !== email) {
+        return swal('Info', 'You entered the wrong email', 'error');
+      }
+      return this.deleteAndLogout(email);
+    });
+  }
+
+  /**
+   *
+   * @desc calls the delete user account endpoint.
+   * It requires the user's email as query.
+   * @param {string} email
+   *
+   * @memberof Dashboard
+   */
+  deleteAndLogout(email) {
+    return client.delete(`/api/users/?email=${email}`)
+      .then(res => {
+        const successMsg = res.data.message;
+        this.props.logOut();
+        swal({
+          title: 'Deleted!',
+          text: successMsg,
+          timer: 2000,
+          type: 'success',
+          showConfirmButton: false
+        });
+
+      }, error => {
+        const errorMsg = error.response.data.message;
+        swal({
+          title: 'Oops, something went wrong!',
+          text: errorMsg,
+          timer: 2000,
+          type: 'error',
+          showConfirmButton: false
+        });
+      });
+  }
+
+  /**
+   *
+   * @desc pops a modal that propmts the user for a delete action.
+   * Calls showEmailConfirm method on affirmation.
+   * @param {any} email
+   * @memberof Dashboard
+   */
+  deleteMyAccount(email) {
+    return swal({
       title: 'Are you sure?',
       text: 'You will not be able to recover your account',
       type: 'warning',
@@ -86,35 +216,22 @@ class Dashboard extends Component {
       confirmButtonColor: '#e53935',
       confirmButtonText: 'Yes, delete it!',
       closeOnConfirm: false
-    }, (isConfirm) => {
-      if (isConfirm) {
-        client.delete(`/api/users/${userId}`)
-          .then(res => {
-            const successMsg = res.data.message;
-            swal({
-              title: 'Deleted!',
-              text: successMsg,
-              timer: 2000,
-              type: 'success',
-              showConfirmButton: false
-            });
-            this.props.logOut();
-          }, error => {
-            const errorMsg = error.response.data.message;
-            swal({
-              title: 'Oops, something went wrong!',
-              text: errorMsg,
-              timer: 2000,
-              type: 'error',
-              showConfirmButton: false
-            });
-          });
+    }, (response) => {
+      if (response) {
+        return this.showEmailConfirm(email);
       }
-      swal('Cancelled', 'Your account is safe :)', 'error');
-    }
-      );
+      return swal('Cancelled', 'Your account is safe :)', 'error');
+    });
   }
 
+  /**
+   *
+   * @desc calls the delete endpoint to delete a specific document.
+   * It requires the docId of the document as params.
+   * @param {string} docId
+   *
+   * @memberof Dashboard
+   */
   deleteDoc(docId) {
     swal({
       title: 'Are you sure?',
@@ -154,18 +271,21 @@ class Dashboard extends Component {
   }
 
   render() {
-    console.log(this.props.user, 'state');
     const role = this.props.user.roleId === 1 ? 'writer' : 'editor';
-    const { filters, query, hide, isSearching } = this.state;
+    const { filters, query, hide, show, isSearching, selectedPage } = this.state;
     const { documents } = this.props;
-    const selectDocView = isSearching ? documents.searchDocuments : documents[this.state.view];
+    const { rows: selectDocView = [], count = 0 } = (isSearching
+      ? documents.searchDocuments : documents[this.state.view]) || {};
 
     const filteredDocs = (selectDocView || []).filter(
       doc => filters.includes(doc.access) || filters.length === 0
     );
-    // start = (currentPage - 1)*numberOfDocsPerPage
-    // end = numberOfDocsPerPage + start
-    // const currentPageDoc = selectDocView.slice(start, end);
+    const pages = Math.ceil(count / 2);
+    const navIndicators = Array(pages).fill().map((i, index) => {
+      const classes = `${index === selectedPage ? 'active' : ''} waves-effect`;
+      return <li key={`navost-${index}`} onClick={() => this.setPage(index)} className={classes}><a href="#!">{index + 1}</a></li>;
+    });
+
     return (
       <div>
         <ul id="slide-out" className="side-nav">
@@ -176,26 +296,32 @@ class Dashboard extends Component {
             </div>
           </li>
 
-          <li><a
+          <li className={show}><a
             role="button"
+            className="delete-profile"
             onClick={() => {
-              this.deleteMyAccount(this.props.user.id);
+              this.deleteMyAccount(this.props.user.email);
             }}
           >Delete your account</a></li>
 
           <li className={hide}>
-             Admin
+            <span className="span-admin">
+               Admin
+            </span>
           </li>
+
           <li><a
+            className="update-profile"
             role="button"
             onClick={() => {
               browserHistory.push(`/users/profile/edit/${this.props.user.id}`);
             }}
           >Update profile</a></li>
-          <li><div className="divider" /></li>
-          <li className={hide}>
+
+          <li className={hide} id="view-all">
             <a
               role="button"
+              className="view-all-docify"
               onClick={() => {
                 browserHistory.push('/users/all');
               }}
@@ -208,7 +334,7 @@ class Dashboard extends Component {
 
         <div className="right-align docify-add">
           <button
-            className="btn-floating btn-medium waves-effect waves-light red"
+            className="btn-floating btn-medium waves-effect waves-light red docify-create-doc"
             onClick={() =>
               browserHistory.push('/create-document')
             }
@@ -234,90 +360,35 @@ class Dashboard extends Component {
           </form>
         </div>
         {/* CheckBoxes */}
-        <div className="row docify-checkbox">
-          <form className="col s6">
-            <div className="row">
-              <p>
-                <input
-                  type="checkbox"
-                  id="private"
-                  className="filled-in col s2"
-                  value="private"
-                  onClick={this.handleCheckBoxChange}
-                />
-                <label htmlFor="private">Private</label>
-
-                <input
-                  type="checkbox"
-                  id="public"
-                  value="public"
-                  className="filled-in col s2"
-                  onClick={this.handleCheckBoxChange}
-                />
-                <label htmlFor="public">Public</label>
-
-                <input
-                  type="checkbox"
-                  id="role"
-                  value={role}
-                  className="filled-in col s2"
-                  onClick={this.handleCheckBoxChange}
-                />
-                <label htmlFor="role">Role</label>
-              </p>
-            </div>
-          </form>
-
-          <div className="col s4">
-            <div className="input-field">
-              <select
-                className="browser-default"
-                onChange={this.handleOptionChange}
-                id="docify-option"
-                value={this.state.view}
-              >
-                <option value="myDocuments">Owned by Me</option>
-                <option value="allDocuments">All Documents</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
+        <CheckBoxes
+          handleCheckBoxChange={this.handleCheckBoxChange}
+          handleOptionChange={this.handleOptionChange}
+          role={role}
+          view={this.state.view}
+        />
 
         <div className="row container-fluid doc-card" >
           {filteredDocs.map(doc =>
-            (<div className="col s6 m4" key={doc.id}>
-              <div className="card small docify-card">
-                <div className="card-content">
-                  <span className="card-title">{doc.title}</span>
-                  <p className="docify-p">{doc.content.slice(0, 200)}...</p>
-                </div>
-                <div className="card-action">
-                  <span>{doc.createdAt.slice(0, 10)}</span>
-                  <div className="docify-icons">
-                    <a
-                      role="button"
-                      onClick={() => browserHistory.push(`documents/view/${doc.id}`)}
-                      className="btn-small waves-effect waves-light"
-                    >View</a>
-                    <a
-                      role="button"
-                      onClick={() => browserHistory.push(`documents/edit/${doc.id}`)}
-                      className="btn-small waves-effect waves-light"
-                    >Edit</a>
-                    <a
-                      role="button"
-                      onClick={() => { this.deleteDoc(doc.id); }}
-                      className="btn-small waves-effect waves-light"
-                    >delete</a>
-                  </div>
-                </div>
-                <div className="docify-access-section center-align">
-                  <span>{doc.access}</span>
-                </div>
-              </div>
-            </div>)
+            <DashboardDocCards
+              key={doc.id}
+              doc={doc}
+              user={this.props.user}
+              deleteDoc={this.deleteDoc}
+
+            />
             )}
+
+          <div className="pagination-wrapper row">
+            {pages > 1 && <ul className="pagination">
+              <li className={`${selectedPage === 0 ? 'disabled' : 'waves-effect'}`}>
+                <a href="#!"><i className="material-icons">chevron_left</i></a>
+              </li>
+              {navIndicators}
+              <li className={`${selectedPage + 1 > pages ? 'disabled' : 'waves-effect'}`}>
+                <a href="#!"><i className="material-icons">chevron_right</i></a>
+              </li>
+            </ul>}
+          </div>
         </div>
       </div>
     );

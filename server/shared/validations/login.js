@@ -2,15 +2,15 @@ import Validator from 'validator';
 import isEmpty from 'lodash/isEmpty';
 
 
-const validateLogin = (data) => {
+const validateLogin = (loginInfo) => {
   const errors = {};
 
-  if (!Validator.isEmail(data.email)) {
+  if (!Validator.isEmail(loginInfo.email)) {
     errors.email = 'Email is invalid';
   }
 
-  if (Validator.isEmpty(data.password)) {
-    errors.password = 'Password must be 6-8 characters';
+  if (!Validator.isLength(loginInfo.password, 6, undefined)) {
+    errors.password = 'Password must be at least 6 characters';
   }
 
   return {

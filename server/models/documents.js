@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
     classMethods: {
       associate: (models) => {
         Documents.belongsTo(models.Users, {
-          foreignKey: 'id'
+          foreignKey: 'ownerId'
         });
       }
     }

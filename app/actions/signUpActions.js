@@ -12,13 +12,20 @@ export const saveUserError = (error) =>
 export const saveUser = () =>
    ({ type: SAVE_USER });
 
+/**
+ *
+ * @desc handles signup request. Stores token to local Storage.
+ *  Redirects user to dashboard on success.
+ * @param {object} input from form fields.
+ * @returns {object} returns success message, user, and token.
+ */
 export const userSignUpRequest = (fieldData) => {
   return (dispatch, getState, { client }) => {
     return client.post('/api/users', fieldData)
       .then(res => {
-        const { message, newUser, token } = res.data;
+        const { message, user, token } = res.data;
         window.localStorage.setItem('jwtToken_docify', token);
-        dispatch(saveUserSuccess(newUser));
+        dispatch(saveUserSuccess(user));
         toastr.success(message);
         browserHistory.push('/dashboard');
       }, error => {

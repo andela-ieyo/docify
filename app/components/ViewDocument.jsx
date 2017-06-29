@@ -6,7 +6,14 @@ import { browserHistory } from 'react-router';
 import client from '../utils/client';
 
 
-class ViewDocument extends Component {
+/**
+ *
+ *
+ * @desc reprsents the View Document Page.
+ * @class ViewDocument
+ * @extends {Component}
+ */
+export class ViewDocument extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -44,7 +51,7 @@ class ViewDocument extends Component {
           </div>
 
           <div className="doc-content center-align">
-            <p>{doc.content}</p>
+            <p dangerouslySetInnerHTML={{ __html: doc.content }} />
           </div>
         </div>
       </div>
@@ -53,13 +60,13 @@ class ViewDocument extends Component {
 }
 
 ViewDocument.propTypes = {
-  document: PropTypes.object.isRequired
+  document: PropTypes.object
 };
 
-const mapStateToProps = ({ documents }, { params }) => {
-  const { allDocuments = [] } = documents;
+export const mapStateToProps = ({ documents }, { params }) => {
+  const { allDocuments = {} } = documents;
   const { id } = params;
-  const document = allDocuments.find(doc => doc.id === parseInt(id, 10));
+  const document = (allDocuments.rows || []).find(doc => doc.id === parseInt(id, 10));
   return {
     document,
     id

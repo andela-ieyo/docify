@@ -1,7 +1,7 @@
 import express from 'express';
-import documentController from '../controllers/documents';
-import config from '../config/middlewares/config';
-import auth from '../config/middlewares/auth';
+import documentController from '../controllers/documentController';
+import config from '../config/jwtConfig/config';
+import auth from '../middleware/auth';
 
 
 const routes = () => {
@@ -15,7 +15,7 @@ const routes = () => {
  * /api/documents:
  *   post:
  *     tags:
- *       - Document
+ *       - Documents
  *     description: Creates a new document
  *     produces:
  *       - application/json
@@ -30,7 +30,7 @@ const routes = () => {
  *       200:
  *         description: Successfully created
  */
-  docRoutes.post('/documents', documentController.create);
+  docRoutes.post('/', documentController.create);
 
   // retrieve all documents
   // docRoutes.get('/documents', documentController.getAll);
@@ -57,7 +57,7 @@ const routes = () => {
  *           $ref: '#/definitions/Documents'
  */
 
-  docRoutes.get('/documents/:id', documentController.getOne);
+  docRoutes.get('/:id', documentController.getOne);
 
  /**
  * @swagger
@@ -80,7 +80,7 @@ const routes = () => {
  *         schema:
  *           $ref: '#/definitions/Users'
  */
-  docRoutes.put('/documents/:id', documentController.update);
+  docRoutes.put('/:id', documentController.update);
 
 /**
  * @swagger
@@ -101,9 +101,7 @@ const routes = () => {
  *       200:
  *         description: Successfully deleted
  */
-  docRoutes.delete('/documents/:id', documentController.deleteOne);
-
-  docRoutes.get('/search/documents/', documentController.search);
+  docRoutes.delete('/:id', documentController.deleteOne);
 
 /**
  * @swagger
@@ -136,7 +134,7 @@ const routes = () => {
  *           $ref: '#/definitions/Documents'
  */
 
-  docRoutes.get('/documents/?', documentController.getPaginatedDocs);
+  docRoutes.get('/?', documentController.getPaginatedDocs);
 
   return docRoutes;
 };

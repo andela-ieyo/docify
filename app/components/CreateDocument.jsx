@@ -4,33 +4,66 @@ import PropTypes from 'prop-types';
 import { browserHistory } from 'react-router';
 import { createDocument } from '../actions/documentActions';
 
-class CreateDocument extends Component {
+/**
+ *
+ *
+ * @desc represents Create Document Page.
+ * @class CreateDocument
+ * @extends {Component}
+ */
+export class CreateDocument extends Component {
+  /**
+   * Creates an instance of CreateDocument.
+   * @param {object} props
+   *
+   * @memberof CreateDocument
+   */
   constructor(props) {
     super(props);
     this.state = {
       title: '',
       access: 'private',
-      content: '',
-      errors: {}
+      content: ''
     };
     this.saveDoc = this.saveDoc.bind(this);
     this.handleFieldChange = this.handleFieldChange.bind(this);
   }
 
+  componentDidMount() {
+    CKEDITOR.replace('content');   // eslint-disable-line
+  }
 
+  /**
+   *
+   *
+   * @param {any} event
+   *
+   * @memberof CreateDocument
+   */
   handleFieldChange(event) {
     event.preventDefault();
     const { id, value } = event.target;
-    this.setState((state) => Object.assign({}, state, { [id]: value }));
+    const content = CKEDITOR.instances.content.getData();   // eslint-disable-line
+    this.setState((state) => Object.assign({}, state, { [id]: value, content }));
   }
 
+  /**
+   *
+   * @desc handles the submit action on the form.
+   *  Calls the createDocument action.
+   * @param {object} event
+   *
+   * @memberof CreateDocument
+   * @returns {void}
+   */
   saveDoc(event) {
     event.preventDefault();
-    this.props.createDocument(this.state);
+    const docInput = { ...this.state };
+    this.props.createDocument(docInput);
   }
 
   render() {
-    const { title, access, content } = this.state;
+    const { title, access } = this.state;
 
     return (
       <div>
@@ -57,8 +90,9 @@ class CreateDocument extends Component {
                   type="text"
                   className="validate"
                 />
-                <label htmlFor="title">Title</label>
+                <label htmlFor="title" />
               </div>
+
 
               <div className="input-field col s6">
                 <select
@@ -69,8 +103,10 @@ class CreateDocument extends Component {
                 >
                   <option value="private">Private</option>
                   <option value="public">Public</option>
-                  <option value="writer">Writer</option>
-                  <option value="editor">Editor</option>
+                  <optgroup label="Role">
+                    <option value="writer">Writer</option>
+                    <option value="editor">Editor</option>
+                  </optgroup>
                 </select>
               </div>
             </div>
@@ -78,22 +114,17 @@ class CreateDocument extends Component {
             <div className="row">
               <div className="row">
                 <div className="input-field col s12">
-                  <i
-                    className="material-icons prefix"
-                  >mode_edit</i>
                   <textarea
                     id="content"
-                    onChange={this.handleFieldChange}
-                    value={content}
                     className="materialize-textarea"
                   />
-                  <label htmlFor="content">Content</label>
+                  <label htmlFor="content" />
                 </div>
               </div>
             </div>
 
             <button
-              className="btn waves-effect waves-light"
+              className="btn waves-effect waves-light docify-save"
               type="submit"
               name="action"
               onClick={this.saveDoc}

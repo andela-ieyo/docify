@@ -6,7 +6,12 @@ export const saveUserSuccess = (user) => ({ type: SAVE_USER_SUCCESS, user });
 export const saveUserError = (error) =>
   ({ type: SAVE_USER_ERROR, error });
 
-
+/**
+ *
+ * @desc retrieves a specific user info.
+ * @param {object} userId
+ * @returns {object} returns a user Object.
+ */
 export const getUser = (userId) => {
   return (dispatch, getState, { client }) => {
     return client.get(`/api/users/${userId}`)

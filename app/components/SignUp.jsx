@@ -4,7 +4,20 @@ import PropTypes from 'prop-types';
 import { userSignUpRequest } from '../actions/signUpActions';
 import validateInput from '../../server/shared/validations/signup';
 
-class SignUp extends Component {
+/**
+ *
+ *
+ * @desc represents sSignup page.
+ * @class SignUp
+ * @extends {Component}
+ */
+export class SignUp extends Component {
+  /**
+   * Creates an instance of SignUp.
+   * @param {object} props
+   *
+   * @memberof SignUp
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -13,6 +26,7 @@ class SignUp extends Component {
       username: '',
       email: '',
       password: '',
+      pwConfirmation: '',
       errors: {},
       isLoading: false
     };
@@ -20,12 +34,28 @@ class SignUp extends Component {
     this.onFieldChange = this.onFieldChange.bind(this);
   }
 
+  /**
+   *
+   * @desc handles onChange event in the form input.
+   * @param {object} event
+   *
+   * @memberof SignUp
+   */
   onFieldChange(event) {
     event.preventDefault();
     const { id, value } = event.target;
     this.setState((state) => Object.assign({}, state, { [id]: value }));
   }
 
+  /**
+   *
+   * @desc handles submit action from form.
+   *  Calls userSignUpRequest action.
+   * @param {object} event
+   *
+   * @memberof SignUp
+   * returns {void}
+   */
   onClickSave(event) {
     event.preventDefault();
     const { errors, isValid } = validateInput(this.state);
@@ -38,7 +68,7 @@ class SignUp extends Component {
 
   render() {
     const { errors } = this.state;
-    const { firstName, lastName, username, email, password } = this.state;
+    const { firstName, lastName, username, email, password, pwConfirmation } = this.state;
     return (
       <div className="docify-signup">
 
@@ -109,6 +139,20 @@ class SignUp extends Component {
                 <div className="row">
                   <div className="input-field col s12">
                     <input
+                      id="pwConfirmation"
+                      type="password"
+                      className="validate"
+                      value={pwConfirmation}
+                      onChange={this.onFieldChange}
+                    />
+                    <label htmlFor="password"> Confirm Password</label>
+                    {errors.pwConfirmation && <span className="validate">{errors.pwConfirmation}</span>}
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="input-field col s12">
+                    <input
                       id="email"
                       type="email"
                       className="validate"
@@ -122,7 +166,7 @@ class SignUp extends Component {
                 <div className="row">
                   <div className="input-field col s12 s6">
                     <button
-                      className="btn waves-effect waves-light"
+                      className="btn waves-effect waves-light signup-btn"
                       onClick={this.onClickSave}
                       disabled={this.state.isLoading}
                     >

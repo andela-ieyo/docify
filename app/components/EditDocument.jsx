@@ -6,7 +6,19 @@ import { browserHistory } from 'react-router';
 import { saveEditedDoc } from '../actions/documentActions';
 import client from '../utils/client';
 
-class EditDocument extends Component {
+/**
+ * @desc represents the Editdocument Page
+ *
+ * @class EditDocument
+ * @extends {Component}
+ */
+export class EditDocument extends Component {
+  /**
+   * Creates an instance of EditDocument.
+   * @param {object} props
+   *
+   * @memberof EditDocument
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -17,6 +29,7 @@ class EditDocument extends Component {
   }
 
   componentDidMount() {
+    CKEDITOR.replace('content');   // eslint-disable-line
     const id = this.props.id;
     if (!this.props.document) {
       client.get(`/api/documents/${id}`)
@@ -28,16 +41,34 @@ class EditDocument extends Component {
     }
   }
 
+  /**
+   * @desc handles onChange event on the form input fields.
+   *
+   * @param {object} event
+   *
+   * @memberof EditDocument
+   */
   handleFieldChange(event) {
     const { id, value } = event.target;
     const field = id;
     this.setState({ document: { ...this.state.document, [field]: value } });
   }
 
+  /**
+   * @desc handles the submit event of the form.
+   * Calls the saveEditedDoc action.
+   *
+   * @param {any} event
+   *
+   * @memberof EditDocument
+   * @returns {void}
+   */
   submitHandler(event) {
     event.preventDefault();
+    const content = CKEDITOR.instances.content.getData();   // eslint-disable-line
     const docId = this.state.document.id;
-    const fieldData = this.state.document;
+    const fieldData = { ...this.state.document, content };
+    // fieldData.content = content;
     this.props.saveEditedDoc(docId, fieldData);
   }
 
@@ -63,11 +94,11 @@ class EditDocument extends Component {
                 <input
                   placeholder="Document Title"
                   id="title"
-                  value={document.title}
+                  value={document.title || ''}
                   onChange={this.handleFieldChange}
                   type="text"
                 />
-                <label htmlFor="title">Title</label>
+                <label htmlFor="title" />
               </div>
 
               <div className="input-field col s6">
@@ -79,8 +110,10 @@ class EditDocument extends Component {
                 >
                   <option value="private">Private</option>
                   <option value="public">Public</option>
-                  <option value="writer">Writer</option>
-                  <option value="editor">Editor</option>
+                  <optgroup label="Role">
+                    <option value="writer">Writer</option>
+                    <option value="editor">Editor</option>
+                  </optgroup>
                 </select>
               </div>
             </div>
@@ -88,22 +121,19 @@ class EditDocument extends Component {
             <div className="row">
               <div className="row">
                 <div className="input-field col s12">
-                  <i
-                    className="material-icons prefix"
-                  >mode_edit</i>
                   <textarea
                     id="content"
-                    onChange={this.handleFieldChange}
-                    value={document.content}
+                    value={document.content || ''}
                     className="materialize-textarea"
+                    onChange={() => null}
                   />
-                  <label htmlFor="content">Content</label>
+                  <label htmlFor="content" />
                 </div>
               </div>
             </div>
 
             <button
-              className="btn waves-effect waves-light"
+              className="btn waves-effect waves-light docify-save-edit"
               type="submit"
               name="action"
               onClick={this.submitHandler}
@@ -118,15 +148,15 @@ class EditDocument extends Component {
 }
 
 EditDocument.propTypes = {
-  document: PropTypes.object.isRequired,
+  document: PropTypes.object,
   saveEditedDoc: PropTypes.func.isRequired
 };
 
 
-const mapStateToProps = ({ documents }, { params }) => {
-  const { allDocuments = [] } = documents;
+export const mapStateToProps = ({ documents }, { params }) => {
+  const { allDocuments = {} } = documents;
   const { id } = params;
-  const document = allDocuments.find(doc => doc.id === parseInt(id, 10));
+  const document = (allDocuments.rows || []).find(doc => doc.id === parseInt(id, 10));
   return {
     document,
     id

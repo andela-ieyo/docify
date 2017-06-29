@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt-nodejs';
 
 module.exports = (sequelize, DataTypes) => {
   const Users = sequelize.define('Users', {
@@ -48,7 +48,8 @@ module.exports = (sequelize, DataTypes) => {
       associate: (models) => {
         Users.hasMany(models.Documents, {
           foreignKey: 'ownerId',
-          onDelete: 'CASCADE'
+          onDelete: 'CASCADE',
+          hooks: true
         });
         Users.belongsTo(models.Roles, {
           foreignKey: 'roleId'

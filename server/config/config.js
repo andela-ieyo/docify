@@ -26,5 +26,8 @@ module.exports = {
         'require': true
       }
     }
+  },
+  travis: {
+    use_env_variable: 'DATABASE_URL'
   }
 };
