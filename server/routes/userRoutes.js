@@ -206,7 +206,7 @@ const routes = () => {
    * /api/users/{id}/documents:
    *   get:
    *     tags:
-   *       - Users Documents
+   *       - Users
    *     description: Returns all of the users Documents
    *     produces:
    *       - application/json
