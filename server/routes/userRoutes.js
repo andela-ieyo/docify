@@ -230,7 +230,7 @@ const routes = () => {
 *       title:
 *         type: string
 *       content:
-*         type: text
+*         type: string
 *       access:
 *         type: string
 */
