@@ -62,7 +62,7 @@ app.use('/api/search', searchRoutes());
 
 // Setup a default catch-all route that sends back a welcome message.
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'app', 'index.html'));
+  res.sendFile(path.resolve(__dirname, 'client', 'index.html'));
 });
 
 const server = app.listen(port, () => {

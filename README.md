@@ -28,7 +28,7 @@ Docify is built with JavaScript (ES6), React, NodeJs, and Express, and PostGres 
 
     ```bash
     $ git clone https://github.com/andela-ieyo/docify.git
-    $ cd <news-feed-app directory>
+    $ cd <docify directory>
     $ npm install
     $ run npm start
     ```

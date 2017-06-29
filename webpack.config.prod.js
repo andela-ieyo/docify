@@ -4,7 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const BUILD_PATH = path.resolve(__dirname, 'public');
-const APP_DIR = `${path.resolve(__dirname)}/app`;
+const APP_DIR = `${path.resolve(__dirname)}/client`;
 
 module.exports = {
   devtool: 'cheap-eval-source-map',
@@ -23,7 +23,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         include: [
-          path.join(__dirname, 'app')
+          path.join(__dirname, 'client')
         ],
         exclude: /node_modules/,
         loader: 'babel-loader'

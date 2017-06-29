@@ -1,3 +1,5 @@
+/* global $ */
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -38,6 +40,7 @@ export class UpdateProfile extends Component {
           toastr.error(error.response.data.message);
         });
     }
+    $('label').addClass('active');
   }
 
   /**

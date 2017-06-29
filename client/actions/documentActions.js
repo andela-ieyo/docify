@@ -21,7 +21,7 @@ export const saveDocumentSuccess = (documents, category) =>
  * @returns {array} returns an array of all docs owned by a specific user.
  */
 export const retrieveMyDocuments = (userId, page) =>
-(dispatch, getState, { client }) => client.get(`/api/users/${userId}/documents?page=${page}&limit=3`)
+(dispatch, getState, { client }) => client.get(`/api/users/${userId}/documents?page=${page}&limit=6`)
       .then(res => {
         if (res.data.message) {
           toastr.info(res.data.message);
@@ -41,7 +41,7 @@ export const retrieveMyDocuments = (userId, page) =>
  * @returns {array} returns an array of all docs.
  */
 export const retrieveAllDocuments = (page) =>
-(dispatch, getState, { client }) => client.get(`api/documents?page=${page}&limit=3`)
+(dispatch, getState, { client }) => client.get(`api/documents?page=${page}&limit=6`)
       .then(res => {
         if (res.data.count === 0) {
           toastr.info('You have 0 documents.');
@@ -96,7 +96,7 @@ export const saveEditedDoc = (docId, fieldData) => (dispatch, getState, { client
  * @returns {array} returns an array of all docs matching the search query on success.
  */
 export const searchDocs = (searchQuery, page) => (dispatch, getState, { client }) =>
-  client.get(`/api/search/documents/?docTitle=${searchQuery}&page=${page}&limit=3`)
+  client.get(`/api/search/documents/?docTitle=${searchQuery}&page=${page}&limit=6`)
       .then(res => {
         const searchResult = res.data;
         if (res.data.message) {

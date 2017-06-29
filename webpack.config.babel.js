@@ -3,7 +3,7 @@ import webpack from 'webpack';
 import path from 'path';
 
 const BUILD_PATH = path.resolve(__dirname, 'public');
-const APP_DIR = `${path.resolve(__dirname)}/app`;
+const APP_DIR = `${path.resolve(__dirname)}/client`;
 
 export default {
   devtool: 'cheap-eval-source-map',
@@ -17,7 +17,7 @@ export default {
       {
         test: /\.js$/,
         include: [
-          path.join(__dirname, 'app'),
+          path.join(__dirname, 'client'),
           path.join(__dirname, 'server/shared')
         ],
         exclude: /node_modules/,
@@ -26,7 +26,7 @@ export default {
       {
         test: /\.jsx$/,
         include: [
-          path.join(__dirname, 'app'),
+          path.join(__dirname, 'client'),
           path.join(__dirname, 'server/shared')
         ],
         exclude: /node_modules/,

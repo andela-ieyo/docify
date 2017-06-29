@@ -9,20 +9,20 @@
     },
     "verbose": true,
     "collectCoverageFrom": [
-      "app/actions/*.{js,jsx}",
-      "app/components/*.{js,jsx}",
+      "client/actions/*.{js,jsx}",
+      "client/components/*.{js,jsx}",
       "server/shared/validations/signup.js",
-      "app/reducers/*.{js,jsx}",
-      "!app/utils/**",
-      "!app/app.js",
-      "!app/index.js",
-      "!app/routes.js",
-      "!app/app.js",
-      "!app/reducers/index.js",
-      "!app/components/ViewAllUsers.jsx"
+      "client/reducers/*.{js,jsx}",
+      "!client/utils/**",
+      "!client/client.js",
+      "!client/index.js",
+      "!client/routes.js",
+      "!client/app.js",
+      "!client/reducers/index.js",
+      "!client/components/ViewAllUsers.jsx"
     ],
     "testPathIgnorePatterns": [
-      "app/tests/e2e/"
+      "client/tests/e2e/"
     ],
     "coverageDirectory": "./feCoverage"
   },
