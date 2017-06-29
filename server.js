@@ -20,7 +20,7 @@ const swaggerDefinition = {
     version: '1.0.0',
     description: 'Describing Docify RESTful API with Swagger'
   },
-  host: 'https://docify.herokuapp.com',
+  host: 'docify.herokuapp.com',
   basePath: '/'
 };
 const swaggerPath = path.join(__dirname, 'server/routes/*.js');

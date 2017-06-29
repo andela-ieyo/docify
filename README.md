@@ -38,7 +38,7 @@ Docify is built with JavaScript (ES6), React, NodeJs, and Express, and PostGres 
       Use `NODE_ENV=test npm test` or `yest --coverage` or `jest --verbose` to run local tests.
 
 ### API Documentation
-  Click this [api docs](https://docify.herokuapp.com/api-docs)to view the api documentation.
+  Click this [api docs](http://docify.herokuapp.com/api-docs) to view the api documentation.
 
 ## Status
 
