@@ -21,6 +21,7 @@ const swaggerDefinition = {
     description: 'Describing Docify RESTful API with Swagger'
   },
   host: 'docify.herokuapp.com',
+  // host: 'localhost:8000',
   basePath: '/'
 };
 const swaggerPath = path.join(__dirname, 'server/routes/*.js');
@@ -41,6 +42,12 @@ app.get('/swagger.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpec);
 });
+
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/api-docs', express.static(path.join(__dirname, 'public')));
+} else {
+  app.use('/api-docs', express.static(path.join(__dirname, 'public/api-docs')));
+}
 
 const port = process.env.PORT || 8000; // eslint-disable-line
 
