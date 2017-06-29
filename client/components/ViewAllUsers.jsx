@@ -221,7 +221,7 @@ export class ViewAllUsers extends Component {
             <div className="row">
               <div className="input-field">
                 <input
-                  placeholder="Search for a document"
+                  placeholder="Type in a name"
                   id="search"
                   type="text"
                   value={query}
