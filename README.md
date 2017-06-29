@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/andela-ieyo/docify.svg?branch=develop)](https://travis-ci.org/andela-ieyo/docify) [![Coverage Status](https://coveralls.io/repos/github/andela-ieyo/docify/badge.png?branch=develop)](https://coveralls.io/github/andela-ieyo/docify?branch=develop)
+[![Build Status](https://travis-ci.org/andela-ieyo/docify.svg?branch=develop)](https://travis-ci.org/andela-ieyo/docify) [![Coverage Status](https://coveralls.io/repos/github/andela-ieyo/docify/badge.svg?branch=develop)](https://coveralls.io/github/andela-ieyo/docify?branch=develop)
 
 # Docify
 
@@ -38,7 +38,7 @@ Docify is built with JavaScript (ES6), React, NodeJs, and Express, and PostGres 
       Use `NODE_ENV=test npm test` or `yest --coverage` or `jest --verbose` to run local tests.
 
 ### API Documentation
-  Click this [api docs](http://docify.herokuapp.com/api-docs) to view the api documentation.
+  Click this [api docs](http://docify.herokuapp.com/docs/) to view the api documentation.
 
 ## Status
 
