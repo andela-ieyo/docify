@@ -7,4 +7,4 @@ before_script:
   - npm install jest -g
   - psql -c 'create database "dms-test";' -U postgres
 
-after_success: "cat ./coverage/lcov.info | coveralls"
+after_success: "cat ./feCoverage/lcov.info | coveralls"
