@@ -57,8 +57,9 @@ app.use(bodyParser.urlencoded({
 app.use(express.static('public'));
 app.use(auth.initialize());
 
+// swagger route
 app.use('/docs', express.static(
-    path.join(__dirname, '/public/api-docs/')));
+    path.join(__dirname, '/api-docs/')));
 
 // routes middleware
 app.use('/api/documents', docRoutes());
