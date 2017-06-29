@@ -211,16 +211,16 @@ const routes = () => {
    *     produces:
    *       - application/json
    *     parameters:
- *       - name: authorization
- *         description: request x-access-token
- *         in: header
- *         required: true
- *         type: string
- *       - name: id
- *         description: User's id
- *         in: path
- *         required: true
- *         type: integer
+ *         - name: authorization
+ *           description: request x-access-token
+ *           in: header
+ *           required: true
+ *           type: string
+ *         - name: id
+ *           description: User's id
+ *           in: path
+ *           required: true
+ *           type: integer
    *     responses:
    *       200:
    *         description: An array of documents
