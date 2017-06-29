@@ -37,7 +37,7 @@ export class ViewAllUsers extends Component {
   }
 
   componentWillMount() {
-    client.get(`/api/users/?page=${this.state.selectedPage}&limit=3`)
+    client.get(`/api/users/?page=${this.state.selectedPage}&limit=6`)
     .then(res => {
       this.setState({ users: res.data });
     }, error => {
@@ -57,14 +57,14 @@ export class ViewAllUsers extends Component {
     if (this.state.selectedPage !== page) {
       this.setState({ selectedPage: page });
       if (this.state.isSearching) {
-        client.get(`/api/search/users/?name=${this.state.query}&page=${page}&limit=3`)
+        client.get(`/api/search/users/?name=${this.state.query}&page=${page}&limit=6`)
           .then(res => {
             this.setState({ searchResult: res.data });
           }, error => {
             toastr.error(error.response.data.message);
           });
       }
-      client.get(`/api/users/?page=${page}&limit=3`)
+      client.get(`/api/users/?page=${page}&limit=6`)
         .then(res => {
           this.setState({ users: res.data });
         }, error => {
@@ -85,7 +85,7 @@ export class ViewAllUsers extends Component {
   handleSearchInput(event) {
     const { value } = event.target;
     this.setState({ isSearching: value.length > 0, query: value });
-    client.get(`/api/search/users/?name=${this.state.query}&page=${this.state.selectedPage}&limit=3`)
+    client.get(`/api/search/users/?name=${this.state.query}&page=${this.state.selectedPage}&limit=6`)
       .then(res => {
         this.setState({ searchResult: res.data });
       }, error => {
