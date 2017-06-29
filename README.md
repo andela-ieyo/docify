@@ -1,6 +1,6 @@
+[![Build Status](https://travis-ci.org/andela-ieyo/docify.svg?branch=develop)](https://travis-ci.org/andela-ieyo/docify) [![Coverage Status](https://coveralls.io/repos/github/andela-ieyo/docify/badge.png?branch=develop)](https://coveralls.io/github/andela-ieyo/docify?branch=develop)
+
 # Docify
-
-
 
 ### What the project does
   **_Introduction/Background Information_**
