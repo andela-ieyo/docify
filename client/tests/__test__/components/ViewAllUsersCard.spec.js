@@ -15,6 +15,9 @@ const mockUpdateRole = jest.fn();
 const mockDeleteUser = jest.fn();
 
 const user = {
+  Role:{
+    title: 'Admin'
+  },
   id: 2,
   firstName: 'Ifiok',
   lastName: 'Eyo',

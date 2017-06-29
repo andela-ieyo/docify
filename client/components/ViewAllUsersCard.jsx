@@ -13,7 +13,7 @@ export default function ViewAllUsersCard({ user, updateRole, deleteUser }) {
       <div className="card-action list-section">
         <span>{user.email}</span>
         <div className="docify-role">
-          <span>{user.roleId}</span>
+          <span>{user.Role.title}</span>
         </div>
       </div>
 

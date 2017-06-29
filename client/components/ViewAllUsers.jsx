@@ -39,6 +39,7 @@ export class ViewAllUsers extends Component {
   componentWillMount() {
     client.get(`/api/users/?page=${this.state.selectedPage}&limit=6`)
     .then(res => {
+      console.log(res.data, 'oooo');
       this.setState({ users: res.data });
     }, error => {
       toastr.error(error.response.data.message);

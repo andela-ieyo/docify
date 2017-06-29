@@ -6,7 +6,7 @@ import validateInput from '../shared/validations/signup';
 import validateLogin from '../shared/validations/login';
 
 const Users = models.Users;
-// const Roles = models.Roles;
+const Roles = models.Roles;
 const Documents = models.Documents;
 const secretKey = config.jwtSecret;
 const salt = bcrypt.genSaltSync();
@@ -405,7 +405,8 @@ const UserController = {
           { firstName: { $iLike: `%${name}%` } },
           { lastName: { $iLike: `%${name}%` } }
         ]
-      }
+      },
+      include: [{ model: Roles, attributes:['title'] }]
     })
       .then(users => {
         if (users.count === 0) {
@@ -458,7 +459,8 @@ const UserController = {
 
     Users.findAndCountAll({
       offset,
-      limit
+      limit,
+      include: [{ model: Roles, attributes:['title'] }]
     })
       .then(allRegUsers => res.status(200).send(allRegUsers))
       .catch(error => res.status(500).send({

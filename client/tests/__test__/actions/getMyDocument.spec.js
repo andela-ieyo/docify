@@ -8,6 +8,9 @@ import {
   saveDocumentSuccess } from '../../../actions/documentActions';
 import * as types from '../../../constants/documents';
 
+
+let store;
+
 const data = [
   {
     title: 'The Lord of the Rings',
@@ -20,7 +23,7 @@ const data = [
     content: 'Adventure'
   }
 ];
-const client = {
+const successClient = {
   get: (url, params) => Promise.resolve({
     data: {
       data
@@ -28,12 +31,32 @@ const client = {
   })
 };
 
-const middlewares = [thunk.withExtraArgument({
-  client
-})];
-const mockStore = configureMockStore(middlewares);
+const failedClient = {
+  get() {
+    return Promise.reject({
+      response: {
+        data: {
+          message: 'error'
+        }
+      }
+    });
+  }
+};
+
+const setUpStore = (client) => {
+  const middlewares = [thunk.withExtraArgument({
+    client
+  })];
+  const mockStore = configureMockStore(middlewares);
+  store = mockStore({
+    documents: {}
+  });
+};
+
 
 const toastrSpy = jest.spyOn(toastr, 'info');
+
+const toastrErrorSpy = jest.spyOn(toastr, 'error');
 
 describe('actions', () => {
   it('should create an action to add a document', () => {
@@ -53,10 +76,19 @@ describe('retrieveAllDocument action', () => {
       documents: { data },
       category: 'myDocuments'
     }];
-    const store = mockStore({ documents: {} });
+
+    setUpStore(successClient);
+
     return store.dispatch(retrieveMyDocuments()).then(() => {
       expect(store.getActions()).toEqual(expectedActions);
       expect(toastrSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  it('dispatches an error message if error occurs', () => {
+    setUpStore(failedClient);
+    return store.dispatch(retrieveMyDocuments()).then(() => {
+      expect(toastrErrorSpy).toHaveBeenCalled();
     });
   });
 });

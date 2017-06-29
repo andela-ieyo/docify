@@ -20,7 +20,7 @@ const routes = () => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: user
+ *       - name: document
  *         description: Document object
  *         in: body
  *         required: true

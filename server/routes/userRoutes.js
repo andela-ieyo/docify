@@ -233,8 +233,6 @@ const routes = () => {
 *         type: text
 *       access:
 *         type: string
-*       ownerId:
-*         type: integer
 */
 
   /**
@@ -242,8 +240,6 @@ const routes = () => {
  * definition:
  *   Users:
  *     properties:
- *       id:
- *         type: integer
  *       firstName:
  *         type: string
  *       LastName:
@@ -252,8 +248,10 @@ const routes = () => {
  *         type: string
  *       email:
  *         type: string
- *       roleId:
- *         type: integer
+ *       password:
+ *         type: string
+ *       pwConfirmation:
+ *          type: string
  */
 
   /**
