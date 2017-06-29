@@ -43,11 +43,6 @@ app.get('/swagger.json', (req, res) => {
   res.send(swaggerSpec);
 });
 
-if (process.env.NODE_ENV !== 'production') {
-  app.use('/api-docs', express.static(path.join(__dirname, 'public')));
-} else {
-  app.use('/api-docs', express.static(path.join(__dirname, 'public/api-docs')));
-}
 
 const port = process.env.PORT || 8000; // eslint-disable-line
 
@@ -62,10 +57,14 @@ app.use(bodyParser.urlencoded({
 app.use(express.static('public'));
 app.use(auth.initialize());
 
+app.use('/docs', express.static(
+    path.join(__dirname, '/public/api-docs/')));
+
 // routes middleware
 app.use('/api/documents', docRoutes());
 app.use('/api/users', userRoutes());
 app.use('/api/search', searchRoutes());
+
 
 // Setup a default catch-all route that sends back a welcome message.
 app.get('*', (req, res) => {
