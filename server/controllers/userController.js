@@ -4,6 +4,7 @@ import models from '../models';
 import config from '../config/jwtConfig/config';
 import validateInput from '../shared/validations/signup';
 import validateLogin from '../shared/validations/login';
+import { paginate } from '../middleware/validator';
 
 const Users = models.Users;
 const Roles = models.Roles;
@@ -27,10 +28,10 @@ const isLoggedInUser = (userId, queryId) => {
 
 const UserController = {
   /**
-   *
    * @desc sign up controller
-   * @param {object} req
-   * @param {object} res
+   *
+   * @param {object} req - HTTP Request Object
+   * @param {object} res - HTTP response object
    * @returns {object} returns userObject, token, success message
    */
   create(req, res) {
@@ -103,10 +104,10 @@ const UserController = {
   },
 
   /**
-   *
    * @desc Login route.
-   * @param {object} req
-   * @param {object} res
+   *
+   * @param {object} req - HTTP Request Object
+   * @param {object} res - HTTP Response Object
    * @returns {object} returns user, token, and success message.
    */
   login(req, res) {
@@ -132,7 +133,6 @@ const UserController = {
               message: 'Your account does not exist'
             });
           }
-
           if (Users.isPassword(user.password, req.body.password)) {
             const payload = {
               id: user.id,
@@ -162,10 +162,10 @@ const UserController = {
   },
 
   /**
-   *
    * @desc This route gets all registered users. It is not paginated.
-   * @param {object} req
-   * @param {object} res
+   *
+   * @param {object} req - HTTP Request Object
+   * @param {object} res - HTTP response object
    * @returns {array} returns an array of all registered users.
    */
   findAll(req, res) {
@@ -201,10 +201,10 @@ const UserController = {
   },
 
   /**
-   *
    * @desc This route deletes a user's record. UserId is required as params.
-   * @param {object} req
-   * @param {object} res
+   *
+   * @param {object} req - HTTP Request Object
+   * @param {object} res - HTTP response object
    * @returns {object} returns a success message or an error message if it fails.
    */
   deleteUser(req, res) {
@@ -239,10 +239,10 @@ const UserController = {
   },
 
   /**
-   *
    * @desc updates user record
-   * @param {object} req
-   * @param {object} res
+   *
+   * @param {object} req - HTTP Request Object
+   * @param {object} res - HTTP response object
    * @returns {object} returns a success message or an error message
    */
   update(req, res) {
@@ -251,7 +251,12 @@ const UserController = {
     let encryptedPassword;
     const isUser = isLoggedInUser(userId, queryId);
 
-    if (req.body.password) {
+    if (req.body.password && req.body.password.length > 0 && req.body.password.length < 6) {
+      return res.status(400)
+        .send({ message: 'password must be at least 6 characters' });
+    }
+
+    if (req.body.password >= 6) {
       encryptedPassword = bcrypt.hashSync(req.body.password, salt);
 
     }
@@ -273,6 +278,7 @@ const UserController = {
           firstName: req.body.firstName || user.firstName,
           lastName: req.body.lastName || user.lastName,
           username: req.body.username || user.username,
+          email: req.body.email || user.email,
           password: encryptedPassword || user.password,
           roleId: req.body.roleId || user.roleId
         })
@@ -287,10 +293,10 @@ const UserController = {
   },
 
   /**
-   *
    * @desc updates a user's record. The docId is passed as params.
-   * @param {any} req
-   * @param {any} res
+   *
+   * @param {any} req - HTTP Request Object
+   * @param {any} res - HTTP response object
    * @returns {object} a success message or an error message if the process fails
    */
   updateRole(req, res) {
@@ -316,10 +322,10 @@ const UserController = {
   },
 
   /**
-   *
    * @desc route to get all docs belonging to a particular user. It takes an userId as params.
+   *
    * @param {object} req
-   * @param {object} res
+   * @param {object} res - HTTP response object
    * @returns {array} all docs belonging to the user with the id passed as params.
    */
   findUserDoc(req, res) {
@@ -335,6 +341,8 @@ const UserController = {
         message: 'Request denied'
       });
     }
+
+    console.log('i was here');
 
     if (isAdmin) {
       return Documents.findAndCountAll({
@@ -387,10 +395,10 @@ const UserController = {
   },
 
   /**
-   *
    * @desc search based on user's firstname or lastname.
-   * @param {object} req
-   * @param {object} res
+   *
+   * @param {object} req - HTTP Request Object
+   * @param {object} res - HTTP response object
    * @returns {array} returns all users matching the search query.
    */
   search(req, res) {
@@ -400,6 +408,9 @@ const UserController = {
     Users.findAndCountAll({
       offset,
       limit,
+      order: [
+        ['createdAt', 'DESC']
+      ],
       where: {
         $or: [
           { firstName: { $iLike: `%${name}%` } },
@@ -414,17 +425,25 @@ const UserController = {
             message: 'No user record found'
           });
         }
-        return res.status(200).send(users);
+
+        const count = users.count;
+        const pagination = paginate(count, limit, offset);
+
+        return res.status(200).send({
+          rows: users.rows,
+          Role: users.Role,
+          ...pagination
+        });
       })
       .catch(error => res.status(500)
         .send({ message: 'Server error', error }));
   },
 
   /**
-   *
    * @desc gets the current user info.
-   * @param {object} req
-   * @param {object} res
+   *
+   * @param {object} req - HTTP Request Object
+   * @param {object} res - HTTP response object
    * @returns {object} returns the user's info.
    */
   getCurrentUser(req, res) {
@@ -434,10 +453,10 @@ const UserController = {
   },
 
   /**
-   *
    * @desc this endpoint logs out a user.
-   * @param {object} req
-   * @param {object} res
+   *
+   * @param {object} req - HTTP Request Object
+   * @param {object} res - HTTP response object
    * @returns {string} returns a succes message.
    */
   logout(req, res) {
@@ -445,24 +464,35 @@ const UserController = {
   },
 
   /**
-   *
    * @desc This route gets all registered users. It is a paginated route,
    *  with default limit set to 10.
-   * @param {object} req
-   * @param {object} res
+   *
+   * @param {object} req - HTTP request object
+   * @param {object} res - HTTP response object
    * @returns {array} returns an array of all registered users.
    */
   getAllUsers(req, res) {
     const limit = req.query.limit || 10;
     const offset = (req.query.page || 0) * limit;
-    console.log('got ere');
 
     Users.findAndCountAll({
       offset,
       limit,
-      include: [{ model: Roles, attributes:['title'] }]
+      order: [
+        ['createdAt', 'DESC']
+      ],
+      attributes: { exclude: ['roleId'] },
+      include: [{ model: Roles, attributes:['id', 'title'] }]
     })
-      .then(allRegUsers => res.status(200).send(allRegUsers))
+      .then(allRegUsers => {
+        const count = allRegUsers.count;
+        const pagination = paginate(count, limit, offset);
+        res.status(200).send({
+          rows: allRegUsers.rows,
+          Role: allRegUsers.Role,
+          ...pagination
+        });
+      })
       .catch(error => res.status(500).send({
         message: 'Server error',
         error
@@ -470,10 +500,10 @@ const UserController = {
   },
 
   /**
-   *
    * @desc this endpoint deletes a user's account. It requires the userId to be passed as params.
-   * @param {object} req
-   * @param {object} res
+   *
+   * @param {object} req - HTTP Request Object
+   * @param {object} res - HTTP response object
    * @returns {string} returns a success message or an error message
    */
   deleteMyAccount(req, res) {

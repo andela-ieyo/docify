@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import toastr from 'toastr';
+import { browserHistory } from 'react-router';
 import { userSignUpRequest } from '../actions/signUpActions';
 import validateInput from '../../server/shared/validations/signup';
 
@@ -27,8 +29,7 @@ export class SignUp extends Component {
       email: '',
       password: '',
       pwConfirmation: '',
-      errors: {},
-      isLoading: false
+      errors: {}
     };
     this.onClickSave = this.onClickSave.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
@@ -61,7 +62,18 @@ export class SignUp extends Component {
     const { errors, isValid } = validateInput(this.state);
 
     if (isValid) {
-      this.props.userSignUpRequest(this.state);
+      this.props.userSignUpRequest(this.state)
+        .then((res) => {
+          const { message, token } = res.data;
+          toastr.success(message);
+          window.localStorage.setItem('jwtToken_docify', token);
+          browserHistory.push('/dashboard');
+
+        })
+        .catch(error => {
+          const errorMsg = error.response.data.message;
+          toastr.error(errorMsg);
+        });
     }
     this.setState({ errors });
   }
@@ -125,6 +137,20 @@ export class SignUp extends Component {
                 <div className="row">
                   <div className="input-field col s12">
                     <input
+                      id="email"
+                      type="email"
+                      className="validate"
+                      value={email}
+                      onChange={this.onFieldChange}
+                    />
+                    <label htmlFor="email">Email</label>
+                    {errors.email && <span className="validate">{errors.email}</span>}
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="input-field col s12">
+                    <input
                       id="password"
                       type="password"
                       className="validate"
@@ -151,24 +177,10 @@ export class SignUp extends Component {
                 </div>
 
                 <div className="row">
-                  <div className="input-field col s12">
-                    <input
-                      id="email"
-                      type="email"
-                      className="validate"
-                      value={email}
-                      onChange={this.onFieldChange}
-                    />
-                    <label htmlFor="email">Email</label>
-                    {errors.email && <span className="validate">{errors.email}</span>}
-                  </div>
-                </div>
-                <div className="row">
                   <div className="input-field col s12 s6">
                     <button
                       className="btn waves-effect waves-light signup-btn"
                       onClick={this.onClickSave}
-                      disabled={this.state.isLoading}
                     >
                     Submit
                     <i className="material-icons right">send</i>

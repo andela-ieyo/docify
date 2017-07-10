@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import logOut from './actions/logOutAction';
+import { logOut } from './actions/logOutAction';
 
 class App extends Component {
   constructor() {
@@ -11,8 +11,8 @@ class App extends Component {
   onClickHandler(event) {
     event.preventDefault();
     this.props.logOut(this.state);
-
   }
+
   render() {
     return (
       <div className="container-fluid">
@@ -34,7 +34,8 @@ App.propTypes = {
   children: React.PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
-  ])
+  ]),
+  logOut: PropTypes.func.isRequired
 };
 
 App.defaultProps = {

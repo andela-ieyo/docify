@@ -9,8 +9,8 @@
     },
     "verbose": true,
     "collectCoverageFrom": [
-      "client/actions/*.{js,jsx}",
-      "client/components/*.{js,jsx}",
+      "client/actions/**.{js,jsx}",
+      "client/components/**/*.{js,jsx}",
       "server/shared/validations/signup.js",
       "client/reducers/*.{js,jsx}",
       "!client/utils/**",
@@ -18,8 +18,7 @@
       "!client/index.js",
       "!client/routes.js",
       "!client/app.js",
-      "!client/reducers/index.js",
-      "!client/components/ViewAllUsers.jsx"
+      "!client/reducers/index.js"
     ],
     "testPathIgnorePatterns": [
       "client/tests/e2e/"
@@ -29,7 +28,7 @@
   "scripts": {
     "e2e": "node_modules/.bin/nightwatch --config nightwatch.conf.js",
     "test": "npm run test:backend && npm run test:frontend",
-    "test:backend": "nyc --reporter=html --reporter=text mocha ./server/tests/*.js --require babel-register",
+    "test:backend": "nyc --reporter=html --reporter=text mocha ./server/tests/**/*.js --require babel-register",
     "start:dev": "webpack -w & nodemon server.js --exec babel-node",
     "db:migrate": "NODE_ENV=development sequelize db:migrate:undo:all && sequelize db:migrate",
     "build": "rm -rf public/ && webpack --config webpack.config.prod.js",
@@ -97,6 +96,7 @@
     "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-materialize": "^1.0.3",
     "react-redux": "^5.0.5",
     "react-router": "^3.0.5",
     "react-tap-event-plugin": "^2.0.1",

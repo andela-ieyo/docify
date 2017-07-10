@@ -8,6 +8,7 @@ import './static/styles/style.scss';
 import './static/styles/toastr.scss';
 import '../node_modules/sweetalert/dist/sweetalert.css';
 
+// window.clientStore = store;
 render(
   <Provider store={store}>
     <Router history={browserHistory} routes={routes} />

@@ -8,19 +8,22 @@ import React from 'react';
 import {
   SignUp
 } from '../../../components/SignUp.jsx';
+import { message, token } from '../__mocks__/helpers/fixtures';
 
 
-const mockUserSignUpRequest = jest.fn();
+let mockUserSignUpRequest;
 const mockValidateLogin = jest.fn();
-
-global.CKEDITOR = {
-  replace: () => {}
-};
 
 let wrapper;
 
 describe('<SignUp />', () => {
   beforeEach(() => {
+    mockUserSignUpRequest = jest.fn(() => {
+      return Promise.resolve({
+        message,
+        token
+      });
+    });
     wrapper = mount(<SignUp
       userSignUpRequest={mockUserSignUpRequest}
       validateLogin={mockValidateLogin}
@@ -72,39 +75,6 @@ describe('<SignUp />', () => {
     });
   });
 
-  it('allows state to be set', () => {
-    expect(wrapper.node.state)
-      .toEqual({
-        email: '',
-        password: '',
-        firstName: '',
-        lastName: '',
-        username: '',
-        pwConfirmation: '',
-        errors: {},
-        isLoading: false });
-
-    wrapper.setState({
-      firstName: 'Ifiok',
-      lastName: 'Eyo',
-      username: 'Admin',
-      email: 'ifiokabasi.eyo@andela.com',
-      password: 'testing',
-      pwConfirmation: 'testing',
-      errors: {},
-      isLoading: false
-    });
-    expect(wrapper.node.state).toEqual({
-      firstName: 'Ifiok',
-      lastName: 'Eyo',
-      username: 'Admin',
-      email: 'ifiokabasi.eyo@andela.com',
-      password: 'testing',
-      pwConfirmation: 'testing',
-      errors: {},
-      isLoading: false
-    });
-  });
 
   it('sets state on input field change', () => {
     const mockEvent = {

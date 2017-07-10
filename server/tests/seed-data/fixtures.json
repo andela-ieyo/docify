@@ -14,6 +14,14 @@
       "password": "testing",
       "email": "john.doe@gmail.com",
       "roleId": 1
+    },
+    {
+      "username": "sage",
+      "firstName": "Ifiok",
+      "lastName": "Eyo",
+      "password": "sagehasson",
+      "email": "ifiok.eyo@gmail.com",
+      "roleId": 3
     }
   ],
   "roles":[

@@ -1,112 +1,133 @@
-import toastr from 'toastr';
-import { SAVE_DOCUMENT_SUCCESS } from '../constants/documents';
-
+import {
+  LOAD_CATEGORY_DOCUMENTS,
+  ADD_DOCUMENT,
+  DELETE_DOCUMENT_SUCCESS,
+  UPDATE_DOCUMENT
+} from '../constants/documents';
 
 /**
+ * @desc get all document success action creator.
  *
- * @desc save document success action creator.
  * @param {object} documents
  * @param {string} category
  * @returns {object} actiontype, and payload
  */
-export const saveDocumentSuccess = (documents, category) =>
-  ({ type: SAVE_DOCUMENT_SUCCESS, documents, category });
+export const loadCategoryDocuments = (documents, category) =>
+  ({
+    type: LOAD_CATEGORY_DOCUMENTS,
+    documents,
+    category
+  });
 
 /**
+ * @desc create document success action creator
  *
- * @desc calls the getOne document endpoint.
- *  Retrieves documents for a specific user.
+ * @param {object} document
+ * @returns {object} actionType, and payload
+ */
+export const addDocument = (document, category) =>
+  ({
+    type: ADD_DOCUMENT,
+    document,
+    category
+  });
+
+/**
+ * @desc delete document success action creator
+ *
+ * @param {object} document
+ * @returns {object} actionType, and payload
+ */
+export const deleteDocumentSuccess = (docId, category) =>
+  ({
+    type: DELETE_DOCUMENT_SUCCESS,
+    docId,
+    category
+  });
+
+/**
+ * @desc update document success action creator
+ *
+ * @param {object} document
+ * @returns {object} actionType, and payload
+ */
+export const updateDocument = (docId, documentDetails, category) =>
+  ({
+    type: UPDATE_DOCUMENT,
+    docId,
+    documentDetails,
+    category
+  });
+
+export const getCategoryDocuments = (page, category) =>
+  (dispatch, getState, {
+    client
+  }) =>
+  client.get(`/api/documents/${category}/?page=${page}&limit=6`)
+  .then(res => {
+    const documents = res.data;
+    dispatch(loadCategoryDocuments(documents, `${category}Documents`));
+    return res;
+  });
+
+
+/**
+ * @desc deletes a document.
+ *
  * @param {object} userId
  * @param {string} page. Represents pagination index.
- * @returns {array} returns an array of all docs owned by a specific user.
+ * @returns {object} returns a success message or error .
  */
-export const retrieveMyDocuments = (userId, page) =>
-(dispatch, getState, { client }) => client.get(`/api/users/${userId}/documents?page=${page}&limit=6`)
-      .then(res => {
-        if (res.data.message) {
-          toastr.info(res.data.message);
-        }
-        const documents = res.data;
-        dispatch(saveDocumentSuccess(documents, 'myDocuments'));
-      }, error => {
-        const errorMsgs = error.response.data.message;
-        toastr.error(errorMsgs);
-      });
+export const deleteDocument = (docId, category) =>
+  (dispatch, getState, {
+    client
+  }) =>
+  client.delete(`/api/documents/${docId}`)
+  .then(res => {
+    if (res.status === 200) {
+      // dispatch(getCategoryDocuments(page, category));
+      dispatch(deleteDocumentSuccess(docId, category));
+    }
+    return res;
+  });
+
 /**
- *
- * @desc calls the getAll document paginated endpoint.
- * Retrieves all documents.
- *
- * @param {string} page. Represents Pagination Index
- * @returns {array} returns an array of all docs.
- */
-export const retrieveAllDocuments = (page) =>
-(dispatch, getState, { client }) => client.get(`api/documents?page=${page}&limit=6`)
-      .then(res => {
-        if (res.data.count === 0) {
-          toastr.info('You have 0 documents.');
-        }
-        const allDocuments = res.data;
-        dispatch(saveDocumentSuccess(allDocuments, 'allDocuments'));
-      }, error => {
-        const errorMsgs = error.response.data.message;
-        toastr.error(errorMsgs);
-      }
-      );
-/**
- *
  * @desc calls the create document endpoint.
+ *
  * @param {object} fieldData. Represents user Inputs from form element.
  * @returns {object} returns a success message or error.
  */
-export const createDocument = (fieldData) =>
-(dispatch, getState, { client }) => client.post('/api/documents', fieldData)
-      .then(res => {
-        const successMsg = res.data.message;
-        toastr.success(successMsg);
-      }, error => {
-        const errorMsgs = error.response.data.message;
-        toastr.error(errorMsgs);
-      }
-      );
+export const createDocument = (newDocument) =>
+  (dispatch, getState, {
+    client
+  }) => client.post('/api/documents', newDocument)
+  .then(res => {
+    if (res.status === 200) {
+      const { document } = res.data;
+      dispatch(addDocument(document, 'privateDocuments'));
+    }
+
+    return Promise.resolve(res);
+  });
+
 /**
- *
- * @desc calls the update a dcoument endpoint.
+ * @desc calls the update a document endpoint.
  * Calls retrieveAllDocuments action on success.
+ *
  * @param {object} docId
  * @param {string} fieldData
  * @returns {object} returns a success message or error message.
  */
-export const saveEditedDoc = (docId, fieldData) => (dispatch, getState, { client }) =>
-  client.put(`/api/documents/${docId}`, fieldData)
-      .then(res => {
-        const successMsg = res.data.message;
-        dispatch(retrieveAllDocuments());
-        toastr.success(successMsg);
-      }, error => {
-        const errorMsgs = error.response.data.message;
-        toastr.error(errorMsgs);
-      }
-      );
-/**
- *
- * @desc calls the search endpoint.
- * @param {object} searchQuery
- * @param {string} page. Represents Pagination index.
- * @returns {array} returns an array of all docs matching the search query on success.
- */
-export const searchDocs = (searchQuery, page) => (dispatch, getState, { client }) =>
-  client.get(`/api/search/documents/?docTitle=${searchQuery}&page=${page}&limit=6`)
-      .then(res => {
-        const searchResult = res.data;
-        if (res.data.message) {
-          toastr.info(res.data.message);
-        }
+export const saveEditedDoc = (docId, documentDetails, category) =>
+  (dispatch, getState, {
+    client
+  }) =>
+  client.put(`/api/documents/${docId}`, documentDetails)
+  .then(res => {
+    if (res.status === 200) {
+      dispatch(updateDocument(docId, documentDetails, category));
+    }
+    return Promise.resolve(res);
 
-        dispatch(saveDocumentSuccess(searchResult, 'searchDocuments'));
-      }, error => {
-        const errorMsgs = error.response.data.message;
-        toastr.error(errorMsgs);
-      }
-      );
+  });
 

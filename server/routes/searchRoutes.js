@@ -1,6 +1,6 @@
 import express from 'express';
-import userController from '../controllers/userController';
-import documentController from '../controllers/documentController';
+import UserController from '../controllers/UserController';
+import DocumentController from '../controllers/DocumentController';
 import config from '../config/jwtConfig/config';
 import auth from '../middleware/auth';
 
@@ -30,7 +30,7 @@ const routes = () => {
    *         schema:
    *           $ref: '#/definitions/Users'
    */
-  searchRoutes.get('/users/?', userController.search);
+  searchRoutes.get('/users/?', UserController.search);
 
    /**
    * @swagger
@@ -53,7 +53,7 @@ const routes = () => {
    *         schema:
    *           $ref: '#/definitions/Documents'
    */
-  searchRoutes.get('/documents/?', documentController.search);
+  searchRoutes.get('/documents/?', DocumentController.search);
 
   return searchRoutes;
 };

@@ -8,14 +8,17 @@ import React from 'react';
 import {
   Login
 } from '../../../components/Login.jsx';
+import { message, token } from '../__mocks__/helpers/fixtures';
 
 
-const mockUserLoginRequest = jest.fn();
+const mockUserLoginRequest =  jest.fn(() => {
+  return Promise.resolve({
+    message,
+    token
+  });
+});
+
 const mockValidateLogin = jest.fn();
-
-global.CKEDITOR = {
-  replace: () => {}
-};
 
 let wrapper;
 
@@ -29,7 +32,6 @@ describe('<Login />', () => {
   });
 
   afterEach(() => {
-    mockUserLoginRequest.mockReset();
     mockValidateLogin.mockReset();
   });
 
@@ -51,34 +53,11 @@ describe('<Login />', () => {
     });
 
     const saveBtn = wrapper.find('.docify-test');
-    jest.spyOn(wrapper.node, 'onClickSave');
 
     saveBtn.simulate('click');
 
     expect(mockUserLoginRequest).toHaveBeenCalled();
     expect(mockUserLoginRequest).toHaveBeenCalledWith({
-      email: 'ifiokabasi.eyo@andela.com',
-      password: 'testing',
-      errors: {},
-      isLoading: false
-    });
-  });
-
-  it('allows state to be set', () => {
-    expect(wrapper.node.state)
-      .toEqual({
-        email: '',
-        password: '',
-        errors: {},
-        isLoading: false });
-
-    wrapper.setState({
-      email: 'ifiokabasi.eyo@andela.com',
-      password: 'testing',
-      errors: {},
-      isLoading: false
-    });
-    expect(wrapper.node.state).toEqual({
       email: 'ifiokabasi.eyo@andela.com',
       password: 'testing',
       errors: {},
