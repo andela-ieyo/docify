@@ -161,7 +161,6 @@ describe('User Controller', () => {
           username: 'kk'
         })
         .end((err, res) => {
-          console.log(res, 'oooo');
           expect(res.status).to.equal(200);
           expect(res.body).to.be.an('object');
           expect(res.body).to.have.property('message').eql('User record updated successfully');
