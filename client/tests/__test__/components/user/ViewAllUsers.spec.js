@@ -69,6 +69,19 @@ describe('<ViewAllUsers />', () => {
     expect(mockUpdateUserRole).toHaveBeenCalled();
   });
 
+  it('set state when searching', () => {
+    const mockEvent = {
+      target: {
+        value: 'Moe Abraham'
+      }
+    };
+
+    wrapper.instance().handleSearchInput(mockEvent);
+
+    expect(wrapper.state('isSearching')).toBe(true);
+    expect(wrapper.state('query')).toBe(mockEvent.target.value);
+  });
+
   describe('mapStateToProps', () => {
 
     it('should receive the required props from mapStateToProps', () => {

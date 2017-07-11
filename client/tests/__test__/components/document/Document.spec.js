@@ -42,11 +42,20 @@ jest.mock('react-router', () => ({
 let wrapper;
 
 const mockGetCategoryDocuments = jest.fn();
-const mockDeleteDocument = jest.fn();
+const mockDeleteDocument = jest.fn(() => {
+  return Promise.resolve({});
+});
 
 const params = {
   category: 'private'
 };
+
+jest.mock('sweetalert', () => {
+  return (obj, fn) => {
+    if (typeof obj === 'string') { return; }
+    if (obj.type === 'warning' && fn) { return fn(true); }
+  };
+});
 
 describe('<Document />', () => {
   wrapper = mount(<Document
@@ -83,6 +92,25 @@ describe('<Document />', () => {
     expect(card.nodes[1].props.doc).toMatchObject(documents.privateDocuments.rows[1]);
     expect(card.nodes[1].props.user).toMatchObject(storeUser);
   });
+
+  it('calls deleteDoc class method when a document is been deleted ', () => {
+    wrapper.instance().deleteDoc(documents.privateDocuments.rows[0]);
+    expect(mockDeleteDocument).toHaveBeenCalled();
+  });
+
+  it('set state when searching', () => {
+    const mockEvent = {
+      target: {
+        value: 'One Ring to rule them all'
+      }
+    };
+
+    wrapper.instance().handleSearchInput(mockEvent);
+
+    expect(wrapper.state('isSearching')).toBe(true);
+    expect(wrapper.state('query')).toBe(mockEvent.target.value);
+  });
+
 
   describe('mapStateToProps', () => {
 
