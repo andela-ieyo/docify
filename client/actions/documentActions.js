@@ -35,7 +35,8 @@ export const addDocument = (document, category) =>
 /**
  * @desc delete document success action creator
  *
- * @param {object} document
+ * @param {number} docId - document Id
+ * @param {string} category - document category
  * @returns {object} actionType, and payload
  */
 export const deleteDocumentSuccess = (docId, category) =>
@@ -48,7 +49,9 @@ export const deleteDocumentSuccess = (docId, category) =>
 /**
  * @desc update document success action creator
  *
- * @param {object} document
+ * @param {number} docId - document Id
+ * @param {object} documentDetails
+ * @param {string} category - document category
  * @returns {object} actionType, and payload
  */
 export const updateDocument = (docId, documentDetails, category) =>
@@ -74,8 +77,8 @@ export const getCategoryDocuments = (page, category) =>
 /**
  * @desc deletes a document.
  *
- * @param {object} userId
- * @param {string} page. Represents pagination index.
+ * @param {number} docId - document id
+ * @param {string} category. document category.
  * @returns {object} returns a success message or error .
  */
 export const deleteDocument = (docId, category) =>
@@ -94,7 +97,7 @@ export const deleteDocument = (docId, category) =>
 /**
  * @desc calls the create document endpoint.
  *
- * @param {object} fieldData. Represents user Inputs from form element.
+ * @param {object} newDocument. Represents user Inputs from form element.
  * @returns {object} returns a success message or error.
  */
 export const createDocument = (newDocument) =>
@@ -114,8 +117,9 @@ export const createDocument = (newDocument) =>
  * @desc calls the update a document endpoint.
  * Calls retrieveAllDocuments action on success.
  *
- * @param {object} docId
- * @param {string} fieldData
+ * @param {number} docId
+ * @param {object} DocumentDetails
+ * @param {string} category -  document category
  * @returns {object} returns a success message or error message.
  */
 export const saveEditedDoc = (docId, documentDetails, category) =>

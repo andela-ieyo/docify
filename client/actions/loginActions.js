@@ -4,6 +4,7 @@ import { SAVE_USER } from '../constants/user';
  *
  * @desc save user success action creator.
  * @param {object} user
+ * @param {string} category - document category
  * @returns {object} actiontype, and user Object
  */
 export const saveUser = (user, category) =>

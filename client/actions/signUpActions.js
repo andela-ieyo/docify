@@ -8,7 +8,7 @@ export const saveUser = (user, category) =>
  * @desc handles signup request. Stores token to local Storage.
  *  Redirects user to dashboard on success.
  *
- * @param {object} input from form fields.
+ * @param {object} fieldData - input from form fields.
  * @returns {object} returns success message, user, and token.
  */
 export const userSignUpRequest = (fieldData) =>

@@ -37,9 +37,9 @@ export const loadAllUsers = (users, category) =>
 /**
  * @desc update user role success action creator.
  *
- * @param {object} userId
- * @param {object} newId
- * @param {string} category
+ * @param {object} id - userId
+ * @param {object} newRole - newId
+ * @param {string} category - section of state
  * @returns {object} actiontype, and payload
  */
 export const updateRoleSuccess = (id, newRole, category) =>
@@ -65,7 +65,7 @@ export const getAllUsers = (page) =>
  * @desc update user role action
  *
  * @param {number} id - user roleId
- * @param {number} newRoleId - user new roleId
+ * @param {number} newRole - user new roleId
  * @returns {object} returns a success message or error
  */
 export const updateUserRole = (id, newRole) =>
@@ -82,6 +82,7 @@ export const updateUserRole = (id, newRole) =>
  * @desc delete user action
  *
  * @param {number} id - user roleId
+ * @param {number} page - pagination
  * @returns {object} returns a success message or error
  */
 export const deleteUser = (id, page) =>
