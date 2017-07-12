@@ -47,7 +47,7 @@ describe('deleteDocument action', () => {
     const store = mockStore({
       documents: {}
     });
-    return store.dispatch(deleteDocument(document.id, 'privateDocuments')).then(() => {
+    return store.dispatch(deleteDocument(document.id, 'private')).then(() => {
       expect(store.getActions()).toEqual(expectedActions);
     });
   });

@@ -17,7 +17,8 @@ export default function documentReducer(state = {}, action) {
       const { category, docId } = action;
       const { [category] : { rows = [] } = {} }  = state;
       const newDocumentList = rows.filter((row) => row.id !== docId);
-      return { ...state, [category]: { count: newDocumentList.length, rows: newDocumentList } };
+      return { ...state,
+        [category]: { count: newDocumentList.length, rows: newDocumentList } };
     }
 
     case UPDATE_DOCUMENT: {

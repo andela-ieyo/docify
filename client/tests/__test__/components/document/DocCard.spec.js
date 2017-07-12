@@ -73,10 +73,8 @@ describe('<DocCard />', () => {
   it('renders <div> with active buttons as children with their required text node', () => {
     const button = wrapper.find('.docify-icons');
     expect(button.props().children[1].type).toEqual('button');
-    expect(button.props().children[1].props.disabled).toEqual(false);
     expect(button.props().children[1].props.children).toEqual('Edit');
     expect(button.props().children[2].type).toEqual('button');
-    expect(button.props().children[2].props.disabled).toEqual(false);
     expect(button.props().children[2].props.children).toEqual('Delete');
   });
 

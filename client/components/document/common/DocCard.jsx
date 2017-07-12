@@ -39,20 +39,19 @@ const DocCard = ({ user, doc, deleteDoc, category }) => {
                 dangerouslySetInnerHTML={{ __html: doc.content }}
               />
             </Modal>
-
-            <button
-              disabled={user.id !== doc.User.id}
+            {user.id === doc.User.id
+            ? <button
               id="doc-edit"
               className="btn-small waves-effect waves-light docify-view"
               onClick={() => browserHistory.push(`/document/edit/${category}/${doc.id}`)}
-            >Edit</button>
+            >Edit</button> : '' }
 
-            <button
-              disabled={user.roleId === Roles.Admin || user.id !== doc.User.id}
-              id="doc-delete"
-              onClick={() => { deleteDoc(doc.id); }}
-              className="btn-small waves-effect waves-light docify-view"
-            >Delete</button>
+            {user.roleId === Roles.Admin || user.id === doc.User.id
+              ? <button
+                id="doc-delete"
+                onClick={() => { deleteDoc(doc.id); }}
+                className="btn-small waves-effect waves-light docify-view"
+              >Delete</button> : '' }
           </div>
         </div>
 

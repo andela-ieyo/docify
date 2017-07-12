@@ -107,6 +107,7 @@ export class Document extends Component {
    * @memberof Dashboard
    */
   deleteDoc(docId) {
+    console.log(this.props.params.category, 'kkk');
     swal({
       title: 'Are you sure?',
       text: 'You will not be able to recover this file!',
@@ -117,7 +118,7 @@ export class Document extends Component {
       closeOnConfirm: false
     }, (isConfirm) => {
       if (isConfirm) {
-        this.props.deleteDocument(docId, this.selectedPage, this.props.params.category)
+        this.props.deleteDocument(docId, this.props.params.category)
           .then(res => {
             const successMsg = res.data.message;
             swal({

@@ -38,7 +38,7 @@ const store = mockStore({
 describe('saveEditedDoc action', () => {
 
   it('calls updateDocument action after a successful update ', () => {
-    return store.dispatch(saveEditedDoc(1, documentDetails, 'privateDocuments')).then(() => {
+    return store.dispatch(saveEditedDoc(1, documentDetails, 'private')).then(() => {
       expect(store.getActions()).toEqual(expectedActions);
     });
   });

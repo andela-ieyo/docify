@@ -89,7 +89,7 @@ export const deleteDocument = (docId, category) =>
   .then(res => {
     if (res.status === 200) {
       // dispatch(getCategoryDocuments(page, category));
-      dispatch(deleteDocumentSuccess(docId, category));
+      dispatch(deleteDocumentSuccess(docId, `${category}Documents`));
     }
     return res;
   });
@@ -129,7 +129,7 @@ export const saveEditedDoc = (docId, documentDetails, category) =>
   client.put(`/api/documents/${docId}`, documentDetails)
   .then(res => {
     if (res.status === 200) {
-      dispatch(updateDocument(docId, documentDetails, category));
+      dispatch(updateDocument(docId, documentDetails, `${category}Documents`));
     }
     return Promise.resolve(res);
 
