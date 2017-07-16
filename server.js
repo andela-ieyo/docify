@@ -16,7 +16,7 @@ const swaggerJSDoc = require('swagger-jsdoc');
 // swagger definition
 const swaggerDefinition = {
   info: {
-    title: 'Node Swagger API',
+    title: 'Docify API Documentation',
     version: '1.0.0',
     description: 'Describing Docify RESTful API with Swagger'
   },
