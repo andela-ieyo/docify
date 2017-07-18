@@ -6,26 +6,36 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notEmpty: true
+        notEmpty: {
+          msg: 'The firstName field cannot be empty'
+        }
       }
     },
     lastName: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notEmpty: true
+        notEmpty: {
+          msg: 'The lastName field cannot be empty'
+        }
       }
     },
     username: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'The username field cannot be empty'
+        }
+      }
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         len: {
-          $gt: 5
+          min: 6,
+          msg: 'Must be greater than 5 characters'
         }
       }
     },
@@ -33,8 +43,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      isEmail: {
-        msg: 'Please enter a valid email address'
+      validate:{
+        isEmail: {
+          msg: 'Please enter a valid email address'
+        }
       }
     }
   }, {

@@ -5,7 +5,7 @@ import db from '../../models/index';
 const expect = chai.expect
 
 describe('Document model', () => {
-  beforeEach((done) => {
+  before((done) => {
     db.sequelize.sync({force: true}).done(() => {
       db.Roles.bulkCreate([
         { title: 'Writer' },
@@ -36,7 +36,7 @@ describe('Document model', () => {
     })
   })
 
-  afterEach((done) => {
+  after((done) => {
     db.Documents.destroy({where: {}}).then(() => {
       db.Users.destroy({ where: {} }).then(() => {
         db.Roles.destroy({ where: {} }).then(()  => {
@@ -48,10 +48,37 @@ describe('Document model', () => {
   })
 
   describe('Create Document', () => {
+    it('it should fail with an error message if the title field is empty', (done) => {
+      db.Documents.create({
+        title: '',
+        content: 'Adventure,reality',
+        access: 'public',
+        ownerId: 1
+      })
+      .then()
+      .catch((error) => {
+        expect(error.errors[0].message).to.equal('The title field cannot be empty');
+        done();
+      })
+    })
+
+    it('it should fail with an error message if the content field is empty', (done) => {
+      db.Documents.create({
+        title: 'Lord of the Rings',
+        content: '',
+        access: 'public',
+        ownerId: 1
+      })
+      .then()
+      .catch((error) => {
+        expect(error.errors[0].message).to.equal('The content field cannot be empty');
+        done();
+      })
+    })
     it('it should create a new document', (done) => {
       db.Documents.create({
         title: 'Lord of the Rings',
-        content: 'Advennture,reality',
+        content: 'Adventure,reality',
         access: 'public',
         ownerId: 1
       })

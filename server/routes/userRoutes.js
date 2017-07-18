@@ -2,7 +2,7 @@ import express from 'express';
 import UserController from '../controllers/UserController';
 import config from '../config/jwtConfig/config';
 import auth from '../middleware/auth';
-import { adminValidator } from '../middleware/validator';
+import adminValidator from '../middleware/adminValidator';
 
 const routes = () => {
   const userRoutes = express.Router(); // eslint-disable-line
