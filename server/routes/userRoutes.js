@@ -1,8 +1,8 @@
 import express from 'express';
-import userController from '../controllers/userController';
+import UserController from '../controllers/UserController';
 import config from '../config/jwtConfig/config';
 import auth from '../middleware/auth';
-import adminValidator from '../middleware/adminValidator';
+import { adminValidator } from '../middleware/validator';
 
 const routes = () => {
   const userRoutes = express.Router(); // eslint-disable-line
@@ -55,7 +55,7 @@ const routes = () => {
  *       200:
  *         description: Successfully created
  */
-  userRoutes.post('/', userController.create);
+  userRoutes.post('/', UserController.create);
 
   /**
  * @swagger
@@ -85,7 +85,7 @@ const routes = () => {
  *       200:
  *         description: Successfully logged in
  */
-  userRoutes.post('/login', userController.login);
+  userRoutes.post('/login', UserController.login);
 
   /**
  * @swagger
@@ -108,13 +108,13 @@ const routes = () => {
  *       200:
  *         description: Successfully logged out.
  */
-  userRoutes.get('/logout', userController.logout);
+  userRoutes.get('/logout', UserController.logout);
 
   // token authentication middleware
   userRoutes.use(auth.authenticate('jwt', config.jwtSession));
 
   // verify current user when browser reloads
-  userRoutes.get('/current', userController.getCurrentUser);
+  userRoutes.get('/current', UserController.getCurrentUser);
 
 
   /**
@@ -143,7 +143,7 @@ const routes = () => {
  *         schema:
  *           $ref: '#/definitions/Users'
  */
-  userRoutes.get('/:id', userController.findUser);
+  userRoutes.get('/:id', UserController.findUser);
 
   /**
  * @swagger
@@ -197,38 +197,38 @@ const routes = () => {
  *         schema:
  *           $ref: '#/definitions/Users'
  */
-  userRoutes.put('/:id', userController.update);
+  userRoutes.put('/:id', UserController.update);
 
-  userRoutes.delete('/', userController.deleteMyAccount);
+  userRoutes.delete('/', UserController.deleteMyAccount);
 
-   /**
-   * @swagger
-   * /api/users/{id}/documents:
-   *   get:
-   *     tags:
-   *       - Users
-   *     description: Returns all of the users Documents
-   *     produces:
-   *       - application/json
-   *     parameters:
- *         - name: authorization
- *           description: request x-access-token
- *           in: header
- *           required: true
- *           type: string
- *         - name: id
- *           description: User's id
- *           in: path
- *           required: true
- *           type: integer
-   *     responses:
-   *       200:
-   *         description: An array of documents
-   *         schema:
-   *           $ref: '#/definitions/Documents'
-   */
+ /**
+ * @swagger
+ * /api/users/{id}/documents:
+ *   get:
+ *     tags:
+ *       - Users
+ *     description: Returns all of the users Documents
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: authorization
+ *         description: request x-access-token
+ *         in: header
+ *         required: true
+ *         type: string
+ *       - name: id
+ *         description: User's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: An array of documents
+ *         schema:
+ *           $ref: '#/definitions/Documents'
+ */
 
-  userRoutes.get('/:id/documents', userController.findUserDoc);
+  userRoutes.get('/:id/documents', UserController.findUserDoc);
 
   userRoutes.use(adminValidator);
 
@@ -265,7 +265,7 @@ const routes = () => {
  *         schema:
  *           $ref: '#/definitions/Users'
  */
-  userRoutes.put('/role/:id', userController.updateRole);
+  userRoutes.put('/role/:id', UserController.updateRole);
 
 
     /**
@@ -293,7 +293,7 @@ const routes = () => {
  *         description: Successfully deleted
  */
 
-  userRoutes.delete('/:id', userController.deleteUser);
+  userRoutes.delete('/:id', UserController.deleteUser);
 
   /**
  * @swagger
@@ -326,7 +326,7 @@ const routes = () => {
  *         schema:
  *           $ref: '#/definitions/Users'
  */
-  userRoutes.get('/?', userController.getAllUsers);
+  userRoutes.get('/?', UserController.getAllUsers);
 
 /**
 * @swagger
@@ -375,7 +375,7 @@ const routes = () => {
  *         schema:
  *           $ref: '#/definitions/Users'
  */
-  userRoutes.get('/', userController.findAll);
+  userRoutes.get('/', UserController.findAll);
 
   return userRoutes;
 };

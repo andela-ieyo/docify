@@ -3,6 +3,10 @@ $width: 100%;
 $break-xsmall: 360px;
 $break-small: 550px;
 $break-large: 1080px;
+$font-color: #212121;
+$dashboard-welcome-msg: #505050;
+$homepage-text: #FFEB3B;
+$nav-active-color: red;
 
 @mixin respond-to($media) {
   @if $media == handhelds {
@@ -18,6 +22,7 @@ $break-large: 1080px;
 
 body {
   font-family: 'Roboto', sans-serif;
+  background-color: #F8F8F8;
 }
 
 .docify-users-search{
@@ -75,14 +80,14 @@ body {
 
 
 #signup{
-   background-color: #F5F5F5;
+   background-color: #E8E8E8;
    border-radius: 5px;
    width: $width;
 }
 
 .login{
   width: $width;
-  background-color: #F5F5F5;
+  background-color: #E8E8E8;
   border-radius: 5px;
 
   .login-title{
@@ -122,12 +127,12 @@ body {
 }
 
 .docify-card{
-  border: #212121 solid 1px;
+  border: $font-color solid 1px;
   .card-title, span{
-    color: #212121;
+    color: $font-color;
   }
   .docify-p{
-    color: #212121;
+    color: $font-color;
   }
 }
 
@@ -137,7 +142,10 @@ body {
 
 .docify-add{
   margin-right: 2%;
-  margin-top: -2%;
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  margin-bottom:4%;
 }
 
 .docify-menu{
@@ -170,6 +178,7 @@ body {
 .docify-search{
   justify-content: space-around;
   width: 40%;
+  margin: 0 auto;
 
   form{
     margin-left: 10%;
@@ -216,10 +225,6 @@ body {
   font-weight: bold;
 }
 
-.span-admin{
-  margin-left: 10%;
-}
-
 .name{
   text-transform: capitalize;
 }
@@ -248,9 +253,7 @@ body {
 
 .users-list{
   margin-bottom: 2%;
-  margin-top: 5%;
-  margin-left: 11%;
-  margin-right: 4%;
+  margin-top: 2%;
 }
 
 .docify-list{
@@ -260,7 +263,7 @@ body {
 
 .list-section{
   span{
-    color: #212121
+    color: $font-color
   }
   .docify-role{
     margin-left: 24%;
@@ -297,23 +300,20 @@ body {
   }
 }
 
-.docify-users-btn-section{
-  display: flex;
-  justify-content: space-between;
-  margin-left: 7%;
-
   .docify-update{
-    margin-top: 3%;
+    margin-top: 2%;
     font-size: 10px;
+    display: inline-block;
+    margin-right: 2%;
   }
 
   .docify-delete{
+    display: inline-block;
     background-color: #e53935;
-    margin-top: 3%;
+    margin-top: 2%;
     font-size: 10px;
   }
 
-}
 
 .desc-section{
   display: flex;
@@ -332,7 +332,7 @@ body {
 
     p{
       margin-top: 0%;
-      color: #FFEB3B;
+      color: $homepage-text;
     }
   }
 
@@ -347,7 +347,7 @@ body {
 
     p{
       margin-top: 0%;
-      color: #FFEB3B;
+      color: $homepage-text;
     }
   }
 
@@ -362,7 +362,7 @@ body {
 
     p{
       margin-top: 0%;
-      color: #FFEB3B;
+      color: $homepage-text;
     }
   }
 }
@@ -394,8 +394,82 @@ body {
 }
 
 .pagination-wrapper{
-  position: fixed;
-  margin-left: 45%;
+  position: absolute;
+  bottom: -7%;
+  left: 44%;
 }
 
+.card-content{
+  i {
+    font-size: 4em;
+    color: $nav-active-color;
+  }
+}
 
+.dashboard-title{
+  margin: 0 auto;
+  span{
+    color: $font-color
+  }
+}
+
+.dashboard-welcome-msg{
+  font-size: 4rem;
+  color: $dashboard-welcome-msg;
+}
+
+.userView{
+  .email{
+    padding-bottom: 0px !important;
+  }
+}
+
+#doc-delete[disabled] {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+#doc-edit[disabled] {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+#doc-view[disabled] {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #E8E8E8  }
+
+th {
+    background-color: #D9EDF7;
+    color: #505050;
+    border-radius: 0px !important;
+}
+
+td{
+  height: 85px !important;
+}
+
+.no-document{
+  font-size: 4em;
+}
+
+.role-btn{
+  display: inline-flex !important;
+  margin-left: 23%;
+}
+
+.selected{
+  color: red !important;
+}

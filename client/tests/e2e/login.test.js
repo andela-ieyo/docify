@@ -4,16 +4,9 @@ const config = require('../../../nightwatch.conf.js');
 
 module.exports = {
   // '@disabled': true,
-  'Docify': function (browser) {
-    browser
-      .url('http://localhost:8000')
-      .waitForElementVisible('body', 8000)
-      .assert.containsText('div', 'Docify')
-      .end();
-  },
-
   'Login Users': function (browser) {
     browser
+      .resizeWindow(1280, 800)
       .url('http://localhost:8000/login')
       .waitForElementVisible('body')
       .waitForElementVisible('h4')
@@ -38,9 +31,11 @@ module.exports = {
       .assert.urlEquals('http://localhost:8000/dashboard')
       .waitForElementVisible('i[class="Small material-icons docify-menu"]')
       .click('a[class="button-collapse"]')
+      .waitForElementVisible('div[class="userView"]')
       .assert.containsText('span', 'Welcome Eyo')
       .assert.elementPresent('.span-admin')
-      .assert.containsText('a[class="view-all-docify"]', 'View All Users')
+      .waitForElementVisible('a[class="view-all-docify "]')
+      .assert.containsText('a[class="view-all-docify "]', 'View All Users')
       .end();
   },
 
@@ -60,7 +55,7 @@ module.exports = {
       .assert.containsText('span[class="email"]', 'precious.ijege@andela.com')
       .assert.containsText('a[class="delete-profile"]', 'Delete your account')
       .assert.containsText('a[class="update-profile"]', 'Update profile')
-      .assert.hidden('.view-all-docify')
+      .assert.elementNotPresent('.view-all-docify')
       .end();
   }
 };

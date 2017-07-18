@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import toastr from 'toastr';
+import { browserHistory } from 'react-router';
 import PropTypes from 'prop-types';
 import { userLoginRequest } from '../actions/loginActions';
 import validateLogin from '../../server/shared/validations/login';
@@ -59,7 +61,17 @@ export class Login extends Component {
     const { errors, isValid } = validateLogin(this.state);
 
     if (isValid) {
-      this.props.userLoginRequest(this.state);
+      this.props.userLoginRequest(this.state)
+       .then((res) => {
+         const { message, token } = res.data;
+         toastr.success(message);
+         window.localStorage.setItem('jwtToken_docify', token);
+         browserHistory.push('/dashboard');
+       })
+       .catch((error) => {
+         const errorMsg = error.response.data.message;
+         toastr.error(errorMsg);
+       });
     }
     this.setState({ errors });
   }
