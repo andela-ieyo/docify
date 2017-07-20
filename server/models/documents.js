@@ -5,7 +5,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true,
       validate: {
-        notEmpty: true
+        notEmpty: {
+          msg: 'The title field cannot be empty'
+        }
       }
     },
     content: {
@@ -13,7 +15,9 @@ module.exports = (sequelize, DataTypes) => {
       length: 'long',
       allowNull: false,
       validate: {
-        notEmpty: true
+        notEmpty: {
+          msg: 'The content field cannot be empty'
+        }
       }
     },
     access: {

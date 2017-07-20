@@ -1,35 +1,13 @@
 import models from '../models';
-import { paginate } from '../middleware/validator';
+import {
+  paginate,
+  checkIfWriter,
+  checkDocOwner
+ } from '../utils/utilFunctions';
 
 const Documents = models.Documents;
 const Users = models.Users;
 
-/**
- * @desc  checks if the request user is the owner of the requested document
- *
- * @param {object} docId document id
- * @param {object} queryId id passed as params
- * @returns
- */
-const checkDocOwner = (docId, queryId) => {
-  if (parseInt(docId, 10) === parseInt(queryId, 10)) {
-    return true;
-  }
-  return false;
-};
-
-/**
- * @desc writer role validation
- *
- * @param {object} roleId
- * @returns
- */
-const checkIfWriter = (roleId) => {
-  if (roleId === 1) {
-    return true;
-  }
-  return false;
-};
 
 const DocumentController = {
   /**
@@ -54,7 +32,7 @@ const DocumentController = {
         title: req.body.title
       }
     })
-      .then(result => {
+      .then((result) => {
         if (result) {
           return res.status(406).send({ message: 'A document with that title exists' });
         }
@@ -64,18 +42,18 @@ const DocumentController = {
             id: loggedInUser.id
           }
         })
-        .then(user => {
+        .then((user) => {
           Documents.create(
             Object.assign({},
             docData,
             { ownerId: loggedInUserId }
           ))
             .then((document) => res.status(200).send({ document, message: 'Document created successfully' }))
-            .catch(error => res.status(500)
+            .catch((error) => res.status(500)
               .send({ message: 'Server error', error }));
         });
       })
-      .catch(error => res.status(500)
+      .catch((error) => res.status(500)
         .send({ message: 'Server error', error }));
   },
 
@@ -92,6 +70,7 @@ const DocumentController = {
     const loggedInUserRoleId = loggedInUser.roleId;
     const isWriter = checkIfWriter(loggedInUserRoleId);
     const editorId = 2;
+
     if (isWriter) {
       return Documents.findAll({
         where: {
@@ -103,10 +82,11 @@ const DocumentController = {
           ]
         }
       })
-      .then(docs => res.status(200).send(docs))
-      .catch(error => res.send(500)
+      .then((docs) => res.status(200).send(docs))
+      .catch((error) => res.send(500)
         .send({ message: 'Server error', error }));
     }
+
     if (loggedInUserRoleId === editorId) {
       return Documents.findAll({
         where: {
@@ -118,13 +98,13 @@ const DocumentController = {
           ]
         }
       })
-        .then(docs => res.status(200).send(docs))
-        .catch(error => res.status(404)
+        .then((docs) => res.status(200).send(docs))
+        .catch((error) => res.status(404)
           .send({ message: 'No such Documents', error }));
     }
     return Documents.findAll()
-      .then(docs => res.status(200).send(docs))
-      .catch(error => res.status(500).send(error));
+      .then((docs) => res.status(200).send(docs))
+      .catch((error) => res.status(500).send(error));
   },
 
   /**
@@ -143,18 +123,19 @@ const DocumentController = {
     }
 
     return Documents.findById(query)
-      .then(doc => {
+      .then((doc) => {
         if (!doc) {
           return res.status(404).send({ message: 'Document not found' });
         }
 
         const isOwner = checkDocOwner(doc.ownerId, loggedInUser.id);
+
         if (isOwner || loggedInUser.roleId === 3) {
           return res.status(200).send(doc);
         }
         return res.status(401).send({ message: 'Request denied' });
       })
-      .catch(error =>
+      .catch((error) =>
         res.status(500).send({ message: 'Server error', error }));
   },
 
@@ -176,12 +157,13 @@ const DocumentController = {
     }
 
     return Documents.findById(query)
-      .then(doc => {
+      .then((doc) => {
         if (!doc) {
           return res.status(404).send({ message: 'Document not found' });
         }
 
         const isOwner = checkDocOwner(doc.ownerId, loggedInUser.id);
+
         if (!isOwner) {
           return res.status(401).send({ message: 'Request denied' });
         }
@@ -192,10 +174,10 @@ const DocumentController = {
         })
           .then(() =>
             res.status(200).send({ message: 'Document updated successfully' }))
-          .catch(error =>
+          .catch((error) =>
             res.status(500).send({ message: 'Server error', error }));
       })
-      .catch(error => res.status(500)
+      .catch((error) => res.status(500)
         .send({ message: 'Server error', error }));
   },
 
@@ -216,33 +198,37 @@ const DocumentController = {
     }
 
     return Documents.findById(queryId)
-      .then(doc => {
+      .then((doc) => {
         if (!doc) {
           return res.status(404).send({ message: 'Document does not exist' });
         }
+
         if (isAdmin) {
           const isPrivate = doc.access === 'private';
           const ownedByAdmin = doc.ownerId === loggedInUser.id;
+
           if (isPrivate && !ownedByAdmin) {
             return res.status(401).send({ message: 'Request denied' });
           }
           return doc.destroy()
             .then(() => res.status(200)
               .send({ message: 'Document deleted successfully' }))
-            .catch(error => res.status(500)
+            .catch((error) => res.status(500)
               .send({ message: 'Server error', error }));
         }
+
         const isOwner = checkDocOwner(doc.ownerId, loggedInUser.id);
+
         if (!isOwner) {
           return res.status(401).send({ message: 'Request denied' });
         }
         return doc.destroy()
           .then(() => res.status(200)
             .send({ message: 'document deleted successfully' }))
-          .catch(error => res.status(500)
+          .catch((error) => res.status(500)
             .send({ message: 'Server error', error }));
       })
-      .catch(error => res.status(500)
+      .catch((error) => res.status(500)
         .send({ message: 'Server error', error }));
   },
 
@@ -260,8 +246,8 @@ const DocumentController = {
     const isAdmin = req.user.roleId === 3;
     const loggedInUser = req.user;
     const loggedInUserId = loggedInUser.id;
-
     const isWriter = checkIfWriter(loggedInUser.roleId);
+
     if (isWriter) {
       return Documents.findAndCountAll({
         offset,
@@ -283,7 +269,7 @@ const DocumentController = {
         },
         include: [{ model: Users, attributes:['id', 'firstName', 'lastName'] }]
       })
-        .then(docs => {
+        .then((docs) => {
           if (docs.count === 0) {
             return res.status(404).send({ message: 'Not Found' });
           }
@@ -296,7 +282,7 @@ const DocumentController = {
             ...pagination
           });
         })
-        .catch(error => res.status(500)
+        .catch((error) => res.status(500)
           .send({ message: 'Server error', error }));
     }
 
@@ -322,7 +308,7 @@ const DocumentController = {
         },
         include: [{ model: Users, attributes:['id', 'firstName', 'lastName'] }]
       })
-        .then(docs => {
+        .then((docs) => {
           if (docs.count === 0) {
             return res.status(404).send({ message: 'Not Found' });
           }
@@ -335,7 +321,7 @@ const DocumentController = {
             ...pagination
           });
         })
-        .catch(error => res.status(500)
+        .catch((error) => res.status(500)
           .send({ message: 'Server error', error }));
     }
 
@@ -353,7 +339,7 @@ const DocumentController = {
       },
       include: [{ model: Users, attributes:['id', 'firstName', 'lastName'] }]
     })
-      .then(docs => {
+      .then((docs) => {
         const count = docs.count;
         const pagination = paginate(count, limit, offset);
         res.status(200).send({
@@ -362,7 +348,7 @@ const DocumentController = {
           ...pagination
         });
       })
-      .catch(error => res.status(500).send(error));
+      .catch((error) => res.status(500).send(error));
   },
 
   /**
@@ -397,7 +383,7 @@ const DocumentController = {
         },
         include: [{ model: Users, attributes:['id', 'firstName', 'lastName'] }]
       })
-      .then(docs => {
+      .then((docs) => {
         const count = docs.count;
         const pagination = paginate(count, limit, offset);
         res.status(200).send({
@@ -406,9 +392,10 @@ const DocumentController = {
           ...pagination
         });
       })
-      .catch(error => res.send(500)
+      .catch((error) => res.send(500)
         .send({ message: 'Server error', error }));
     }
+
     if (loggedInUserRoleId === editorId) {
       return Documents.findAndCountAll({
         offset,
@@ -424,7 +411,7 @@ const DocumentController = {
         },
         include: [{ model: Users, attributes:['id', 'firstName', 'lastName'] }]
       })
-        .then(docs => {
+        .then((docs) => {
           const count = docs.count;
           const pagination = paginate(count, limit, offset);
           res.status(200).send({
@@ -433,7 +420,7 @@ const DocumentController = {
             ...pagination
           });
         })
-        .catch(error => res.status(404)
+        .catch((error) => res.status(404)
           .send({ message: 'No such Documents', error }));
     }
     return Documents.findAndCountAll(
@@ -444,7 +431,7 @@ const DocumentController = {
         include: [{ model: Users, attributes:['id', 'firstName', 'lastName'] }]
       }
     )
-      .then(docs => {
+      .then((docs) => {
         const count = docs.count;
         const pagination = paginate(count, limit, offset);
         res.status(200).send({
@@ -453,7 +440,7 @@ const DocumentController = {
           ...pagination
         });
       })
-      .catch(error => res.status(500).send(error));
+      .catch((error) => res.status(500).send(error));
 
   },
 
@@ -482,7 +469,7 @@ const DocumentController = {
       },
       include: [{ model: Users, attributes:['id', 'firstName', 'lastName'] }]
     })
-      .then(docs => {
+      .then((docs) => {
         const count = docs.count;
         const pagination = paginate(count, limit, offset);
         res.status(200).send({
@@ -490,7 +477,7 @@ const DocumentController = {
           User: docs.User,
           ...pagination });
       })
-      .catch(error => res.send(500)
+      .catch((error) => res.send(500)
         .send({ message: 'Server error', error }));
 
   },
@@ -516,12 +503,12 @@ const DocumentController = {
       },
       include: [{ model: Users, attributes:['id', 'firstName', 'lastName'] }]
     })
-      .then(docs => {
+      .then((docs) => {
         const count = docs.count;
         const pagination = paginate(count, limit, offset);
         res.status(200).send({ rows: docs.rows, User: docs.User, ...pagination });
       })
-      .catch(error => res.send(500)
+      .catch((error) => res.send(500)
         .send({ message: 'Server error', error }));
 
   },
@@ -551,12 +538,12 @@ const DocumentController = {
         },
         include: [{ model: Users, attributes:['id', 'firstName', 'lastName'] }]
       })
-      .then(docs => {
+      .then((docs) => {
         const count = docs.count;
         const pagination = paginate(count, limit, offset);
         res.status(200).send({ rows: docs.rows, User: docs.User, ...pagination });
       })
-      .catch(error => res.send(500)
+      .catch((error) => res.send(500)
         .send({ message: 'Server error', error }));
     }
 
@@ -576,7 +563,7 @@ const DocumentController = {
         },
         include: [{ model: Users, attributes:['firstName', 'lastName'] }]
       })
-        .then(docs => {
+        .then((docs) => {
           const count = docs.count;
           const pagination = paginate(count, limit, offset);
           res.status(200).send({
@@ -585,7 +572,7 @@ const DocumentController = {
             ...pagination
           });
         })
-        .catch(error => res.status(404)
+        .catch((error) => res.status(404)
           .send({ message: 'No such Documents', error }));
     }
 
@@ -599,7 +586,7 @@ const DocumentController = {
         include: [{ model: Users, attributes:['firstName', 'lastName'] }]
       }
     )
-      .then(docs => {
+      .then((docs) => {
         const count = docs.count;
         const pagination = paginate(count, limit, offset);
         res.status(200).send({
@@ -608,7 +595,7 @@ const DocumentController = {
           ...pagination
         });
       })
-      .catch(error => res.status(500).send(error));
+      .catch((error) => res.status(500).send(error));
   }
 
 };

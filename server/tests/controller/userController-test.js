@@ -37,10 +37,10 @@ describe('User Controller', () => {
     });
   });
 
-  after((done) => { //Before each test we empty the database
+  after((done) => {
     models.sequelize.sync({
       force: true
-    }) // drops table and re-creates it
+    })
       .then(() => {
         done();
       });

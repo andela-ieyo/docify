@@ -21,7 +21,8 @@
       "!client/reducers/index.js"
     ],
     "testPathIgnorePatterns": [
-      "client/tests/e2e/"
+      "client/__test__/e2e/",
+       "server/"
     ],
     "coverageDirectory": "./feCoverage"
   },

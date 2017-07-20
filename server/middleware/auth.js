@@ -16,22 +16,22 @@ const options = {
 
 const Users = models.Users;
 
-const strategy = new Strategy(options, (payload, done) => {
+const emailValidator = new Strategy(options, (payload, done) => {
   Users.findOne({
     where: { email: payload.email }
   })
-    .then(user => {
+    .then((user) => {
       if (user) {
         return done(null, user);
       }
       return done(new Error('User not found'), false);
     })
-    .catch(error => {
+    .catch((error) => {
       done(error, null);
     });
 });
 
 
-passport.use(strategy);
+passport.use(emailValidator);
 
 export default passport;

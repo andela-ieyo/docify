@@ -1,0 +1,39 @@
+/* eslint func-names: "off"*/
+/* eslint no-unused-vars: "off"*/
+import faker from 'faker';
+const config = require('../../../nightwatch.conf.js');
+
+module.exports = {
+  // '@disabled': true,
+
+  'Delete User': function (browser) {
+    browser
+      .resizeWindow(1280, 800)
+      .url('http://localhost:8000/login')
+      .waitForElementVisible('body')
+      .waitForElementVisible('input[type=email]')
+      .setValue('input[type=email]', 'ifiokabasi.eyo@andela.com')
+      .setValue('input[type=password]', 'sagehasson')
+      .click('button[name=submit]')
+      .waitForElementVisible('.toast')
+      .assert.visible('.toast')
+      .assert.urlEquals('http://localhost:8000/dashboard')
+      .waitForElementVisible('i[class="material-icons add"]')
+      .waitForElementVisible('i[class="Small material-icons docify-menu"]')
+      .waitForElementVisible('i[class="fa fa-folder"]')
+      .click('a[class="button-collapse"]')
+      .waitForElementVisible('div[class="userView"]')
+      .assert.containsText('span', 'Welcome Eyo')
+      .waitForElementVisible('a[class="view-all-docify "]')
+      .click('a[class="view-all-docify "]')
+      .assert.urlEquals('http://localhost:8000/users/all')
+      .waitForElementVisible('div[class="create-title center-align"]')
+      .waitForElementVisible('a[class="waves-effect waves-teal btn docify-delete"]')
+      .click('a[class="waves-effect waves-teal btn docify-delete"]')
+      .pause(5000)
+      .waitForElementVisible('div[class="sweet-alert showSweetAlert visible"]')
+      .waitForElementVisible('div[class="sa-confirm-button-container"]')
+      .click('button[class="confirm"]')
+      .end();
+  }
+};

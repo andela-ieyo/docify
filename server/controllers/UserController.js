@@ -4,7 +4,7 @@ import models from '../models';
 import config from '../config/jwtConfig/config';
 import validateInput from '../shared/validations/signup';
 import validateLogin from '../shared/validations/login';
-import { paginate } from '../middleware/validator';
+import { paginate, isLoggedInUser } from '../utils/utilFunctions';
 
 const Users = models.Users;
 const Roles = models.Roles;
@@ -12,19 +12,6 @@ const Documents = models.Documents;
 const secretKey = config.jwtSecret;
 const salt = bcrypt.genSaltSync();
 
-/**
- *
- * @desc checks if a user is a registered user.
- * @param {number} userId
- * @param {number} queryId id passeds as params.
- * @returns {boolean} returns true or false
- */
-const isLoggedInUser = (userId, queryId) => {
-  if (parseInt(userId, 10) === parseInt(queryId, 10)) {
-    return true;
-  }
-  return false;
-};
 
 const UserController = {
   /**
@@ -51,7 +38,7 @@ const UserController = {
     };
 
     return Users.findOne(query)
-      .then(user => {
+      .then((user) => {
         if (user) {
           return res.status(400).send({
             message: 'An account with that email address already exists'
@@ -68,7 +55,7 @@ const UserController = {
             roleId: 1
           }
         )
-          .then(userObj => {
+          .then((userObj) => {
             const payload = {
               roleId: userObj.roleId,
               email: userObj.email
@@ -94,11 +81,11 @@ const UserController = {
               }
             );
           })
-          .catch(error => {
+          .catch((error) => {
             res.status(500).send({ message: 'Server error', error });
           });
       })
-      .catch(error => {
+      .catch((error) => {
         res.status(500).send({ message: 'Server error', error });
       });
   },
@@ -118,7 +105,6 @@ const UserController = {
       return res.status(400).json(errors);
     }
 
-    // if (req.body.email && req.body.password)
     const { email } = req.body;
     const query = {
       where: {
@@ -133,6 +119,7 @@ const UserController = {
               message: 'Your account does not exist'
             });
           }
+
           if (Users.isPassword(user.password, req.body.password)) {
             const payload = {
               id: user.id,
@@ -156,7 +143,7 @@ const UserController = {
             message: 'Please, enter the correct password or email'
           });
         })
-        .catch(error => {
+        .catch((error) => {
           res.status(500).send({ message: 'Server error', error });
         });
   },
@@ -176,8 +163,8 @@ const UserController = {
       });
     }
     return Users.findAll()
-      .then(allRegUsers => res.status(200).send(allRegUsers))
-      .catch(error => res.status(500).send({
+      .then((allRegUsers) => res.status(200).send(allRegUsers))
+      .catch((error) => res.status(500).send({
         message: 'Server error',
         error
       }));
@@ -186,7 +173,7 @@ const UserController = {
   findUser(req, res) {
     const query = req.params.id;
     Users.findById(query)
-      .then(user => {
+      .then((user) => {
         if (!user) {
           return res.status(404).send({
             message: 'User not found'
@@ -194,7 +181,7 @@ const UserController = {
         }
         return res.status(200).send(user);
       })
-      .catch(error => res.status(500).send({
+      .catch((error) => res.status(500).send({
         message: 'Server error',
         error
       }));
@@ -211,7 +198,7 @@ const UserController = {
     const { id } = req.params;
 
     Users.findById(id)
-      .then(user => {
+      .then((user) => {
         if (!user) {
           return res.status(400).send({
             message: 'User not found'
@@ -229,11 +216,11 @@ const UserController = {
               message: 'User record deleted successfully'
             });
           })
-          .catch(error => res.status(500).send({
+          .catch((error) => res.status(500).send({
             message: 'Server error', error })
           );
       })
-      .catch(error => res.status(500).send({
+      .catch((error) => res.status(500).send({
         message: 'Server error', error })
       );
   },
@@ -268,7 +255,7 @@ const UserController = {
     }
 
     return Users.findById(queryId)
-      .then(user => {
+      .then((user) => {
         if (!user) {
           return res.status(404).send({
             message: 'User not found'
@@ -285,10 +272,10 @@ const UserController = {
           .then(() => res.status(200).send({
             message: 'User record updated successfully'
           }))
-          .catch(error => res.status(500)
+          .catch((error) => res.status(500)
             .send({ message: 'Server error', error }));
       })
-      .catch(error => res.status(500)
+      .catch((error) => res.status(500)
         .send({ message: 'Server error', error }));
   },
 
@@ -303,7 +290,7 @@ const UserController = {
     const queryId = parseInt(req.params.id, 10);
 
     Users.findById(queryId)
-      .then(user => {
+      .then((user) => {
         if (!user) {
           return res.status(404).send({
             message: 'User not found'
@@ -315,10 +302,10 @@ const UserController = {
           .then(() => res.status(200).send({
             message: 'User role updated successfully'
           }))
-          .catch(error => res.status(500)
+          .catch((error) => res.status(500)
             .send({ message: 'Server error', error }));
       })
-      .catch(error => res.status(500).send(error));
+      .catch((error) => res.status(500).send(error));
   },
 
   /**
@@ -342,8 +329,6 @@ const UserController = {
       });
     }
 
-    console.log('i was here');
-
     if (isAdmin) {
       return Documents.findAndCountAll({
         offset,
@@ -356,7 +341,7 @@ const UserController = {
         },
         include: [{ model: Users, attributes:['firstName', 'lastName'] }]
       })
-        .then(docs => {
+        .then((docs) => {
           if (!docs) {
             return res.send(404).send({
               message: 'No document found'
@@ -364,7 +349,7 @@ const UserController = {
           }
           return res.status(200).send(docs);
         })
-        .catch(error =>
+        .catch((error) =>
           res.status(500).send({
             message: 'Server error',
             error
@@ -379,7 +364,7 @@ const UserController = {
       },
       include: [{ model: Users, attributes:['firstName', 'lastName'] }]
     })
-    .then(docs => {
+    .then((docs) => {
       if (!docs) {
         return res.send(404).send({
           message: 'No document found'
@@ -387,7 +372,7 @@ const UserController = {
       }
       return res.status(200).send(docs);
     })
-    .catch(error =>
+    .catch((error) =>
       res.status(500).send({
         message: 'Server error',
         error
@@ -405,6 +390,7 @@ const UserController = {
     const limit = req.query.limit || 10;
     const offset = (req.query.page || 0) * limit;
     const { name } = req.query;
+
     Users.findAndCountAll({
       offset,
       limit,
@@ -419,7 +405,7 @@ const UserController = {
       },
       include: [{ model: Roles, attributes:['title'] }]
     })
-      .then(users => {
+      .then((users) => {
         if (users.count === 0) {
           return res.status(404).send({
             message: 'No user record found'
@@ -435,7 +421,7 @@ const UserController = {
           ...pagination
         });
       })
-      .catch(error => res.status(500)
+      .catch((error) => res.status(500)
         .send({ message: 'Server error', error }));
   },
 
@@ -449,6 +435,7 @@ const UserController = {
   getCurrentUser(req, res) {
     const user = JSON.parse(JSON.stringify(req.user));
     const currentUser = Object.assign({}, user, { password: '' });
+
     return res.status(200).send(currentUser);
   },
 
@@ -484,7 +471,7 @@ const UserController = {
       attributes: { exclude: ['roleId'] },
       include: [{ model: Roles, attributes:['id', 'title'] }]
     })
-      .then(allRegUsers => {
+      .then((allRegUsers) => {
         const count = allRegUsers.count;
         const pagination = paginate(count, limit, offset);
         res.status(200).send({
@@ -493,7 +480,7 @@ const UserController = {
           ...pagination
         });
       })
-      .catch(error => res.status(500).send({
+      .catch((error) => res.status(500).send({
         message: 'Server error',
         error
       }));
@@ -515,7 +502,7 @@ const UserController = {
       return res.status(403).send({ message: 'This email does not belong to you' });
     }
     return Users.findById(id)
-      .then(user => {
+      .then((user) => {
         if (!user) {
           return res.status(400).send({
             message: 'User not found'
@@ -527,11 +514,11 @@ const UserController = {
               message: 'User account deleted successfully'
             });
           })
-          .catch(error => res.status(500).send({
+          .catch((error) => res.status(500).send({
             message: 'Server error', error })
           );
       })
-      .catch(error => res.status(500).send({
+      .catch((error) => res.status(500).send({
         message: 'Server error', error })
       );
   }
